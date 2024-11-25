@@ -1,6 +1,5 @@
 {
-    "rewrites": [{
-        "source": "/(.*)",
-        "destination": "/"
-    }]
+    "routes": [
+        {"handle": "fileSystem"}
+    ]
 }
