@@ -1,30 +1,34 @@
-import React, { useState, createContext, Dispatch, SetStateAction } from "react";
+import React, { useState, createContext} from "react";
 import { useContext } from "react";
 
 type Popup = {
     show: boolean;
     type: string;
+    data?: any
 }
 
 interface IPopupContext {
     hidePopup: Popup;
-    setHidePopup: Dispatch<SetStateAction<Popup>>;
+    handleHidePopup: (values: Popup) => void;
 }
 
 
 export const PopupContext = createContext<IPopupContext>({
     hidePopup: {show: false, type: "create"},
-    setHidePopup: () => {},
-}
-)
+    handleHidePopup: () => {}
+})
 
 
 
 export const PopupContextProvider = ({ children }: {children: React.ReactNode}) => {
 
-    const [hidePopup, setHidePopup] = useState({show: false, type: "create"})
+    const [hidePopup, setHidePopup] = useState({show: false, type: "create", data: undefined})
 
-    const value = {hidePopup,  setHidePopup}
+
+    const handleHidePopup = (values: Popup) => {
+        setHidePopup({show: values.show, type: values.type, data: values.data})
+    }
+    const value = {hidePopup,  handleHidePopup}
 
     return <PopupContext.Provider value={value}>
         {children}

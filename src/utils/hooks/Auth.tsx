@@ -1,7 +1,6 @@
 import { User, Tokens, Login } from "../../types/Auth";
 import { createContext, PropsWithChildren, useContext, useState, useEffect } from "react";
 import { login, logout } from "../../api/authentication";
-import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 
@@ -43,7 +42,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                 first_name: response.user.first_name,
                 last_name: response.user.last_name,
                 email: response.user.email,
-                user_type: response.user.user_type
+                user_type: response.user.user_type,
+                company: response.user.company
             };
             const tokens = {access_token: response.access_token, refresh_token: response.refresh_token};
 

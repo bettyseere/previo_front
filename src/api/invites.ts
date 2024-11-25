@@ -1,18 +1,20 @@
 import request from "../utils/network";
-import { CompanyUserInvite } from "../types/Inites";
-import { SuperUserInvite } from "../types/Inites";
+import { CompanyUserInvite } from "../types/Invites";
+import { SuperUserInvite } from "../types/Invites";
 
 export const invite_super_user = async (data: SuperUserInvite) => request ({
     method: "POST",
     url: "/invites/invite_super_user",
-    data: data
+    data: data,
+    params: {redirect_url: `${window.origin}/create_account`}
 })
 
 
 export const invite_company_user = async (data: CompanyUserInvite) => request({
     method: "POST",
     url: "/invites/invite_company_user",
-    data: data
+    data: data,
+    params: {redirect_url: `${window.origin}/create_account`}
 })
 
 

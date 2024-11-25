@@ -1,45 +1,123 @@
 import Layout from "../../Layout/Dashboard/Layout";
-import { useApiGet } from "../../utils/hooks/query";
+import { useApiGet, useApiSend } from "../../utils/hooks/query";
 import { usePopup } from "../../utils/hooks/usePopUp";
-import { get_companies } from "../../api/companies";
+import { get_companies, delete_company } from "../../api/companies";
 import Table from "../Commons/Table";
 import Button from "../Commons/Button";
+import Popup from "../Commons/Popup";
+import CompanyForm from "./Form";
+import { useNavigate } from "react-router-dom";
+import { BsTrash } from "react-icons/bs";
+import { PiPen } from "react-icons/pi";
+import { toast } from "react-toastify";
 
+export default function Home() {
+    const { hidePopup, handleHidePopup } = usePopup();
+    const navigate = useNavigate()
 
-export default function Home(){
-    const {hidePopup, setHidePopup} = usePopup()
     const {
-            data,
-            isLoading,
-            isPending,
-            isFetching,
-            error,
-            isError,
-            isLoadingError
-        } = useApiGet(["companies"], get_companies)
+        data,
+        isLoading,
+        isPending,
+        isFetching,
+        error,
+        isError,
+        isLoadingError,
+    } = useApiGet(["companies"], get_companies);
 
-        if (isLoading || isPending || isFetching){
-            <div>Fetching companies</div>
+    if (isLoading || isPending || isFetching) {
+        return <Layout><div>Fetching companies</div></Layout>;
+    }
+
+    if (isError || isLoadingError) {
+        console.log(error);
+        return <Layout><div>Error fetching companies</div></Layout>;
+    }
+
+    data && localStorage.setItem("companies", JSON.stringify(data))
+
+    const handleUpdate = (data: any) => {
+        console.log(data, "This is the update value", "Clicked")
+        handleHidePopup({show: true, data: data, type: "edit"})
+    }
+
+    const handleDelete = async (id: string) => {
+        try{
+            await delete_company(id=id)
+            toast("Company delete successfully.")
+            handleHidePopup({show: false, type: "create"})
+            window.location.reload()
+        } catch (error) {
+            toast("Error deleting company")
+            handleHidePopup({show: false, type: "create"})
         }
+    }
 
-        if (isError || isLoadingError){
-            console.log(error)
-            return (<div>Error fetching companies</div>)
+
+    const table_columns = [
+        { header: "Name", accessorKey: "name", enableSorting: true, cell: ({cell, row}) => <a href={`/${row.original.id}`} className="text-secondary font-bold hover:scale-110">{row.original.name}</a> },
+        { header: "Country", accessorKey: "country", enableSorting: true },
+        { header: "City", accessorKey: "city" },
+        { header: "Address", accessorKey: "address"},
+        {
+            header: "Actions",
+            accessorKey: "id",
+            cell: ({ cell, row}) => {
+                return <div className="flex gap-8">
+                    <div onClick={()=>handleDelete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                        <BsTrash size={20} color="red" />
+                    </div>
+                    <div onClick={()=>handleUpdate(row.original)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                        <PiPen size={20} className="text-primary" />
+                    </div>
+                </div>
+                }
         }
+    ];
 
-        const table_columns = [
-            {header: "Name", accessorKey: "name"},
-            {country: "Country", accessorKey: "country"},
-            {country: "City", accessorKey: "city"}
-        ]
 
-        const button = <Button text="Create Company" styling="text-white py-2" />
-        console.log(data)
+    const button = (
+        <Button
+            text="Create Company"
+            styling="text-white py-2"
+            handleClick={()=>handleHidePopup({ show: true, type: "create" })}
+        />
+    );
+
+
+    const popup = <Popup>
+                    <div>
+                        {hidePopup.type === "create" ? (
+                            <div><CompanyForm popup={hidePopup} /></div>
+                        ) : (
+                            <div>
+                            {
+                                <CompanyForm
+                                    popup={hidePopup}
+                                />
+                            }
+                            </div>
+                        )}
+                    </div>
+                </Popup>
+
     return (
-        <Layout>
-            {data && <div className="p-6">
-                <Table data={data} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Companies"} />
-            </div>}
-        </Layout>
-    )
+        <div className="">
+            {hidePopup.show && popup}
+            <Layout>
+                {data && (
+                    <div className="p-6">
+                        <Table
+                            data={data}
+                            columns={table_columns}
+                            initialPageSize={10}
+                            actionBtn={button}
+                            searchMsg={"Search Companies"}
+                            onRowClick={(row) => navigate(`/${row.id}`)}
+                        />
+                    </div>
+                )}
+            </Layout>
+        </div>
+    );
 }

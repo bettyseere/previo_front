@@ -1,33 +1,32 @@
-import { useAuth } from "../../utils/hooks/Auth";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { Login as LoginData } from "../../types/Auth";
+import { CreateUserAccount } from "../../types/Auth";
+import { create_account } from "../../api/authentication";
 import Button from "../Commons/Button";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
-const Login = () => {
-    const { handleLogin, currentUser } = useAuth();
+const CreateAccount = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
     const navigate = useNavigate();
-    const { register, handleSubmit } = useForm<LoginData>();
+    const { register, handleSubmit, reset } = useForm<CreateUserAccount>();
     const [showPassword, setShowPassword] = useState(false)
 
-    const onSubmit = async (data: LoginData) => {
+    const onSubmit = async (data: CreateUserAccount) => {
         try {
-            await handleLogin?.(data);
-            toast.success("Login Successful!")
-            navigate("/");
+            const res = await create_account(data, token);
+            console.log(res)
+            toast.success(res.message)
+            reset()
+            navigate("/login");
         } catch (error) {
-            toast.error("Login failed. Please check your credentials.");
+            toast.error("There was a problem creating your account..");
+            reset()
         }
     };
-
-    useEffect(() => {
-        if (currentUser) {
-            navigate("/");
-        }
-    }, [currentUser, navigate]);
 
     return (
         <div className="font-jarkata flex items-center h-screen">
@@ -37,7 +36,7 @@ const Login = () => {
             <div className="bg-secondary h-full w-[30%] flex items-center justify-center">
                 <div className="flex flex-col justify-center items-center">
                     <div className="text-white max-w-72 mb-8">
-                        <h1 className="mb-4 font-bold text-2xl text-center">Welcome Back to Seere. Please Login</h1>
+                        <h1 className="font-bold text-2xl text-center">Welcome to Seere. Create your account</h1>
                         {/* <p className="font-bold text-center uppercase text-lg">Login</p> */}
                     </div>
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -45,11 +44,19 @@ const Login = () => {
                             <input
                                 type="text"
                                 className="rounded-md py-2 px-2 w-[20rem] outline-none bg-white"
-                                placeholder="Email"
-                                {...register("email", { required: true, pattern: /^\S+@\S+$/ })}
+                                placeholder="First Name"
+                                {...register("first_name", { required: true})}
+                            />
+                            <input
+                                className="rounded-md py-2 px-2 w-[20rem] outline-none bg-white"
+                                type="last_name"
+                                placeholder="Last Name"
+                                {...register("last_name", { required: true })}
                             />
                             <div className="flex gap-1 bg-white w-[20rem] justify-between items-center rounded-md py-2 px-2 ">
                                 <input
+                                    minLength={8}
+                                    maxLength={50}
                                     className="outline-none"
                                     type={!showPassword ? "password": "text"}
                                     placeholder="Password"
@@ -58,10 +65,8 @@ const Login = () => {
                                 <div onClick={()=>setShowPassword(!showPassword)} >{!showPassword ? <FaEyeSlash /> : <FaEye />}</div>
                             </div>
                         </div>
-                        <a href="/forgot_password">
-                            <p className="mb-2 text-white font-semibold cursor-pointer text-sm">Forgot password?</p>
-                        </a>
-                        <Button type="submit" text="Login" styling="px-6 py-2" />
+                        <p className="text-white mb-2">Already have an account? <a href="/login" className="text-primary font-bold">Login</a></p>
+                        <Button type="submit" text="Create account" styling="px-6 py-2" />
                     </form>
                 </div>
             </div>
@@ -69,4 +74,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default CreateAccount;

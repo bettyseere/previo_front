@@ -3,10 +3,14 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { ResetPassword as ResetPasswordType } from "../../types/Auth";
 import Button from "../Commons/Button";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
+
 
 const ResetPassword = () => {
     const navigate = useNavigate();
     const { register, handleSubmit } = useForm<ResetPasswordType>();
+    const [showPassword, setShowPassword] = useState(false)
 
     const onSubmit = async (data: ResetPasswordType) => {
         if (data.confirm_password !== data.password){
@@ -35,12 +39,15 @@ const ResetPassword = () => {
                     </div>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-2 flex flex-col gap-4">
-                            <input
-                                type="password"
-                                className="rounded-md py-2 px-2 w-[20rem] outline-none bg-white"
-                                placeholder="Password"
-                                {...register("password", { required: true, pattern: /^\S+@\S+$/ })}
-                            />
+                            <div className="flex gap-1 bg-white w-[20rem] justify-between items-center rounded-md py-2 px-2 ">
+                                <input
+                                    className="outline-none"
+                                    type={!showPassword ? "password": "text"}
+                                    placeholder="Password"
+                                    {...register("password", { required: true })}
+                                />
+                                <div onClick={()=>setShowPassword(!showPassword)} >{!showPassword ? <FaEyeSlash /> : <FaEye />}</div>
+                            </div>
                             <input
                                 className="rounded-md py-2 px-2 w-[20rem] outline-none bg-white"
                                 type="text"

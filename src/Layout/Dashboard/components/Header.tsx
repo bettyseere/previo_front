@@ -1,6 +1,6 @@
 export default function DashboardHeader(){
     return (
-        <div className="h-[2rem] mr-5 w-ful rounded-md mt-4">
+        <div className="h-[2rem] mr-5 rounded-md mt-4">
             <div className="flex justify-between items-center w-full">
                         <div className="flex items-center px-2 gap-2">
                         </div>

@@ -19,15 +19,15 @@ export default function Devices(){
         } = useApiGet(["devices"], get_devices)
 
         if (isLoading || isFetching || isPending){
-            <div>Fetching Devices</div>
+            return <div>Fetching Devices</div>
         }
 
         if (isError || isLoadingError){
             console.log(error)
-            return (<div>Error fetching companies</div>)
+            return (<div>Error fetching devices</div>)
         }
 
-        console.log(data)
+
         let data_to_render;
 
         if (data){

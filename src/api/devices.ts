@@ -23,4 +23,3 @@ export const get_company_devices = (company_id: string) => request({
     url: "/devices",
     params: {company_id: company_id}
 })
-

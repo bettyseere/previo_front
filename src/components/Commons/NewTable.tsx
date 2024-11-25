@@ -1,22 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import Button from './Button';
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+    ColumnDef,
+    flexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    useReactTable,
 } from '@tanstack/react-table';
 
 interface TableWithPaginationProps<T> {
-  columns: ColumnDef<T, any>[]; // Table column definitions
-  data: T[];                   // Table data
-  initialPageSize?: number;    // Optional initial page size
-  actionBtn?: React.JSX.Element; // Optional action button
-  searchMsg?: string;          // Placeholder text for search input
-  handleBtn?: () => void;      // Action button click handler
-  onRowClick?: (row: T) => void; // Callback when a row is clicked
+    columns: ColumnDef<T, any>[];
+    data: T[];
+    initialPageSize?: number; // Optional initial page size
+    actionBtn?: React.JSX.Element,
+    searchMsg?: string,
+    handleBtn?: () => void
 }
 
 export default function Table<T>({
@@ -24,18 +22,16 @@ export default function Table<T>({
     data,
     actionBtn,
     handleBtn = () => {},
-    searchMsg = '',
-    initialPageSize = 10,
-    onRowClick,
-    }: TableWithPaginationProps<T>) {
+    searchMsg = "",
+    initialPageSize = 10, // Default page size
+}: TableWithPaginationProps<T>) {
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: initialPageSize,
     });
     const [searchInput, setSearchInput] = useState('');
-    const [sorting, setSorting] = useState([]);
 
-    // Filter data based on search input
+  // Memoize the filtered data based on the search input
     const filteredData = useMemo(() => {
         if (!searchInput) return data;
         return data.filter((row) =>
@@ -46,25 +42,24 @@ export default function Table<T>({
         );
     }, [searchInput, data]);
 
+
   // Initialize the table instance
     const table = useReactTable({
         data: filteredData,
         columns,
         state: {
-            pagination,
-            sorting,
+        pagination,
         },
         onPaginationChange: setPagination,
-        // onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
+        manualPagination: false,
     });
 
     return (
-    <div>
-      {/* Search Input */}
-        <div className="flex items-center justify-between mb-4">
+        <div>
+        {/* Search Input */}
+        <div className='flex items-center justify-between mb-4'>
             <div className="w-[24rem]">
             <input
                 type="text"
@@ -77,7 +72,8 @@ export default function Table<T>({
             {actionBtn && <div onClick={handleBtn}>{actionBtn}</div>}
         </div>
 
-      {/* Table */}
+
+        {/* Table */}
         <table className="min-w-full border-collapse">
             <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -85,8 +81,7 @@ export default function Table<T>({
                 {headerGroup.headers.map((header) => (
                     <th
                     key={header.id}
-                    className={`px-4 py-[.6rem] border-b bg-slate-300 text-left text-[1rem] text-gray-500 font-semibold capitalize tracking-wider rounded-sm`}
-                    onClick={header.column.getToggleSortingHandler()}
+                    className="px-4 py-[.6rem] border-b bg-slate-300 text-left text-[1rem]  text-gray-500 font-bold capitalize tracking-wider rounded-sm"
                     >
                     {header.isPlaceholder
                         ? null
@@ -94,15 +89,6 @@ export default function Table<T>({
                             header.column.columnDef.header,
                             header.getContext()
                         )}
-                    {header.column.getCanSort() ? (
-                        <span>
-                        {header.column.getIsSorted() === 'asc'
-                            ? ' 🔼'
-                            : header.column.getIsSorted() === 'desc'
-                            ? ' 🔽'
-                            : ''}
-                        </span>
-                    ) : null}
                     </th>
                 ))}
                 </tr>
@@ -110,22 +96,13 @@ export default function Table<T>({
             </thead>
             <tbody>
             {table.getRowModel().rows.map((row) => (
-                <tr
-                key={row.id}
-                className="hover:bg-gray-100 cursor-pointer"
-                // onClick={() => onRowClick && onRowClick(row.original)}
-                >
+                <tr key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                     <td
                     key={cell.id}
-                    className={`px-4 max-w-12 truncate ... overflow-hidden py-3 border-b font-semibold text-[.9rem] text-seere-text ${
-                        cell.column.id === 'specificColumn' ? 'text-primary' : ''
-                    }`}
+                    className="px-4 py-4 border-b font-semibold text-[.9rem] text-gray-800"
                     >
-                    {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                    )}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                 ))}
                 </tr>
@@ -133,8 +110,8 @@ export default function Table<T>({
             </tbody>
         </table>
 
-      {/* Pagination Controls */}
-        <div className='absolute bottom-4 right-6 mb-4'>
+        {/* Pagination Controls */}
+        <div className='absolute bottom-4 right-6'>
             <div className="flex justify-between items-center mb-4">
                 <div className='flex gap-2'>
                     <Button text='<<' handleClick={()=>table.setPageIndex(0)} disabled={!table.getCanPreviousPage()} styling='text-white' />
@@ -167,6 +144,6 @@ export default function Table<T>({
                 </div>
             </div>
         </div>
-    </div>
+        </div>
     );
 }
