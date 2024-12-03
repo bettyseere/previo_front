@@ -1,5 +1,5 @@
 import request from "../utils/network";
-import { Company, UpdateCompany } from "../types/Company";
+import { Company } from "../types/Company";
 
 export const get_companies = async () => request({
     method: "GET",

@@ -34,7 +34,7 @@ export default function CompanyLayout({children}: props) {
                         {item.name}
                     </div>)})}
                 </div>}
-                <Outlet /><div className="m-4">{children}</div>
+                <Outlet /><div className="pt-4 px-4">{children}</div>
             </Layout>
         </>
     );

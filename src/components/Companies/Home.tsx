@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { BsTrash } from "react-icons/bs";
 import { PiPen } from "react-icons/pi";
 import { toast } from "react-toastify";
+import ErrorLoading from "../Commons/ErrorAndLoading";
 
 export default function Home() {
     const { hidePopup, handleHidePopup } = usePopup();
@@ -25,19 +26,26 @@ export default function Home() {
         isLoadingError,
     } = useApiGet(["companies"], get_companies);
 
+
     if (isLoading || isPending || isFetching) {
-        return <Layout><div>Fetching companies</div></Layout>;
+        return (
+            <ErrorLoading>
+                <div  className="text-2xl font-bold text-secondary">Fetching companies ...</div>
+            </ErrorLoading>
+        )
     }
 
     if (isError || isLoadingError) {
-        console.log(error);
-        return <Layout><div>Error fetching companies</div></Layout>;
+        return (
+            <ErrorLoading>
+                <div  className="text-2xl font-bold text-secondary text-red-400">Error fetching companies</div>
+            </ErrorLoading>
+        )
     }
 
     data && localStorage.setItem("companies", JSON.stringify(data))
 
     const handleUpdate = (data: any) => {
-        console.log(data, "This is the update value", "Clicked")
         handleHidePopup({show: true, data: data, type: "edit"})
     }
 
@@ -63,7 +71,7 @@ export default function Home() {
             header: "Actions",
             accessorKey: "id",
             cell: ({ cell, row}) => {
-                return <div className="flex gap-8">
+                return <div className="flex gap-8 justify-center items-center px-4">
                     <div onClick={()=>handleDelete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
                     </div>

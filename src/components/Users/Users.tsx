@@ -8,6 +8,7 @@ import Popup from "../Commons/Popup";
 import UserForm from "./Form";
 import { BsTrash } from "react-icons/bs";
 import { PiPen } from "react-icons/pi";
+import ErrorLoading from "../Commons/ErrorAndLoading";
 
 export default function Users(){
     const {hidePopup, handleHidePopup} = usePopup()
@@ -21,13 +22,21 @@ export default function Users(){
             isLoadingError
         } = useApiGet(["users"], get_all_users)
 
-        if (isLoading || isFetching || isPending){
-            return <div>Fetching Users</div>
+
+        if (isLoading || isFetching || isPending) {
+            return (
+                <ErrorLoading>
+                    <div  className="text-2xl font-bold text-secondary">Fetching users ...</div>
+                </ErrorLoading>
+            )
         }
 
         if (isError || isLoadingError){
-            console.log(error)
-            return (<div>Error fetching users</div>)
+            return (
+                <ErrorLoading>
+                    <div  className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No users found": "Error fetching users"}</div>
+                </ErrorLoading>
+            )
         }
 
         const table_columns = [
@@ -43,13 +52,13 @@ export default function Users(){
             header: "Actions",
             accessorKey: "id",
             cell: ({ }) => {
-                return <div className="flex gap-8">
+                return <div className="flex gap-8 justify-center items-center">
                     <div className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
                     </div>
-                    <div className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                    {/* <div className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <PiPen size={20} className="text-primary" />
-                    </div>
+                    </div> */}
                 </div>
                 }
         }

@@ -85,7 +85,7 @@ export default function Table<T>({
                 {headerGroup.headers.map((header) => (
                     <th
                     key={header.id}
-                    className={`px-4 py-[.6rem] border-b bg-slate-300 text-left text-[1rem] text-gray-500 font-semibold capitalize tracking-wider rounded-sm`}
+                    className={`px-4 py-[.6rem] border-b bg-slate-300 text-[1rem] text-gray-500 text-center font-semibold capitalize tracking-wider`}
                     onClick={header.column.getToggleSortingHandler()}
                     >
                     {header.isPlaceholder
@@ -118,7 +118,7 @@ export default function Table<T>({
                 {row.getVisibleCells().map((cell) => (
                     <td
                     key={cell.id}
-                    className={`px-4 max-w-12 truncate ... overflow-hidden py-3 border-b font-semibold text-[.9rem] text-seere-text ${
+                    className={`px-4 max-w-12 py-2 truncate ... overflow-hidden border-b text-center border-r first:border-l font-semibold text-[.9rem] text-seere-text ${
                         cell.column.id === 'specificColumn' ? 'text-primary' : ''
                     }`}
                     >

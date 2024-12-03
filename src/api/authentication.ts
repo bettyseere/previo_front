@@ -20,6 +20,12 @@ export const get_all_users = async () => await request({
     url: "/auth"
 })
 
+export const get_company_users = (company_id: string, is_staff: boolean = false) => request({
+    method: "GET",
+    url: "/auth/company_users",
+    params: {company_id: company_id, is_staff: is_staff}
+})
+
 
 export const me = async () => await request({
     method: "GET",
