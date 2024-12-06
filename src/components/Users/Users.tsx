@@ -7,7 +7,7 @@ import Button from "../Commons/Button";
 import Popup from "../Commons/Popup";
 import UserForm from "./Form";
 import { BsTrash } from "react-icons/bs";
-import { PiPen } from "react-icons/pi";
+import ConfirmModel from "../Commons/ConfirmModel";
 import ErrorLoading from "../Commons/ErrorAndLoading";
 
 export default function Users(){
@@ -68,11 +68,12 @@ export default function Users(){
 
         const popup = <Popup>
                     <div>
-                        {hidePopup.type === "create" ? (
-                            <div><UserForm /></div>
-                        ) : (
-                            <div>Other Popup Content</div>
-                        )}
+                        {hidePopup.confirmModel ? <ConfirmModel
+                            message="Are you sure you want to delete this user?"
+                            title="Delete User"
+                            handleSubmit={()=>console.log("User deleted")}
+                        />
+                            : <div>{hidePopup.type === "create" ? ( <div><UserForm /></div>) : ( <div>Other Popup Content</div>)}</div>}
                     </div>
                 </Popup>
     return (

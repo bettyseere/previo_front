@@ -1,28 +1,27 @@
 import { Outlet} from "react-router-dom";
 import Layout from "../../Layout/Dashboard/Layout";
-import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../utils/hooks/Auth";
 
 interface props {
     children: React.ReactNode
+    sub_page_props: [NavValue]
 }
 
-export default function CompanyLayout({children}: props) {
-    const company_id = useParams()
+type NavValue = {
+    name: string
+    link: string
+}
+
+
+export default function SubMenu({children, sub_page_props}: props) {
     const navigate = useNavigate()
     const location = useLocation()
     const { currentUser } = useAuth()
     const is_super = currentUser?.user_type == "super"
 
-    const navigation = [
-        // {name: "Overview", link: `/${company_id.id}`},
-        // {name: "Teams", link: `/${company_id.id}/teams`},
-        {name: "Staff", link: `/${company_id.id}/staff`},
-        // {name: "Athletes", link: `/${company_id.id}/athletes`},
-        {name: "Devices", link: `/${company_id.id}/devices`}
-    ]
+    const navigation = sub_page_props
 
     return (
         <>

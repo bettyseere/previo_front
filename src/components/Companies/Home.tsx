@@ -11,10 +11,13 @@ import { BsTrash } from "react-icons/bs";
 import { PiPen } from "react-icons/pi";
 import { toast } from "react-toastify";
 import ErrorLoading from "../Commons/ErrorAndLoading";
+import ConfirmModel from "../Commons/ConfirmModel";
+import { useState } from "react";
 
 export default function Home() {
     const { hidePopup, handleHidePopup } = usePopup();
     const navigate = useNavigate()
+    const [deleteID, setDeleteID] = useState("")
 
     const {
         data,
@@ -26,6 +29,10 @@ export default function Home() {
         isLoadingError,
     } = useApiGet(["companies"], get_companies);
 
+    const handleDeletePopup = (id: string) => {
+        setDeleteID(id)
+        handleHidePopup({show: true, type: "create", confirmModel: true})
+    }
 
     if (isLoading || isPending || isFetching) {
         return (
@@ -63,7 +70,7 @@ export default function Home() {
 
 
     const table_columns = [
-        { header: "Name", accessorKey: "name", enableSorting: true, cell: ({cell, row}) => <a href={`/${row.original.id}`} className="text-secondary font-bold hover:scale-110">{row.original.name}</a> },
+        { header: "Name", accessorKey: "name", enableSorting: true, cell: ({cell, row}) => <a href={`/${row.original.id}/devices`} className="text-secondary font-bold hover:scale-110">{row.original.name}</a> },
         { header: "Country", accessorKey: "country", enableSorting: true },
         { header: "City", accessorKey: "city" },
         { header: "Address", accessorKey: "address"},
@@ -72,7 +79,7 @@ export default function Home() {
             accessorKey: "id",
             cell: ({ cell, row}) => {
                 return <div className="flex gap-8 justify-center items-center px-4">
-                    <div onClick={()=>handleDelete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                    <div onClick={()=>handleDeletePopup(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
                     </div>
                     <div onClick={()=>handleUpdate(row.original)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
@@ -94,6 +101,7 @@ export default function Home() {
 
 
     const popup = <Popup>
+                    {!hidePopup.confirmModel ?
                     <div>
                         {hidePopup.type === "create" ? (
                             <div><CompanyForm popup={hidePopup} /></div>
@@ -106,7 +114,7 @@ export default function Home() {
                             }
                             </div>
                         )}
-                    </div>
+                    </div>: <ConfirmModel cancel_action={()=>handleHidePopup({show: false, type: "create", confirmModel: false})} handleSubmit={()=>handleDelete(deleteID)} message="Are you sure you want to delete this company? This action cannot be reversed." title="Delete Company" />}
                 </Popup>
 
     return (

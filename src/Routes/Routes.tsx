@@ -14,8 +14,8 @@ import Athletes from "../components/Companies/Athletes/Athletes";
 import CompanyDevices from "../components/Companies/Devices/Devices";
 import CompanyTeams from "../components/Companies/Teams/Teams";
 import CreateAccount from "../components/authentication/CreateAccount";
-import SuperUserRoutes from "./SuperUserRoutes";
-import AdminUserRoutes from "./AdminUserRoutes";
+import Device_Types from "../components/DeviceTypes/DeviceTypes";
+import DeviceTypeDevices from "../components/DeviceTypes/Devices/Devices";
 import { useAuth } from "../utils/hooks/Auth";
 
 function AppRoutes() {
@@ -34,6 +34,11 @@ function AppRoutes() {
                 {<Route element={<ProtectedRoutes />}>
                     <Route path="/" element={!is_admin ? <Home />: <CompanyOverview />} />
                     <Route path="/devices" element={!is_admin ? <Devices />: <CompanyDevices />} />
+                    {!is_admin && <Route path="/device_types" element={<Device_Types />} />}
+                    <Route path="/device_types/:id" >
+                        <Route path="" element = {<DeviceTypeDevices />} />
+                    </Route>
+
                     <Route path="/exercises" element={<Exercises />} />
                     {!is_admin && <Route path="/users" element={!is_admin ? <Users />: <Athletes />} />}
                     {is_admin && <Route path="/athletes" element={<Athletes />} />}

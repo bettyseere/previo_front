@@ -1,23 +1,32 @@
 import Layout from "../../Layout/Dashboard/Layout";
 import { useApiGet } from "../../utils/hooks/query";
 import { usePopup } from "../../utils/hooks/usePopUp";
-import { get_devices, delete_device } from "../../api/devices";
+import { get_device_types, delete_device_type } from "../../api/device_types";
 import Table from "../Commons/Table";
 import Button from "../Commons/Button";
 import { BsTrash } from "react-icons/bs";
 import { PiPen } from "react-icons/pi";
 import Popup from "../Commons/Popup";
-import DeviceForm from "./Form";
+import DeviceTypeForm from "./Form";
 import ErrorLoading from "../Commons/ErrorAndLoading";
 import { toast } from "react-toastify";
+import ConfirmModel from "../Commons/ConfirmModel";
+import { useState } from "react";
 
 
-export default function Devices(){
+
+export default function Device_Types(){
     const {hidePopup ,handleHidePopup} = usePopup()
+    const [deleteID, setDeleteID] = useState("")
 
     const handleUpdate = (data: any) => {
         handleHidePopup({show: true, data: data, type: "edit"})
         console.log(data, hidePopup)
+    }
+
+    const handleDeletePopup = (id: string) => {
+        setDeleteID(id)
+        handleHidePopup({show: true, type: "create", confirmModel: true})
     }
     // const {hidePopup, setHidePopup} = usePopup()
     const {
@@ -29,13 +38,13 @@ export default function Devices(){
             isError,
             isLoadingError,
             refetch
-        } = useApiGet(["devices"], get_devices)
+        } = useApiGet(["device_types"], get_device_types)
 
         const handleDelete = async (id: string) => {
         try{
-            await delete_device(id=id)
+            await delete_device_type(id=id)
             refetch()
-            toast("Device deleted successfully.")
+            toast("Device type deleted successfully.")
             handleHidePopup({show: false, type: "create"})
         } catch (error) {
             toast("Error deleting device type.")
@@ -47,7 +56,7 @@ export default function Devices(){
         if (isLoading || isFetching || isPending){
             return (
             <ErrorLoading>
-                <div  className="text-2xl font-bold text-secondary">Fetching devices ...</div>
+                <div  className="text-2xl font-bold text-secondary">Fetching device types ...</div>
             </ErrorLoading>
         )
         }
@@ -55,41 +64,28 @@ export default function Devices(){
         if (isError || isLoadingError){
             return (
             <ErrorLoading>
-                <div  className="text-2xl font-bold text-secondary">Error fetching devices</div>
+                <div  className="text-2xl font-bold text-secondary">Error fetching device types</div>
             </ErrorLoading>
         )
         }
 
-        data && localStorage.setItem("devices", JSON.stringify(data))
-
-        let data_to_render;
-
-        if (data){
-            data_to_render = data.map(device => ({
-            id: device.id,
-            serial_number: device.serial_number,
-            mac_address: device.mac_address,
-            create_at: device.created_at,
-            owner: `${device.owner ? device.owner.first_name + " " + device.owner.last_name: ""}`,
-            company: `${device.company ? device.company.name: ""}`,
-            company_id: `${device.company ? device.company.id: ""}`,
-            device_type_id: device.device_type?.id || null,
-            device_type_name: device.device_type?.name || null
-        }))
-        }
 
         const table_columns = [
-            {header: "Name", accessorKey: "device_type_name"},
-            {header: "Mac Address", accessorKey: "mac_address"},
-            {header: "Serial Number", accessorKey: "serial_number"},
-            {header: "Owner", accessorKey: "owner"},
-            {header: "Company", accessorKey: "company"},
+            {header: "Name", accessorKey: "name", cell: ({cell, row}) => {
+                return <div className="text-secondary"><a href={`/device_types/${row.original.id}`}>{row.original.name}</a></div>
+            }},
+            {header: "Devices", accessorKey: "devices", cell: ({cell, row}) => {
+                return <div className="text-secondary">{row.original.devices?.length}</div>
+            }},
+            {header: "Device Activities", accessorKey: "devices", cell: ({cell, row}) => {
+                return <div className="text-secondary">{row.original.device_activities?.length}</div>
+            }},
             {
             header: "Actions",
             accessorKey: "id",
             cell: ({ cell, row}) => {
                 return <div className="flex justify-between gap-4 px-4">
-                    <div onClick={()=>handleDelete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                    <div onClick={()=>handleDeletePopup(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
                     </div>
                     <div onClick={()=>handleUpdate(row.original)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
@@ -100,10 +96,15 @@ export default function Devices(){
         }
         ]
 
-        const button = <Button text="Create Device" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
+        const button = <Button text="Create Device Type" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
         const popup = <Popup>
                     <div>
-                        <DeviceForm popup={hidePopup} />
+                        {hidePopup.confirmModel ? <ConfirmModel
+                            message="Are you sure you want to delete this device type? This action cannot be reversed."
+                            title="Delete device type"
+                            handleSubmit={()=>handleDelete(deleteID)}
+                            cancel_action={()=>handleHidePopup({confirmModel: false, type: "create", show: false})}
+                        /> : <DeviceTypeForm popup={hidePopup} />}
                     </div>
                 </Popup>
     return (
@@ -111,7 +112,7 @@ export default function Devices(){
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Devices"} />
+                    <Table data={data} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Device Types"} />
                 </div>}
             </Layout>
         </div>

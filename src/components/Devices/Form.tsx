@@ -3,8 +3,9 @@ import { usePopup } from "../../utils/hooks/usePopUp";
 import Button from "../Commons/Button";
 import { useApiGet, useApiSend } from "../../utils/hooks/query";
 import { get_devices } from "../../api/devices";
+import { get_device_types } from "../../api/device_types";
 import { useForm } from "react-hook-form";
-import { create_device, update_device, get_device_types } from "../../api/devices";
+import { create_device, update_device } from "../../api/devices";
 import { get_companies } from "../../api/companies";
 import { UpdateDevice } from "../../types/Device";
 

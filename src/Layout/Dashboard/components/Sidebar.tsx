@@ -21,7 +21,7 @@ export default function Sidebar() {
         { name: "Teams", logo: <FaPeopleGroup className="text-secondary" size={20} />, link: "/teams", roles: ["admin", "super", "staff"] },
         { name: "Exercises", logo: <FaPersonBiking className="text-secondary" size={20} />, link: "/exercises", roles: ["admin", "super", "staff"] },
         { name: is_super ? "Users": "Athletes", logo: <FaPerson className="text-secondary" size={20} />, link: is_super ? "/users": "/athletes", roles: ["admin", "super", "staff"] },
-        { name: "Devices", logo: <FaTablet className="text-secondary" size={20} />, link: "/devices", roles: ["admin", "super", "staff"] }
+        { name: is_super ? "Device Types": "Devices", logo: <FaTablet className="text-secondary" size={20} />, link: !is_super ? "/devices": "/device_types", roles: ["admin", "super", "staff"] }
     ];
 
     !is_super && top_nav_items.push({ name: "Staff", logo: <FaTablet className="text-secondary" size={20} />, link: "/staff", roles: ["admin", "super", "staff"] })

@@ -1,7 +1,6 @@
 import CompanyLayout from "../CompanyDetails";
 import Form from "../../Commons/Form";
 import { useParams } from "react-router-dom";
-import { Outlet } from "react-router-dom";
 
 export default function CompanyTeams(){
     const link = useParams()
