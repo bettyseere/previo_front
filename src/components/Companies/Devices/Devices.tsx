@@ -98,7 +98,7 @@ export default function CompanyDevices() {
         <div>
             {hidePopup.show && popup}
             <CompanyLayout>
-                <Table data={data_to_render} entity_name={data ? data[0].company.name: ""} searchMsg="Search Devices" columns={table_columns} />
+                <Table data={data_to_render} entity_name={data && data[0].company ? data[0].company.name: ""} searchMsg="Search Devices" columns={table_columns} />
             </CompanyLayout>
         </div>
     );
