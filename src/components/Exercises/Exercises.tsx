@@ -4,6 +4,7 @@ import { usePopup } from "../../utils/hooks/usePopUp";
 import { get_exercises } from "../../api/activities";
 import Table from "../Commons/Table";
 import Button from "../Commons/Button";
+import ErrorLoading from "../Commons/ErrorAndLoading";
 
 
 export default function Exercises(){
@@ -19,15 +20,20 @@ export default function Exercises(){
         } = useApiGet(["exercises"], get_exercises)
 
         if (isLoading || isFetching || isPending){
-            return <div>Fetching Exercises</div>
+            return (
+                <ErrorLoading>
+                    <div  className="text-2xl font-bold text-red-400">Fetching exercises...</div>
+                </ErrorLoading>
+            )
         }
 
         if (isError || isLoadingError){
-            if (error.respons.status !== 404){
-                return (<div>Error fetching exercises</div>)
-            }
+            return (
+                <ErrorLoading>
+                    <div  className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No exercises found": "Error fetching exercises"}</div>
+                </ErrorLoading>
+            )
         }
-
         console.log(data)
         let data_to_render;
 
