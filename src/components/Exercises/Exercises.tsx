@@ -22,7 +22,7 @@ export default function Exercises(){
         if (isLoading || isFetching || isPending){
             return (
                 <ErrorLoading>
-                    <div  className="text-2xl font-bold text-red-400">Fetching exercises...</div>
+                    <div  className="text-2xl font-bold text-secondary">Fetching exercises...</div>
                 </ErrorLoading>
             )
         }
