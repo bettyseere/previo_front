@@ -37,6 +37,11 @@ export const remove_user = (id: string) => request({
     url: "/devices/remove_user/"+id
 })
 
+export const remove_company = (id: string) => request({
+    method: "PATCH",
+    url: "/devices/remove_company/"+id
+})
+
 
 export const create_device = (data: Device) => request({
     method: "POST",

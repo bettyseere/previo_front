@@ -14,7 +14,8 @@ interface TableWithPaginationProps<T> {
   data: T[];                   // Table data
   initialPageSize?: number;    // Optional initial page size
   actionBtn?: React.JSX.Element; // Optional action button
-  searchMsg?: string;          // Placeholder text for search input
+  searchMsg?: string;
+  entity_name?: string,        // Placeholder text for search input
   handleBtn?: () => void;      // Action button click handler
   onRowClick?: (row: T) => void; // Callback when a row is clicked
 }
@@ -25,6 +26,7 @@ export default function Table<T>({
     actionBtn,
     handleBtn = () => {},
     searchMsg = '',
+    entity_name = '',
     initialPageSize = 10,
     onRowClick,
     }: TableWithPaginationProps<T>) {
@@ -65,14 +67,15 @@ export default function Table<T>({
     <div>
       {/* Search Input */}
         <div className="flex items-center justify-between mb-4">
+            {entity_name && <h4 className='font-semibold text-xl text-tertiary uppercase'>{entity_name}</h4>}
             <div className="w-[24rem]">
-            <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder={searchMsg}
-                className="border px-4 py-2 rounded w-full outline-none text-gray-700"
-            />
+                <input
+                    type="text"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    placeholder={searchMsg}
+                    className="border px-4 py-2 rounded w-full outline-none text-gray-700"
+                />
             </div>
             {actionBtn && <div onClick={handleBtn}>{actionBtn}</div>}
         </div>

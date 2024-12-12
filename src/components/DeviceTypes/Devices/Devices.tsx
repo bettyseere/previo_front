@@ -35,6 +35,7 @@ export default function DeviceTypeDevices(){
         console.log(data, hidePopup)
     }
 
+
     const handleDelete = async (id: any) => {
         try{
             await delete_device(id=id)

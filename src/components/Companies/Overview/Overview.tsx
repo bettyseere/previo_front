@@ -12,7 +12,9 @@ import Layout from "../../../Layout/Dashboard/Layout";
 export default function CompanyOverview() {
     const { currentUser } = useAuth()
     let company_id: any = useParams();
+    console.log(currentUser)
     company_id = company_id.id
+
 
     const is_admin = currentUser?.user_type == "admin"
     is_admin ? company_id = currentUser?.company: company_id = company_id

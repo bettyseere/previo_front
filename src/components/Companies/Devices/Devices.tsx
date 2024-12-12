@@ -88,6 +88,8 @@ export default function CompanyDevices() {
             }
         ]
 
+        console.log(data[0].company.name, "This is the data we need")
+
         const popup = <Popup>
                         <AddUserToDeviceForm popup={hidePopup} company_id={company_id} />
                     </Popup>
@@ -96,7 +98,7 @@ export default function CompanyDevices() {
         <div>
             {hidePopup.show && popup}
             <CompanyLayout>
-                <Table data={data_to_render} searchMsg="Search Devices" columns={table_columns} />
+                <Table data={data_to_render} entity_name={data ? data[0].company.name: ""} searchMsg="Search Devices" columns={table_columns} />
             </CompanyLayout>
         </div>
     );

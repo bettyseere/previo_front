@@ -8,6 +8,9 @@ import { useForm } from "react-hook-form";
 import { create_device, update_device } from "../../api/devices";
 import { get_companies } from "../../api/companies";
 import { UpdateDevice } from "../../types/Device";
+import { remove_company } from "../../api/devices";
+import { toast } from "react-toastify";
+import { queryClient } from "../../main";
 
 export default function DeviceForm({ popup }: UpdateDevice) {
     const { handleHidePopup } = usePopup();
@@ -24,14 +27,27 @@ export default function DeviceForm({ popup }: UpdateDevice) {
 
     const { register, handleSubmit, reset } = useForm();
 
+     const handle_remove_company = async (id: string) => {
+        try {
+            await remove_company(id)
+            queryClient.invalidateQueries(["devices"]);
+            toast("Company removed")
+            handleHidePopup({ show: false, type: "create" }); // Close the popup on success
+            reset(); // Reset form fields
+        } catch (error) {
+            toast("Error removing company")
+        }
+    }
+
     // Handle form submission
     const onSubmit = (data: any) => {
         data.company_id == "" ? data.company_id = null: ""
         mutate(data, {
             onSuccess: () => {
-                refetch()
+                queryClient.invalidateQueries(["devices"]);
                 handleHidePopup({ show: false, type: "create" }); // Close the popup on success
                 reset(); // Reset form fields
+                // refetch()
             },
             onError: (error) => {
                 console.error("Error inviting company user:", error);
@@ -86,6 +102,8 @@ export default function DeviceForm({ popup }: UpdateDevice) {
                     {...register("device_type_id", { required: "Device type is required" })}
                     className="outline-none border-b-2 border-primary w-full py-2"
                 >
+                    {popup.type === "create" && <option value="">Select Device Type</option>}
+                    {popup.type == "edit" && popup.data.device_type_id ? <option value={popup.data.device_type_id}>{popup.data.device_type_name}</option>: <option value="">Select Company</option>}
                     {device_types?.map((device_type: any) => (
                         <option key={device_type.id} value={device_type.id}>
                             {device_type.name}
@@ -116,12 +134,13 @@ export default function DeviceForm({ popup }: UpdateDevice) {
 
 
             {/* Submit Button */}
-            <div className="mt-6">
+            <div className={`mt-6 ${popup.type == "edit" && popup.data.company_id ? "flex gap-4": ""}`}>
                 <Button
                     type="submit"
                     text={isPending ? "Submitting..." : popup.type === "create" ? "Create" : "Save"}
                     styling="text-white px-4 py-1 rounded"
                 />
+                {popup.type == "edit" && popup.data.company_id && <Button text="Remove Company" styling="bg-red-600" handleClick={()=>handle_remove_company(popup.data.id)} />}
             </div>
 
             {/* Error and Success Messages */}
