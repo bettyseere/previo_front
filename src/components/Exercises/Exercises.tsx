@@ -23,8 +23,9 @@ export default function Exercises(){
         }
 
         if (isError || isLoadingError){
-            console.log(error)
-            return (<div>Error fetching exercises</div>)
+            if (error.respons.status !== 404){
+                return (<div>Error fetching exercises</div>)
+            }
         }
 
         console.log(data)
