@@ -88,7 +88,7 @@ export default function CompanyDevices() {
             }
         ]
 
-        console.log(data[0].company.name, "This is the data we need")
+        console.log(data[0], "This is the data we need")
 
         const popup = <Popup>
                         <AddUserToDeviceForm popup={hidePopup} company_id={company_id} />
