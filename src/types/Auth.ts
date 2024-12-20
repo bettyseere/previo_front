@@ -5,6 +5,9 @@ export type User = {
     email?: string
     user_type?: string
     company?: string
+    address?: string
+    country?: string
+    city?: string
 }
 
 export type Tokens = {
@@ -20,6 +23,15 @@ export type Login = {
 export type ResetPasswordRequest = {
     email: string
 }
+
+export type UpdateUserInfo = {
+    first_name?: string,
+    last_name?: string,
+    address?: string,
+    country?: string,
+    city?: string
+}
+
 
 export type ResetPassword = {
     confirm_password: string

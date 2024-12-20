@@ -26,7 +26,7 @@ export default function SuperUserForm() {
     };
 
     return (
-        <Form formTitle={hidePopup.type === "create" ? "Invite Super USer" : "Edit Invite"} handleSubmit={handleSubmit(onSubmit)}>
+        <Form formTitle={hidePopup.type === "create" ? "Invite Super User" : "Edit Invite"} handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-4 items-center mt-4 w-[24rem]">
                 <div className="">
                     <label htmlFor="email" className="block text-sm font-medium text-black py-2">
@@ -45,6 +45,18 @@ export default function SuperUserForm() {
                         Notes
                     </label>
                     <textarea {...register("notes")} name="notes" rows={4} maxLength={100} className="outline-none border-b-2 border-primary w-full py-2"></textarea>
+                </div>
+
+                <div className="mb-4 mt-2 flex items-end hidden">
+                    <label htmlFor="email" className="block text-sm font-medium text-black mt-2 w-[6rem]">
+                        Birth date
+                    </label>
+                    <input
+                        id="birth_date"
+                        type="date"
+                        {...register("birth_date", { required: "Birth date is required" })}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
                 </div>
             </div>
 

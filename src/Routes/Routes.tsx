@@ -16,12 +16,14 @@ import CompanyTeams from "../components/Companies/Teams/Teams";
 import CreateAccount from "../components/authentication/CreateAccount";
 import Device_Types from "../components/DeviceTypes/DeviceTypes";
 import DeviceTypeDevices from "../components/DeviceTypes/Devices/Devices";
+import UserInfo from "../components/Users/UserInfo/UserInfo";
 import { useAuth } from "../utils/hooks/Auth";
 
 function AppRoutes() {
     const {currentUser} = useAuth()
     const is_admin = currentUser?.user_type === "admin"
-    console.log(is_admin)
+    const is_staff = currentUser?.user_type === "staff"
+
     return (
         <Router>
             <Routes>
@@ -32,9 +34,15 @@ function AppRoutes() {
                 <Route path="/create_account" element={<CreateAccount />} />
                 {/* Protected Routes */}
                 {<Route element={<ProtectedRoutes />}>
-                    <Route path="/" element={!is_admin ? <Home />: <CompanyOverview />} />
+                    <Route
+                        path="/"
+                        element={
+                            !is_staff ? (is_admin ? <CompanyOverview /> : <Home />) : <UserInfo />
+                        }
+                    />
                     <Route path="/devices" element={!is_admin ? <Devices />: <CompanyDevices />} />
                     {!is_admin && <Route path="/device_types" element={<Device_Types />} />}
+                    {!is_staff && <Route path="/profile" element={<UserInfo />}/>}
                     <Route path="/device_types/:id" >
                         <Route path="" element = {<DeviceTypeDevices />} />
                     </Route>

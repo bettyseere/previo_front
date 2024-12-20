@@ -51,6 +51,19 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
                     <textarea {...register("notes")} name="notes" rows={4} maxLength={100} className="outline-none border-b-2 border-primary w-[24rem] py-2"></textarea>
                 </div>
             </div>
+
+            <div className="mb-4 mt-2 flex items-end">
+                <label htmlFor="email" className="block text-sm font-medium text-black mt-2 w-[6rem]">
+                    Birth date
+                </label>
+                <input
+                    id="birth_date"
+                    type="date"
+                    {...register("birth_date", { required: "Birth date is required" })}
+                    className="outline-none border-b-2 border-primary w-full py-2"
+                />
+            </div>
+
             <div className="flex items-center gap-2 mt-2">
                 <input type="checkbox" {...register("is_admin")} name="is_admin" className="h-4 w-4 text-primary bg-primary" />
                 <p className="font-bold text-secondary">Is admin user?</p>

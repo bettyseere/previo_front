@@ -1,6 +1,6 @@
 import { User, Tokens, Login } from "../../types/Auth";
 import { createContext, PropsWithChildren, useContext, useState, useEffect } from "react";
-import { login, logout } from "../../api/authentication";
+import { login, logout, user_info } from "../../api/authentication";
 import { toast } from "react-toastify";
 
 
@@ -37,22 +37,36 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     async function handleLogin(data: Login) {
         try {
             const response = await login(data)
-            const user = {
-                id: response.user.id,
-                first_name: response.user.first_name,
-                last_name: response.user.last_name,
-                email: response.user.email,
-                user_type: response.user.user_type,
-                company: response.user.company
-            };
             const tokens = {access_token: response.access_token, refresh_token: response.refresh_token};
-
-            // Store user and tokens in localStorage
-            localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem("tokens", JSON.stringify(tokens));
 
-            // Update the state with the logged-in user and tokens
-            setCurrentUser(user);
+            try {
+                const user_info_response = await user_info()
+                const user = {
+                    id: response.user.id,
+                    first_name: response.user.first_name,
+                    last_name: response.user.last_name,
+                    email: response.user.email,
+                    user_type: response.user.user_type,
+                    company: response.user.company,
+                    country: user_info_response.country,
+                    city: user_info_response.city,
+                    address: user_info_response.address
+                };
+
+                localStorage.setItem("user", JSON.stringify(user));
+
+                // Update the state with the logged-in user and tokens
+                setCurrentUser(user);
+            } catch (error) {
+                if (error){
+                    toast(error.data.detail)
+                } else {
+                    toast("Error fetch user inf")
+                }
+            }
+
+            // Store user and tokens in localStorage
             setTokens(tokens);
         } catch (error) {
             // toast("Incorrect email or password.")

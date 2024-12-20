@@ -1,6 +1,7 @@
 "use client";
 import { useAuth } from "../../../utils/hooks/Auth";
 import { useLocation } from "react-router-dom";
+import SeereLogo from "./SeereLogo";
 
 import {
     FaHouseChimney,
@@ -29,14 +30,7 @@ export default function Sidebar() {
     return (
         <div className="h-screen w-[14rem] bg-[#FFF] relative">
             <div className="px-4">
-                <div className="">
-                    <img
-                        className="p-0 -mx-4 mt-2"
-                        width={130}
-                        src="/images/logo_seere/svg/main_logo_dark.svg"
-                        alt="seere logo"
-                    />
-                </div>
+                <SeereLogo />
                 <div className="flex flex-col gap-8 overflow-hidden max-h-[28rem] mt-12">
                     {top_nav_items.map((item) => {
                         const isActive = location.pathname === item.link;

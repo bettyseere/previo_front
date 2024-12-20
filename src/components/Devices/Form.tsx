@@ -27,7 +27,7 @@ export default function DeviceForm({ popup }: UpdateDevice) {
 
     const { register, handleSubmit, reset } = useForm();
 
-     const handle_remove_company = async (id: string) => {
+    const handle_remove_company = async (id: string) => {
         try {
             await remove_company(id)
             queryClient.invalidateQueries(["devices"]);

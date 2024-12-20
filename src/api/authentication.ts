@@ -1,5 +1,5 @@
 import request from "../utils/network";
-import { Login, ResetPasswordRequest } from "../types/Auth";
+import { Login, ResetPasswordRequest, UpdateUserInfo } from "../types/Auth";
 import { CreateUserAccount } from "../types/Auth";
 
 export const login = async (data: Login) => await request ({
@@ -8,6 +8,16 @@ export const login = async (data: Login) => await request ({
     data: data
 })
 
+export const user_info = async () => await request({
+    method: "GET",
+    url: "/auth/me"
+})
+
+export const update_user_info = async (data: UpdateUserInfo) => await request({
+    method: "PATCH",
+    url: "/auth",
+    data: data
+})
 
 export const logout = async () => await request({
     method: "GET",

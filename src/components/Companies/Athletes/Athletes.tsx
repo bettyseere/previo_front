@@ -11,7 +11,7 @@ import Button from "../../Commons/Button";
 import CompanyUserForm from "./Form";
 import Popup from "../../Commons/Popup";
 
-export default function CompanyDevices() {
+export default function CompanyAthletes() {
     const {hidePopup, handleHidePopup} = usePopup()
     const { currentUser } = useAuth()
     let company_id: any = useParams();
