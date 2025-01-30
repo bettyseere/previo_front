@@ -6,7 +6,7 @@ import UserInfo from "../../UserInfo/UserInfo";
 export default function UserTeams(){
     const { currentUser } = useAuth()
     const user_teams = currentUser?.teams || []
-    console.log(user_teams)
+    const is_staff = currentUser?.user_type == "staff"
     let data_to_render = []
 
     // get team members from server
@@ -24,7 +24,7 @@ export default function UserTeams(){
             accessorKey: "name",
             cell: ({ cell, row }) => {
                 const { role, id, name } = row.original;
-                const href = role === "Athlete" ? "/reports" : `/teams/${id}?label=${name}`;
+                const href = role === "Athlete" ? "/reports" : is_staff ? `/teams/${id}?label=${name}`: `/profile/teams/${id}?label=${name}`;
 
                 return (
                     <div className="text-secondary font-semibold">

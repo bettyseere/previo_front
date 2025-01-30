@@ -56,6 +56,9 @@ function AppRoutes() {
                     {is_staff && has_permission && <Route path="/teams" element={<UserTeams />} />} {/* If user is not only athlete they see teams*/}
                     {!is_staff && <Route path="/profile" element={<UserReports />} />}
                     {!is_staff && has_permission && <Route path="/profile/teams" element={<UserTeams />} />}
+                    {!is_staff && has_permission && <Route path="profile/teams/:id">
+                        <Route path={""} element={<UserTeamMembers />}/>
+                    </Route>}
 
                     {is_admin && <Route path="/measurements" element={<Measurements />} />}
                     {is_admin && <Route path="/measurements/:id">
@@ -79,8 +82,7 @@ function AppRoutes() {
 
 
                     {!is_super && <Route path="teams/:id">
-                            {<Route path={is_staff ? "": "profile"} element={<UserTeamMembers />}/>}
-                            {is_admin && <Route path="team_members" element={<TeamMembers />} />}
+                        {is_admin ? <Route path="team_members" element={<TeamMembers />} />: has_permission && <Route path={""} element={<UserTeamMembers />}/>}
                     </Route>}
 
                     <Route path={!is_admin ? "/:id": "/"}>
