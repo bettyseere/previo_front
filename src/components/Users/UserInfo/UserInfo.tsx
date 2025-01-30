@@ -11,19 +11,11 @@ import Popup from "../../Commons/Popup"
 import { useApiGet } from "../../../utils/hooks/query"
 import { user_info } from "../../../api/authentication"
 import ErrorLoading from "../../Commons/ErrorAndLoading"
-
-const user_nav = [
-    {name: "Reports"},
-    {name: "Teams"},
-    {name: "Devices"},
-    {name: "Schedule"}
-]
+import { Link } from "react-router-dom"
 
 interface Props {
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
-
-
 
 
 export default function UserInfo({children}: Props){
@@ -31,22 +23,34 @@ export default function UserInfo({children}: Props){
     const {hidePopup, handleHidePopup} = usePopup()
     const is_staff = currentUser?.user_type === "staff"
     const [popupType, setPopupType] = useState("edit_info")
+    const current_location = window.location.pathname;
+    const has_permission = currentUser?.has_permission
+
+
+
+    const user_nav = has_permission ? [
+        {name: "Reports", path: is_staff ? "/": "/profile"},
+        {name: "Teams", path: is_staff ? "/teams": "/profile/teams"},
+        // {name: "Devices", path: is_staff ? "/devices": "/profile/devices"}
+        // {name: "Schedule", path: is_staff ? "/schedule":  "/profile/schedule"}
+    ]: []
+
 
     const {data, isLoading, isFetching, isPending, error, isError, isLoadingError} = useApiGet(["current_user"], user_info)
 
     if (isLoading || isFetching || isPending) {
         return (
-            <ErrorLoading>
+            <StaffLayout>
                 <div  className="text-2xl font-bold text-secondary">Fetching user info ...</div>
-            </ErrorLoading>
+            </StaffLayout>
         )
     }
 
     if (isError || isLoadingError){
         return (
-            <ErrorLoading>
+            <StaffLayout>
                 <div  className="text-2xl font-bold text-red-400">{"Error fetching user info"}</div>
-            </ErrorLoading>
+            </StaffLayout>
             )
         }
 
@@ -100,10 +104,10 @@ export default function UserInfo({children}: Props){
                 </div>
 
                 <div className="w-full">
-                    <div className="flex w-full h-[3rem] gap-2 justify-between">
-                        {user_nav.map((item, i) => <nav className="bg-primary w-full justify-center flex items-center text-white cursor-pointer" key={i}>{item.name}</nav>)}
-                    </div>
-                    <div className="mt-4">{children}</div>
+                    {has_permission && <div className="flex w-full h-[3rem] gap-2 justify-between">
+                        {user_nav.map((item, i) => <Link to={item.path} className={`${item.path === current_location ? "bg-tertiary" : "bg-primary"} w-full justify-center flex items-center text-white cursor-pointer`}><nav className="" key={i}>{item.name}</nav></Link>)}
+                    </div>}
+                    <div className={`${has_permission ? "mt-4": ""}`}>{children}</div>
                 </div>
             </div>
         </StaffLayout>

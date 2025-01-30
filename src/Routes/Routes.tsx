@@ -5,11 +5,10 @@ import Home from "../components/Companies/Home";
 import Devices from "../components/Devices/Devices";
 import ForgotPassword from "../components/authentication/ForgotPassoword";
 import ResetPassword from "../components/authentication/ResetPassword";
-import Exercises from "../components/Exercises/Exercises";
+import Activities from "../components/Activities/Activities";
 import Users from "../components/Users/Users";
-import Teams from "../components/Teams/Teams";
+import UserTeams from "../components/Users/UserInfo/Teams/Teams";
 import CompanyOverview from "../components/Companies/Overview/Overview";
-import Staff from "../components/Companies/Staff/Staff";
 import Athletes from "../components/Companies/Athletes/Athletes";
 import CompanyDevices from "../components/Companies/Devices/Devices";
 import CompanyTeams from "../components/Companies/Teams/Teams";
@@ -17,12 +16,26 @@ import CreateAccount from "../components/authentication/CreateAccount";
 import Device_Types from "../components/DeviceTypes/DeviceTypes";
 import DeviceTypeDevices from "../components/DeviceTypes/Devices/Devices";
 import UserInfo from "../components/Users/UserInfo/UserInfo";
+import SubActivities from "../components/Activities/SubActivities/SubActivites";
 import { useAuth } from "../utils/hooks/Auth";
+import MeasurementAttributes from "../components/Measurements/Attributes/Attributes";
+import Measurements from "../components/Measurements/Measurements";
+import Results from "../components/Measurements/Results/Results";
+import ActivityAttributes from "../components/Activities/SubActivities/Attributes/ActivityAttributes";
+import Roles from "../components/Roles/Roles";
+import TeamMembers from "../components/Companies/Teams/TeamMembers/TeamMembers";
+import UserDevices from "../components/Users/UserInfo/Devices/Devices";
+import UserReports from "../components/Users/UserInfo/Reports/Reports";
+import UserTeamMembers from "../components/Users/UserInfo/Teams/Members/TeamMembers";
+
 
 function AppRoutes() {
     const {currentUser} = useAuth()
     const is_admin = currentUser?.user_type === "admin"
     const is_staff = currentUser?.user_type === "staff"
+    const is_super = currentUser?.user_type === "super"
+    let has_permission =  currentUser?.has_permission;
+
 
     return (
         <Router>
@@ -37,25 +50,42 @@ function AppRoutes() {
                     <Route
                         path="/"
                         element={
-                            !is_staff ? (is_admin ? <CompanyOverview /> : <Home />) : <UserInfo />
+                            !is_staff ? (is_admin ? <CompanyOverview /> : <Home />) : <UserReports />
                         }
                     />
-                    <Route path="/devices" element={!is_admin ? <Devices />: <CompanyDevices />} />
-                    {!is_admin && <Route path="/device_types" element={<Device_Types />} />}
-                    {!is_staff && <Route path="/profile" element={<UserInfo />}/>}
+                    {is_staff && has_permission && <Route path="/teams" element={<UserTeams />} />} {/* If user is not only athlete they see teams*/}
+                    {!is_staff && <Route path="/profile" element={<UserReports />} />}
+                    {!is_staff && has_permission && <Route path="/profile/teams" element={<UserTeams />} />}
+
+                    {is_admin && <Route path="/measurements" element={<Measurements />} />}
+                    {is_admin && <Route path="/measurements/:id">
+                        <Route path="" element={<Results />} />
+                    </Route>}
+                    {is_super && <Route path="/attributes" element={<MeasurementAttributes />} />}
+                    {is_super && <Route path="/device_types" element={<Device_Types />} />}
                     <Route path="/device_types/:id" >
                         <Route path="" element = {<DeviceTypeDevices />} />
                     </Route>
 
-                    <Route path="/exercises" element={<Exercises />} />
+                    {is_super && <Route path="/activities" element={<Activities />} />}
+                    {is_super && <Route path="/activities/:id">
+                        <Route path="" element = {<SubActivities />} />
+                        <Route path="attributes" element = {<ActivityAttributes />} />
+                    </Route>}
                     {!is_admin && <Route path="/users" element={!is_admin ? <Users />: <Athletes />} />}
                     {is_admin && <Route path="/athletes" element={<Athletes />} />}
-                    <Route path="/teams" element={!is_admin ? <Teams />: <CompanyTeams />} />
+                    {!is_super && <Route path="/teams" element={!is_admin ? <UserTeams />: <CompanyTeams />} />}
+                    {is_super && <Route path="/roles" element={<Roles />} />}
 
-                    {/* Dynamic Routes for Company */}
+
+                    {!is_super && <Route path="teams/:id">
+                            {<Route path={is_staff ? "": "profile"} element={<UserTeamMembers />}/>}
+                            {is_admin && <Route path="team_members" element={<TeamMembers />} />}
+                    </Route>}
+
                     <Route path={!is_admin ? "/:id": "/"}>
                         <Route path="" element={<CompanyOverview />} />
-                        <Route path="staff" element={<Staff />} />
+                        {/* <Route path="staff" element={<Staff />} /> */}
                         <Route path="athletes" element={<Athletes />} />
                         <Route path="devices" element={<CompanyDevices />} />
                         <Route path="teams" element={<CompanyTeams />}/>

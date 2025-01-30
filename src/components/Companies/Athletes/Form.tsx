@@ -29,7 +29,7 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
     let companies = localStorage.getItem("companies")
     companies ? companies = JSON.parse(companies) : companies = null
     return (
-        <Form formTitle={hidePopup.type === "create" ? "Invite Company USer" : "Edit Invite"} handleSubmit={handleSubmit(onSubmit)}>
+        <Form formTitle={hidePopup.type === "create" ? "Invite Company User" : "Edit Invite"} handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-4 items-center mt-4 w-[24rem]">
                 <div className="">
                     <label htmlFor="email" className="block text-sm font-medium text-black">

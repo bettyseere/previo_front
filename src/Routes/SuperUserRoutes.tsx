@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedRoutes from "../utils/ProtectedRoutes";
 import Home from "../components/Companies/Home";
 import Devices from "../components/Devices/Devices";
-import Exercises from "../components/Exercises/Exercises";
+import Exercises from "../components/Activities/Activities";
 import Users from "../components/Users/Users";
 import Teams from "../components/Teams/Teams";
 import CompanyOverview from "../components/Companies/Overview/Overview";

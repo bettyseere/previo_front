@@ -13,7 +13,7 @@ export default function StaffLayout({children}: LayoutProps) {
     const { currentUser } = useAuth();
     const is_staff = currentUser?.user_type === "staff"
     return (
-            is_staff ? <div className="flex gap-4 bg-[#F5F5F5] w-full font-jarkata">
+            currentUser && (is_staff ? <div className="flex gap-4 bg-[#F5F5F5] w-full font-jarkata">
                 <div className="w-full h-screen bg-gray-100 relative max-w-[1600px]">
                     <DashboardHeader />
                     <div className="ml-4">
@@ -25,6 +25,6 @@ export default function StaffLayout({children}: LayoutProps) {
             </div>:
             <Layout>
                 {children}
-            </Layout>
+            </Layout>)
     );
 }

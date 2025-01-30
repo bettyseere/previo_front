@@ -4,15 +4,14 @@ import Button from "../../Commons/Button";
 import { useApiGet, useApiSend } from "../../../utils/hooks/query";
 import { get_company_users } from "../../../api/authentication";
 import { useForm } from "react-hook-form";
-import { update_device, get_company_devices } from "../../../api/devices";
-import { UpdateDevice } from "../../../types/Device";
+import { update_device_owner, get_company_devices } from "../../../api/devices";
 
 export default function AddUserToDeviceForm({ company_id }: {company_id: string}) {
     const { hidePopup, handleHidePopup } = usePopup();
-    const operation = (data: any) => update_device(data, hidePopup.data.id);
+    const operation = (data: any) => update_device_owner(data, hidePopup.data.id);
 
     const { mutate, isError, isSuccess, isPending } = useApiSend(operation, undefined, undefined, ["devices"]);
-    const { data: company_users, isLoading: isLoadingCompanyUsers } = useApiGet(["company_users", company_id], () => get_company_users(company_id, false))
+    const { data: company_users, isLoading: isLoadingCompanyUsers } = useApiGet(["company_users", company_id], () => get_company_users(company_id))
     const { refetch } = useApiGet(["company_devices", company_id], () => get_company_devices(company_id));
 
 
@@ -71,7 +70,7 @@ export default function AddUserToDeviceForm({ company_id }: {company_id: string}
             <div className="mt-6">
                 <Button
                     type="submit"
-                    text={isPending ? "Submitting..." : hidePopup.type === "create" ? "Create" : "Save"}
+                    text={isPending ? "Submitting..." : hidePopup.type === "edit" ? "Save" : "Create"}
                     styling="text-white px-4 py-1 rounded"
                 />
             </div>

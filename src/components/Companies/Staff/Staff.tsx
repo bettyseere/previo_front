@@ -20,7 +20,7 @@ export default function CompanyDevices() {
 
     const { data, isError, isLoading, error } = useApiGet(
         ["staff", company_id],
-        () => get_company_users(company_id, true)
+        () => get_company_users(company_id)
     );
 
     if (isLoading) {

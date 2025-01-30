@@ -72,8 +72,7 @@ export default function Users(){
                             message="Are you sure you want to delete this user?"
                             title="Delete User"
                             handleSubmit={()=>console.log("User deleted")}
-                        />
-                            : <div>{hidePopup.type === "create" ? ( <div><UserForm /></div>) : ( <div>Other Popup Content</div>)}</div>}
+                        />: <div>{hidePopup.type === "create" ? ( <div><UserForm /></div>) : ( <div>Other Popup Content</div>)}</div>}
                     </div>
                 </Popup>
     return (

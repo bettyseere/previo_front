@@ -35,11 +35,11 @@ export default function Teams(){
             {header: "Name", accessorKey: "name"}
         ]
 
-        const button = <Button text="Create Team" styling="text-white py-2" />
+        // const button = <Button text="Create Team" styling="text-white py-2" />
     return (
         <Layout>
             {data && <div className="p-6">
-                <Table data={data} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Teams"} />
+                <Table data={data} columns={table_columns} initialPageSize={10} searchMsg={"Search Teams"} />
             </div>}
         </Layout>
     )

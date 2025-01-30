@@ -77,7 +77,7 @@ export default function CompanyDevices() {
             cell: ({ cell, row }) => {
                 console.log(row.original)
                 return <div className="flex gap-4 justify-center items-center">
-                    <div onClick={()=>handleHidePopup({show: true, type: row.original.owner ? "create": "edit", data: row.original})} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">{row.original.owner ? "Change": "Assign"}
+                    <div onClick={()=>handleHidePopup({show: true, type: row.original.owner ? "edit": "create", data: row.original})} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">{row.original.owner ? "Change": "Assign"}
                     </div>
                     {row.original.owner && <div onClick={()=>handle_remove_user(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">Remove</div>}
                     {/* <div className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">

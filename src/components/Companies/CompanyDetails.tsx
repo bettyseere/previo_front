@@ -15,7 +15,6 @@ export default function CompanyLayout({children}: props) {
     const location = useLocation()
     const { currentUser } = useAuth()
     const is_super = currentUser?.user_type == "super"
-    console.log(company_id, "This is the company_id")
 
     const navigation = [
         // {name: "Overview", link: `/${company_id.id}`},

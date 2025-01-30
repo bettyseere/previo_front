@@ -42,6 +42,14 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
             try {
                 const user_info_response = await user_info()
+                let has_permission = false;
+
+                for (const team of user_info_response.teams || []) {
+                    if (team.role) {
+                        has_permission = true;
+                        break;
+                    }
+                }
                 const user = {
                     id: response.user.id,
                     first_name: response.user.first_name,
@@ -51,7 +59,10 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     company: response.user.company,
                     country: user_info_response.country,
                     city: user_info_response.city,
-                    address: user_info_response.address
+                    address: user_info_response.address,
+                    teams: user_info_response.teams,
+                    devices: user_info_response.devices,
+                    has_permission: has_permission
                 };
 
                 localStorage.setItem("user", JSON.stringify(user));

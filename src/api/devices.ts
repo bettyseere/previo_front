@@ -60,3 +60,9 @@ export const update_device = async (data: Device, id: string) => request({
     url: `/devices/${id}`,
     data: data
 })
+
+export const update_device_owner = async (data: Device, id: string) => request({
+    method: "PATCH",
+    url: `/devices/update_owner/${id}`,
+    data: data
+})

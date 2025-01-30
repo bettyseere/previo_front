@@ -8,6 +8,9 @@ export type User = {
     address?: string
     country?: string
     city?: string
+    teams?: [any]
+    devices?: [any]
+    has_permission: boolean
 }
 
 export type Tokens = {

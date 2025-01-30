@@ -22,7 +22,7 @@ export default function CompanyAthletes() {
 
     const { data, isError, isLoading, error } = useApiGet(
         ["athletes", company_id],
-        () => get_company_users(company_id, false)
+        () => get_company_users(company_id)
     );
 
     if (isLoading) {
