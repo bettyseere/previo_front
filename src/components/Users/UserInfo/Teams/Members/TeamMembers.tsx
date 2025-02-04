@@ -1,34 +1,36 @@
-import Layout from "../../../../../Layout/Dashboard/Layout";
 import { useApiGet } from "../../../../../utils/hooks/query";
-import { usePopup } from "../../../../../utils/hooks/usePopUp";
 import { get_team_members } from "../../../../../api/team_members";
 import Table from "../../../../Commons/Table";
-import Button from "../../../../Commons/Button";
-import ErrorLoading from "../../../../Commons/ErrorAndLoading";
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import UserInfo from "../../UserInfo";
+import { useAuth } from "../../../../../utils/hooks/Auth";
 
 
 export default function UserTeamMembers(){
     let team_id = useParams().id
     let team_name = (new URLSearchParams(window.location.search)).get("label")
+    const { currentUser } = useAuth()
+    const is_staff = currentUser?.user_type == "staff"
 
     const {
             data,
             isLoading,
             isFetching,
             isPending,
-            error,
             isError,
             isLoadingError
         } = useApiGet(["team_members", team_id], ()=>get_team_members(team_id))
+
+    const default_nav = [
+        {name: "Team Members", path: is_staff ? "/teams/"+team_id: "/profile/teams/"+team_id},
+        {name: "Team Records", path: is_staff ? "/teams/"+team_id+"/records": "/profile/teams/"+team_id+"/records"}
+    ]
 
 
 
         if (isLoading || isFetching || isPending){
             return (
-                <UserInfo>
+                <UserInfo nav_items={default_nav}>
                     <div  className="text-2xl font-bold text-secondary">Fetching team members...</div>
                 </UserInfo>
             )
@@ -36,7 +38,7 @@ export default function UserTeamMembers(){
 
         if (isError || isLoadingError){
             return (
-                <UserInfo>
+                <UserInfo nav_items={default_nav}>
                     <p>Error fetching team members</p>
                 </UserInfo>
             )
@@ -63,9 +65,10 @@ export default function UserTeamMembers(){
         ]
 
 
+
     return (
         <div>
-            <UserInfo>
+            <UserInfo  nav_items={default_nav}>
                 {data && <div className="">
                     <Table data={data_to_render} columns={table_columns} initialPageSize={10} entity_name={team_name ? team_name + " team members" : ""} searchMsg={"Search Team Members"} />
                 </div>}

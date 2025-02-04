@@ -28,3 +28,4 @@ export const get_single_invite = async (id: string) => request({
     method: "GET",
     url: `/invites/${id}`
 })
+

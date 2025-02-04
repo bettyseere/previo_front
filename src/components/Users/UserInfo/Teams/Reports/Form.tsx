@@ -1,31 +1,30 @@
-import { usePopup } from "../../utils/hooks/usePopUp";
-import Form from "../Commons/Form";
+import { usePopup } from "../../../../../utils/hooks/usePopUp";
+import Form from "../../../../Commons/Form";
 import { useForm } from "react-hook-form";
-import Button from "../Commons/Button";
-import { get_company_devices } from "../../api/devices";
-import { get_company_users } from "../../api/authentication";
-import { useApiSend, useApiGet } from "../../utils/hooks/query";
-import { get_sub_activities } from "../../api/activities/sub_activities/sub_activities";
-import { queryClient } from "../../main";
-import { create_measurement, update_measurement } from "../../api/measurements/measurements";
-import { useState } from "react";
-import { useAuth } from "../../utils/hooks/Auth";
-import Popup from "../Commons/Popup";
-import { get_attributes } from "../../api/measurements/attributes";
+import Button from "../../../../Commons/Button";
+import { get_company_devices } from "../../../../../api/devices";
+import { get_team_members } from "../../../../../api/team_members";
+import { useApiSend, useApiGet } from "../../../../../utils/hooks/query";
+import { get_sub_activities } from "../../../../../api/activities/sub_activities/sub_activities";
+import { queryClient } from "../../../../../main";
+import { create_measurement, update_measurement } from "../../../../../api/measurements/measurements";
+import { useAuth } from "../../../../../utils/hooks/Auth";
+import Popup from "../../../../Commons/Popup";
+import { get_attributes } from "../../../../../api/measurements/attributes";
+import { useParams } from "react-router-dom";
 
 export default function MeasurementForm(){
     const {currentUser} = useAuth()
     const {reset, handleSubmit, register} = useForm()
     const { hidePopup, handleHidePopup } = usePopup();
-    const [selectedArtist, setSelectedArtist] = useState(null)
-    const [selectedDevice, setSelectedDevice] = useState(null)
     const company_id = currentUser?.company
+    let team_id = useParams().id
 
     const operation = hidePopup.type === "create" ? create_measurement : (data: any) =>  hidePopup.data.id && update_measurement(hidePopup.data.id, data);
     const { mutate, isPending } = useApiSend(operation, undefined, undefined, ["measurements"]);
 
     const { data: company_devices, isLoading: isLoadingDevices, error: CompanyDevicesError } = useApiGet(["company_devices", company_id], () => get_company_devices(company_id))
-    const { data: company_users, isLoading: isLoadingAthletes, error: AthtletesError } = useApiGet(["company_users", company_id], () => get_company_users(company_id))
+    const { data: team_members, isLoading: isLoadingAthletes, error: AthtletesError } = useApiGet(["team_members", team_id], () => get_team_members(team_id))
     const {data: activities, isLoading: activitiesLoading, error: activitiesError} = useApiGet(["sub_activities"], get_sub_activities)
     const {data: attributes, isLoading: isLoadingAttributes, error: attributesError} = useApiGet(["measurement_attributes"], get_attributes)
 
@@ -36,6 +35,10 @@ export default function MeasurementForm(){
             </Popup>
         )
         }
+
+    let user_team = currentUser?.teams
+    user_team = user_team?.find(team => team.team.id == team_id)
+    const team_role = user_team?.role.id || null
 
     if (CompanyDevicesError){
         return (
@@ -52,7 +55,7 @@ export default function MeasurementForm(){
             </Popup>
         )
         }
-    
+
     if (isLoadingAttributes){
         return(
             (
@@ -96,6 +99,8 @@ export default function MeasurementForm(){
     }
 
     const onSubmit = (data: any) => {
+        data.team_id = team_id
+        data.role_id = team_role
         mutate(data, {
             onSuccess: (response) => {
                 console.log(response)
@@ -122,11 +127,11 @@ export default function MeasurementForm(){
                             {hidePopup.type === "edit" && hidePopup.data?.owner_id && (
                                 <option value={hidePopup.data.owner_id}>{hidePopup.data.owner}</option>
                             )}
-                            {/* Filter out the current owner from the company_users list */}
-                            {company_users
+                            {/* Filter out the current owner from the team_members list */}
+                            {team_members
                                 .map((user: any) => (
-                                    <option key={user.id} value={user.id}>
-                                        {user.first_name + " " + user.last_name}
+                                    <option key={user.user.id} value={user.user.id}>
+                                        {user.user.first_name + " " + user.user.last_name}
                                     </option>
                                 ))}
                         </select>
@@ -157,7 +162,7 @@ export default function MeasurementForm(){
                         </label>
                         <select id="sub_activity_id"
                             {...register("sub_activity_id", { required: "Activity is required" })} className="outline-none border-b-2 border-primary w-full py-2">
-                            {/* Filter out the current owner from the company_users list */}
+                            {/* Filter out the current owner from the team_members list */}
                             {activities
                                 .map((activity: any) => (
                                     <option key={activity.id} value={activity.id}>
@@ -173,7 +178,7 @@ export default function MeasurementForm(){
                         </label>
                         <select id="attribute_id"
                             {...register("attribute_id", { required: "Attribute is required" })} className="outline-none border-b-2 border-primary w-full py-2">
-                            {/* Filter out the current owner from the company_users list */}
+                            {/* Filter out the current owner from the team_members list */}
                             {attributes
                                 .map((attribute: any) => (
                                     <option key={attribute.id} value={attribute.id}>

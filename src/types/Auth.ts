@@ -46,3 +46,9 @@ export type CreateUserAccount = {
     last_name: string
     password: string
 }
+
+
+export type ChangePassword = {
+    old_password: string
+    new_password: string
+}

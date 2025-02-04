@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "../components/authentication/Login";
 import ProtectedRoutes from "../utils/ProtectedRoutes";
 import Home from "../components/Companies/Home";
-import Devices from "../components/Devices/Devices";
+// import Devices from "../components/Devices/Devices";
 import ForgotPassword from "../components/authentication/ForgotPassoword";
 import ResetPassword from "../components/authentication/ResetPassword";
 import Activities from "../components/Activities/Activities";
@@ -15,7 +15,7 @@ import CompanyTeams from "../components/Companies/Teams/Teams";
 import CreateAccount from "../components/authentication/CreateAccount";
 import Device_Types from "../components/DeviceTypes/DeviceTypes";
 import DeviceTypeDevices from "../components/DeviceTypes/Devices/Devices";
-import UserInfo from "../components/Users/UserInfo/UserInfo";
+// import UserInfo from "../components/Users/UserInfo/UserInfo";
 import SubActivities from "../components/Activities/SubActivities/SubActivites";
 import { useAuth } from "../utils/hooks/Auth";
 import MeasurementAttributes from "../components/Measurements/Attributes/Attributes";
@@ -24,9 +24,10 @@ import Results from "../components/Measurements/Results/Results";
 import ActivityAttributes from "../components/Activities/SubActivities/Attributes/ActivityAttributes";
 import Roles from "../components/Roles/Roles";
 import TeamMembers from "../components/Companies/Teams/TeamMembers/TeamMembers";
-import UserDevices from "../components/Users/UserInfo/Devices/Devices";
+// import UserDevices from "../components/Users/UserInfo/Devices/Devices";
 import UserReports from "../components/Users/UserInfo/Reports/Reports";
 import UserTeamMembers from "../components/Users/UserInfo/Teams/Members/TeamMembers";
+import UserTeamRecords from "../components/Users/UserInfo/Teams/Reports/TeamRecords";
 
 
 function AppRoutes() {
@@ -58,6 +59,7 @@ function AppRoutes() {
                     {!is_staff && has_permission && <Route path="/profile/teams" element={<UserTeams />} />}
                     {!is_staff && has_permission && <Route path="profile/teams/:id">
                         <Route path={""} element={<UserTeamMembers />}/>
+                        <Route path={"records"} element={<UserTeamRecords />} />
                     </Route>}
 
                     {is_admin && <Route path="/measurements" element={<Measurements />} />}
@@ -83,6 +85,7 @@ function AppRoutes() {
 
                     {!is_super && <Route path="teams/:id">
                         {is_admin ? <Route path="team_members" element={<TeamMembers />} />: has_permission && <Route path={""} element={<UserTeamMembers />}/>}
+                        {is_staff && <Route path="records" element={<UserTeamRecords />} />}
                     </Route>}
 
                     <Route path={!is_admin ? "/:id": "/"}>

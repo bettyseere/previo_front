@@ -12,6 +12,11 @@ export const get_user_measurements = async (athlete_id: string) => request({
     url: `/measurements?athlete_id=${athlete_id}`
 })
 
+export const get_team_measurements = async (team_id: string, access: string = "individual", role_id: any = null) => request({
+    method: "GET",
+    url: `/measurements?team_id=${team_id}&access=${access}&role_id=${role_id}`
+})
+
 export const create_measurement = async (data: CreateMeasurement) => request({
     method: "POST",
     url: "/measurements",

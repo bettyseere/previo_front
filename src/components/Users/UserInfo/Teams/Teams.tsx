@@ -9,7 +9,10 @@ export default function UserTeams(){
     const is_staff = currentUser?.user_type == "staff"
     let data_to_render = []
 
-    // get team members from server
+    const default_nav = [
+        {name: "Team Members", path: is_staff ? "/": "/profile"},
+        {name: "Athlete Records", path: is_staff ? "/teams": "/profile/teams"},
+    ]
 
     user_teams.forEach(team =>
         {

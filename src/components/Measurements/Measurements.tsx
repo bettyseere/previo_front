@@ -3,16 +3,11 @@ import { useApiGet } from "../../utils/hooks/query";
 import ErrorLoading from "../Commons/ErrorAndLoading";
 import Layout from "../../Layout/Dashboard/Layout";
 import Table from "../Commons/Table";
-import Button from "../Commons/Button";
 import { usePopup } from "../../utils/hooks/usePopUp";
-import { PiPen } from "react-icons/pi";
-import { BsTrash } from "react-icons/bs";
 import Popup from "../Commons/Popup";
 import ConfirmModel from "../Commons/ConfirmModel";
-import MeasurementForm from "./Form";
+import MeasurementForm from "../Users/UserInfo/Teams/Reports/Form";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import { get_attributes } from "../../api/measurements/attributes";
 
 
 export default function Measurements(){
@@ -145,14 +140,13 @@ export default function Measurements(){
         // }
     ]
 
-    const button = <Button handleClick={()=>handleHidePopup({show: true, type: "create"})} text="Create Measurement" styling="text-white py-2" />
 
     return (
         <div>
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table data={data_to_render} actionBtn={button} columns={table_columns} initialPageSize={10} searchMsg={"Search Measurements"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} searchMsg={"Search Measurements"} />
                 </div>}
             </Layout>
         </div>

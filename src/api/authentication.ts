@@ -1,6 +1,6 @@
 import request from "../utils/network";
 import { Login, ResetPasswordRequest, UpdateUserInfo } from "../types/Auth";
-import { CreateUserAccount } from "../types/Auth";
+import { CreateUserAccount, ChangePassword } from "../types/Auth";
 
 export const login = async (data: Login) => await request ({
     method: "POST",
@@ -62,3 +62,9 @@ export const create_account = async (data: CreateUserAccount, token: string) => 
         params: {token: token}
     })
 
+
+export const change_password = async (data: ChangePassword) => request({
+    method: "PATCH",
+    url: "/auth/change_password",
+    data: data
+})
