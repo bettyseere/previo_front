@@ -14,6 +14,7 @@ import { toast } from "react-toastify"
 import Table from "../../Commons/Table"
 import ConfirmModel from "../../Commons/ConfirmModel"
 import { useState } from "react"
+import { get_device_activities } from "../../../api/device_activities"
 
 export default function DeviceTypeDevices(){
     const device_type_id: any = useParams()
@@ -29,6 +30,13 @@ export default function DeviceTypeDevices(){
             isLoadingError,
             refetch
         } = useApiGet(["device_type_devices"], ()=>get_device_type_devices(device_type_id.id))
+    
+    const {
+            data: activities
+        } = useApiGet(["device_type_activities", device_type_id], ()=>get_device_activities(device_type_id))
+
+    console.log(activities, "these are activities")
+
 
     const handleUpdate = (data: any) => {
         handleHidePopup({show: true, data: data, type: "edit"})
