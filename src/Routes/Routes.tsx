@@ -49,7 +49,7 @@ function AppRoutes() {
                 <Route path="/forgot_password" element={<ForgotPassword />} />
                 <Route path="/reset_password" element={<ResetPassword />} />
                 <Route path="/create_account" element={<CreateAccount />} />
-                <Route path="*" element={<Navigate to="/login" replace />} />
+                {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
 
                 {/* Protected Routes */}
                 {<Route element={<ProtectedRoutes />}>

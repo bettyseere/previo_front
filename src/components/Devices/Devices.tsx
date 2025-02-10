@@ -54,11 +54,23 @@ export default function Devices(){
 
         if (isError || isLoadingError){
             return (
-            <ErrorLoading>
-                <div  className="text-2xl font-bold text-secondary">Error fetching devices</div>
-            </ErrorLoading>
+            <div>
+                {hidePopup.show && popup}
+                <ErrorLoading>
+                    <div className="flex items-center justify-center flex-col gap-4">
+                        <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "No devices found": "Error fetching devices"}</div>
+                        {error.response.status === 404 && <Button text="Add Device" handleClick={()=>handleHidePopup({show: true, type: "create"})} />}
+                    </div>
+                </ErrorLoading>
+            </div>
         )
         }
+
+        const popup = <Popup>
+                    <div>
+                        <DeviceForm popup={hidePopup} />
+                    </div>
+                </Popup>
 
         data && localStorage.setItem("devices", JSON.stringify(data))
 
@@ -101,11 +113,6 @@ export default function Devices(){
         ]
 
         const button = <Button text="Create Device" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
-        const popup = <Popup>
-                    <div>
-                        <DeviceForm popup={hidePopup} />
-                    </div>
-                </Popup>
     return (
         <div>
             {hidePopup.show && popup}

@@ -11,8 +11,10 @@ import ConfirmModel from "../Commons/ConfirmModel";
 import ErrorLoading from "../Commons/ErrorAndLoading";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "../../utils/hooks/Auth";
 
 export default function Users(){
+    const {currentUser} = useAuth()
     const {hidePopup, handleHidePopup} = usePopup()
     const [selectedID, setSelectedID] = useState("")
     const {
@@ -35,10 +37,10 @@ export default function Users(){
         try {
             await delete_user(id)
             refetch()
-            toast("User deleted successfully")
+            toast.success("User deleted successfully")
             handleHidePopup({show: false, type: "create", confirmModel: false})
         } catch {
-            toast("Error deleting user.")
+            toast.error("Error deleting user.")
             handleHidePopup({show: false, type: "create", confirmModel: false})
         }
     }
@@ -51,11 +53,27 @@ export default function Users(){
         )
     }
 
-        if (isError || isLoadingError){
+    const popup = <Popup>
+                    <div>
+                        {hidePopup.confirmModel ? <ConfirmModel
+                            message="Are you sure you want to delete this user?"
+                            title="Delete User"
+                            handleSubmit={()=>handle_delete(selectedID)}
+                        />: <div>{hidePopup.type === "create" ? ( <div><UserForm /></div>) : ( <div>Other Popup Content</div>)}</div>}
+                    </div>
+                </Popup>
+
+    if (isError) {
             return (
+                <div>
+                {hidePopup.show && popup}
                 <ErrorLoading>
-                    <div  className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No users found": "Error fetching users"}</div>
+                    <div className="flex items-center justify-center flex-col gap-4">
+                        <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "No users found": "Error fetching users"}</div>
+                        {error.response.status == 404 && <Button text="Invite athlete" handleClick={()=>handleHidePopup({show: true, type: "create"})} />}
+                    </div>
                 </ErrorLoading>
+                </div>
             )
         }
 
@@ -73,9 +91,9 @@ export default function Users(){
             accessorKey: "id",
             cell: ({ cell, row}) => {
                 return <div className="flex gap-8 justify-center items-center">
-                    <div onClick={()=>init_delete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                    {row.original.id !== currentUser?.id && <div onClick={()=>init_delete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
-                    </div>
+                    </div>}
                     {/* <div className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <PiPen size={20} className="text-primary" />
                     </div> */}
@@ -86,15 +104,6 @@ export default function Users(){
 
         const button = <Button text="Invite User" styling="text-white py-2" handleClick={() => handleHidePopup({ show: true, type: "create" })} />
 
-        const popup = <Popup>
-                    <div>
-                        {hidePopup.confirmModel ? <ConfirmModel
-                            message="Are you sure you want to delete this user?"
-                            title="Delete User"
-                            handleSubmit={()=>handle_delete(selectedID)}
-                        />: <div>{hidePopup.type === "create" ? ( <div><UserForm /></div>) : ( <div>Other Popup Content</div>)}</div>}
-                    </div>
-                </Popup>
     return (
         <div>
             {hidePopup.show && popup}

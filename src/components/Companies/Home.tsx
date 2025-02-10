@@ -42,11 +42,34 @@ export default function Home() {
         )
     }
 
-    if (isError || isLoadingError) {
+    const popup = <Popup>
+                    {!hidePopup.confirmModel ?
+                    <div>
+                        {hidePopup.type === "create" ? (
+                            <div><CompanyForm popup={hidePopup} /></div>
+                        ) : (
+                            <div>
+                            {
+                                <CompanyForm
+                                    popup={hidePopup}
+                                />
+                            }
+                            </div>
+                        )}
+                    </div>: <ConfirmModel cancel_action={()=>handleHidePopup({show: false, type: "create", confirmModel: false})} handleSubmit={()=>handleDelete(deleteID)} message="Are you sure you want to delete this company? This action cannot be reversed." title="Delete Company" />}
+                </Popup>
+
+    if (isError) {
         return (
+            <div>
+            {hidePopup.show && popup}
             <ErrorLoading>
-                <div  className="text-2xl font-bold text-secondary text-red-400">Error fetching companies</div>
+                <div className="flex items-center justify-center flex-col gap-4">
+                    <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "No companies found": "Error fetching companies"}</div>
+                    {error.response.status == 404 && <Button text="Create Company" handleClick={()=>handleHidePopup({show: true, type: "create"})} />}
+                </div>
             </ErrorLoading>
+            </div>
         )
     }
 
@@ -99,23 +122,6 @@ export default function Home() {
         />
     );
 
-
-    const popup = <Popup>
-                    {!hidePopup.confirmModel ?
-                    <div>
-                        {hidePopup.type === "create" ? (
-                            <div><CompanyForm popup={hidePopup} /></div>
-                        ) : (
-                            <div>
-                            {
-                                <CompanyForm
-                                    popup={hidePopup}
-                                />
-                            }
-                            </div>
-                        )}
-                    </div>: <ConfirmModel cancel_action={()=>handleHidePopup({show: false, type: "create", confirmModel: false})} handleSubmit={()=>handleDelete(deleteID)} message="Are you sure you want to delete this company? This action cannot be reversed." title="Delete Company" />}
-                </Popup>
 
     return (
         <div className="">

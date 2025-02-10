@@ -61,12 +61,29 @@ export default function Device_Types(){
         )
         }
 
+        const popup = <Popup>
+                <div>
+                    {hidePopup.confirmModel ? <ConfirmModel
+                        message="Are you sure you want to delete this device type? This action cannot be reversed."
+                        title="Delete device type"
+                        handleSubmit={()=>handleDelete(deleteID)}
+                        cancel_action={()=>handleHidePopup({confirmModel: false, type: "create", show: false})}
+                    /> : <DeviceTypeForm popup={hidePopup} />}
+                </div>
+            </Popup>
+
         if (isError || isLoadingError){
             return (
-            <ErrorLoading>
-                <div  className="text-2xl font-bold text-secondary">Error fetching device types</div>
-            </ErrorLoading>
-        )
+                <div>
+                    {hidePopup.show && popup}
+                    <ErrorLoading>
+                        <div className="flex items-center justify-center flex-col gap-4">
+                            <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "No device types found": "Error fetching device types"}</div>
+                            {error.response.status === 404 && <Button text="Add Device Type" handleClick={()=>handleHidePopup({show: true, type: "create"})} />}
+                        </div>
+                    </ErrorLoading>
+                </div>
+            )
         }
 
 
@@ -97,16 +114,6 @@ export default function Device_Types(){
         ]
 
         const button = <Button text="Create Device Type" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
-        const popup = <Popup>
-                    <div>
-                        {hidePopup.confirmModel ? <ConfirmModel
-                            message="Are you sure you want to delete this device type? This action cannot be reversed."
-                            title="Delete device type"
-                            handleSubmit={()=>handleDelete(deleteID)}
-                            cancel_action={()=>handleHidePopup({confirmModel: false, type: "create", show: false})}
-                        /> : <DeviceTypeForm popup={hidePopup} />}
-                    </div>
-                </Popup>
     return (
         <div>
             {hidePopup.show && popup}
