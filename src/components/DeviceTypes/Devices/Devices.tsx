@@ -17,7 +17,8 @@ import { useState } from "react"
 import { get_device_activities } from "../../../api/device_activities"
 
 export default function DeviceTypeDevices(){
-    const device_type_id: any = useParams()
+    let device_type_id: any = useParams()
+    device_type_id = device_type_id.id
     const {hidePopup, handleHidePopup} = usePopup()
     const [selectedDeviceId, setSelectedDeviceID] = useState("")
     const {
@@ -30,7 +31,7 @@ export default function DeviceTypeDevices(){
             isLoadingError,
             refetch
         } = useApiGet(["device_type_devices"], ()=>get_device_type_devices(device_type_id.id))
-    
+
     const {
             data: activities
         } = useApiGet(["device_type_activities", device_type_id], ()=>get_device_activities(device_type_id))

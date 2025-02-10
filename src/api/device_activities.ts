@@ -29,5 +29,5 @@ export const update_device_type = async (data: UpdateDeviceActivity, old_device_
 
 export const get_device_activities = async (device_type_id: string) => request({
     method: "GET",
-    url: `/device_activities/?device_type_id=${device_type_id}`
+    url: `/device_activities?device_type_id=${device_type_id}`
 })
