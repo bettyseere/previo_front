@@ -4,7 +4,7 @@ import { CreateDeviceActivity, UpdateDeviceActivity } from "../types/DeviceTypes
 
 export const get_single_device_activity = (activity_id: string, device_type_id: string) => request({
     method: "GET",
-    url: `/device_activities/?activity_id=${activity_id}&device_type_id=${device_type_id}`
+    url: `/device_activities/?activity_id=${activity_id}&device_type_id=${device_type_id}/`
 })
 
 
@@ -29,5 +29,5 @@ export const update_device_type = async (data: UpdateDeviceActivity, old_device_
 
 export const get_device_activities = async (device_type_id: string) => request({
     method: "GET",
-    url: `/device_activities/?device_type_id=${device_type_id}`
+    url: `/device_activities/?device_type_id=${device_type_id}/`
 })
