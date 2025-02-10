@@ -17,7 +17,8 @@ import { BsTrash } from "react-icons/bs"
 
 export default function DeviceActivities(){
     const { hidePopup, handleHidePopup } = usePopup()
-    const device_type_id: any = useParams()
+    let device_type_id: any = useParams()
+    device_type_id = device_type_id.id
     const [selectedActivityID, setSelectedActivityId] = useState("")
     const {
                 data,
@@ -28,7 +29,7 @@ export default function DeviceActivities(){
                 isError,
                 isLoadingError,
                 refetch
-            } = useApiGet(["device_activities"], ()=>get_device_activities(device_type_id.id))
+            } = useApiGet(["device_activities", device_type_id], ()=>get_device_activities(device_type_id))
 
     const init_delete = (id: string) =>{
         setSelectedActivityId(id)
