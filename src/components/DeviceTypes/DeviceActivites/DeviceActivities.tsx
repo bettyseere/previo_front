@@ -10,7 +10,7 @@ import ConfirmModel from "../../Commons/ConfirmModel"
 import Button from "../../Commons/Button"
 import { toast } from "react-toastify"
 import { useState } from "react"
-import { apiUrl } from "../../../utils/network"
+import ErrorLoading from "../../Commons/ErrorAndLoading"
 import { BsTrash } from "react-icons/bs"
 
 
@@ -18,7 +18,6 @@ import { BsTrash } from "react-icons/bs"
 export default function DeviceActivities(){
     const { hidePopup, handleHidePopup } = usePopup()
     let device_type_id: any = useParams()
-    console.log(apiUrl)
     device_type_id = device_type_id.id
     const [selectedActivityID, setSelectedActivityId] = useState("")
     const {
@@ -30,7 +29,15 @@ export default function DeviceActivities(){
                 isError,
                 isLoadingError,
                 refetch
-            } = useApiGet(["device_activities", device_type_id], ()=>get_device_activities(device_type_id))
+            } = useApiGet(["device_type_activities", device_type_id], ()=>get_device_activities(device_type_id))
+
+    if (isLoading || isFetching || isPending){
+                return (
+                <ErrorLoading>
+                    <div  className="text-2xl font-bold text-secondary">Fetching activities ...</div>
+                </ErrorLoading>
+            )
+            }
 
     const init_delete = (id: string) =>{
         setSelectedActivityId(id)
@@ -38,7 +45,7 @@ export default function DeviceActivities(){
     }
     const handleDelete = async (id: string) => {
             try{
-                await delete_device_activity(device_type_id.id, id)
+                await delete_device_activity(device_type_id, id)
                 refetch()
                 toast("Device deleted successfully.")
                 handleHidePopup({show: false, type: "create"})
