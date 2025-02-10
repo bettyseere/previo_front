@@ -30,9 +30,9 @@ export default function SubMenu({children, sub_page_props}: props) {
                 {is_super && <div className="flex justify-between gap-1">
                     {navigation.map(item=>{
                         const isActive = location.pathname === item.link;
-                        return (<Link to={item.link}><div key={item.name} className={`w-full text-center font-semibold ${isActive ? "bg-tertiary": "bg-primary"} p-4 hover:scale-95 text-white cursor-pointer hover:duration-150`}>
+                        return (<div className="w-full"><Link to={item.link}><div key={item.name} className={`w-full text-center font-semibold ${isActive ? "bg-tertiary": "bg-primary"} p-4 hover:scale-95 text-white cursor-pointer hover:duration-150`}>
                         {item.name}
-                    </div></Link>)})}
+                    </div></Link></div>)})}
                 </div>}
                 <Outlet /><div className="pt-4 px-4">{children}</div>
             </Layout>
