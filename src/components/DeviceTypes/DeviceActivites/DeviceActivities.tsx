@@ -10,7 +10,8 @@ import ConfirmModel from "../../Commons/ConfirmModel"
 import Button from "../../Commons/Button"
 import { toast } from "react-toastify"
 import { useState } from "react"
-import ErrorLoading from "../../Commons/ErrorAndLoading"
+import { queryClient } from "../../../main"
+import { BsTrash } from "react-icons/bs"
 
 
 
@@ -63,9 +64,11 @@ export default function DeviceActivities(){
         {header: "Name", accessorKey: "activity_name"},
         {header: "Description", accessorKey: "activity_description"},
         {header: "Actions", accessorKey: "activity_id", cell: ({ cell, row}) => {
-            return <div onClick={()=>init_delete(row.original.activity_id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+            return <div className="flex justify-center items-center gap-4 px-4">
+                <div onClick={()=>init_delete(row.original.activity_id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
                     </div>
+                </div>
         }}
     ]
 

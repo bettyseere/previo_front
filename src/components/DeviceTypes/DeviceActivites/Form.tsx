@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import Dropdown from "../../Commons/Dropdown";
 import { create_device_activity } from "../../../api/device_activities";
 import { get_activities } from "../../../api/activities/activities";
+import { queryClient } from "../../../main";
 
 export default function DeviceActivitiesForm() {
     const { handleHidePopup, hidePopup } = usePopup();
@@ -14,8 +15,8 @@ export default function DeviceActivitiesForm() {
     const device_type_id: any = useParams()
 
 
-    const { mutate, isError, isSuccess, isPending } = useApiSend(operation, undefined, undefined, ["device_activities"]);
-    const { data: activities, refetch } = useApiGet(["activities"], get_activities);
+    const { mutate, isError, isSuccess,  isPending } = useApiSend(operation, undefined, undefined, ["device_activities"]);
+    const { data: activities } = useApiGet(["activities"], get_activities);
 
 
     const { register, handleSubmit, reset, control } = useForm();
@@ -25,9 +26,9 @@ export default function DeviceActivitiesForm() {
         data.device_type_id = device_type_id.id
         mutate(data, {
             onSuccess: () => {
-                refetch()
                 handleHidePopup({ show: false, type: "create" }); // Close the popup on success
                 reset(); // Reset form fields
+                queryClient.invalidateQueries(["device_activities"]);
             },
             onError: (error) => {
                 console.error("Error inviting company user:", error);
