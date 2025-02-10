@@ -9,8 +9,10 @@ const ProtectedRoutes = () => {
         return <div>Loading...</div>;
     }
 
+    console.log("Protected routes being called")
+
     if (!currentUser) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/login" replace />;
     }
 
     return <Outlet />;

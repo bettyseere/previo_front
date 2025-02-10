@@ -71,7 +71,7 @@ export default function CompanyTeams(){
                 <ErrorLoading>
                     <div className="flex items-center justify-center flex-col gap-4">
                         <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "Not teams found": "Error fetching teams"}</div>
-                        <Button text="Add Team" handleClick={()=>handleHidePopup({show: true, type: "create"})} />
+                        {error.response.status === 404 && <Button text="Add Team" handleClick={()=>handleHidePopup({show: true, type: "create"})} />}
                     </div>
                 </ErrorLoading>
             </div>

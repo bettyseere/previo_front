@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "../components/authentication/Login";
 import ProtectedRoutes from "../utils/ProtectedRoutes";
 import Home from "../components/Companies/Home";
+import UserTeamLayout from "../components/Users/UserInfo/Teams/Layout";
 // import Devices from "../components/Devices/Devices";
 import ForgotPassword from "../components/authentication/ForgotPassoword";
 import ResetPassword from "../components/authentication/ResetPassword";
@@ -15,6 +16,7 @@ import CompanyTeams from "../components/Companies/Teams/Teams";
 import CreateAccount from "../components/authentication/CreateAccount";
 import Device_Types from "../components/DeviceTypes/DeviceTypes";
 import DeviceTypeDevices from "../components/DeviceTypes/Devices/Devices";
+import DeviceActivities from "../components/DeviceTypes/DeviceActivites/DeviceActivities";
 // import UserInfo from "../components/Users/UserInfo/UserInfo";
 import SubActivities from "../components/Activities/SubActivities/SubActivites";
 import { useAuth } from "../utils/hooks/Auth";
@@ -28,6 +30,7 @@ import TeamMembers from "../components/Companies/Teams/TeamMembers/TeamMembers";
 import UserReports from "../components/Users/UserInfo/Reports/Reports";
 import UserTeamMembers from "../components/Users/UserInfo/Teams/Members/TeamMembers";
 import UserTeamRecords from "../components/Users/UserInfo/Teams/Reports/TeamRecords";
+import { Navigate } from "react-router-dom";
 
 
 function AppRoutes() {
@@ -46,6 +49,8 @@ function AppRoutes() {
                 <Route path="/forgot_password" element={<ForgotPassword />} />
                 <Route path="/reset_password" element={<ResetPassword />} />
                 <Route path="/create_account" element={<CreateAccount />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+
                 {/* Protected Routes */}
                 {<Route element={<ProtectedRoutes />}>
                     <Route
@@ -70,6 +75,7 @@ function AppRoutes() {
                     {is_super && <Route path="/device_types" element={<Device_Types />} />}
                     <Route path="/device_types/:id" >
                         <Route path="" element = {<DeviceTypeDevices />} />
+                        <Route path="activities" element={<DeviceActivities />} />
                     </Route>
 
                     {is_super && <Route path="/activities" element={<Activities />} />}
@@ -83,9 +89,9 @@ function AppRoutes() {
                     {is_super && <Route path="/roles" element={<Roles />} />}
 
 
-                    {!is_super && <Route path="teams/:id">
+                    {!is_super && <Route path="teams/:id" element={<UserTeamLayout />}>
                         {is_admin ? <Route path="team_members" element={<TeamMembers />} />: has_permission && <Route path={""} element={<UserTeamMembers />}/>}
-                        {is_staff && <Route path="records" element={<UserTeamRecords />} />}
+                        {is_staff && <Route path={"records"} element={<UserTeamRecords />} />}
                     </Route>}
 
                     <Route path={!is_admin ? "/:id": "/"}>

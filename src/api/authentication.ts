@@ -1,6 +1,6 @@
 import request from "../utils/network";
 import { Login, ResetPasswordRequest, UpdateUserInfo } from "../types/Auth";
-import { CreateUserAccount, ChangePassword } from "../types/Auth";
+import { CreateUserAccount, ChangePassword, ResetPassword } from "../types/Auth";
 
 export const login = async (data: Login) => await request ({
     method: "POST",
@@ -54,6 +54,11 @@ export const request_password_reset = async (data: ResetPasswordRequest) => awai
     data: data
 })
 
+export const reset_password = async (data: ResetPassword, token: string) => await request({
+    method: "POST",
+    url: `/auth/password_reset_confirm?token=${token}`,
+    data: data
+})
 
 export const create_account = async (data: CreateUserAccount, token: string) => await request ({
         method: "POST",

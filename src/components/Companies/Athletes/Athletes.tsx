@@ -36,7 +36,10 @@ export default function CompanyAthletes() {
     if (isError) {
         return (
             <ErrorLoading>
-                <div className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No athletes found!": "Error fetching athletes!"}</div>
+                <div className="flex items-center justify-center flex-col gap-4">
+                    <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "No not athletes found": "Error fetching athletes"}</div>
+                    {error.response.status == 404 && <Button text="Invite athlete" handleClick={()=>handleHidePopup({show: true, type: "create"})} />}
+                </div>
             </ErrorLoading>
         )
     }

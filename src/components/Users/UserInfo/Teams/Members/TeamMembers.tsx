@@ -4,6 +4,7 @@ import Table from "../../../../Commons/Table";
 import { useParams } from "react-router-dom";
 import UserInfo from "../../UserInfo";
 import { useAuth } from "../../../../../utils/hooks/Auth";
+import UserTeamLayout from "../Layout";
 
 
 export default function UserTeamMembers(){
@@ -68,7 +69,7 @@ export default function UserTeamMembers(){
 
     return (
         <div>
-            <UserInfo  nav_items={default_nav}>
+            <UserInfo nav_items={default_nav}>
                 {data && <div className="">
                     <Table data={data_to_render} columns={table_columns} initialPageSize={10} entity_name={team_name ? team_name + " team members" : ""} searchMsg={"Search Team Members"} />
                 </div>}

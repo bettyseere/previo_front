@@ -25,6 +25,7 @@ export type Login = {
 
 export type ResetPasswordRequest = {
     email: string
+    // redirect_url: string
 }
 
 export type UpdateUserInfo = {

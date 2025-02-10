@@ -6,15 +6,18 @@ import { request_password_reset } from "../../api/authentication";
 
 const ForgotPassword = () => {
     const { register, handleSubmit, reset } = useForm< ResetPasswordRequest>();
+    const base_url = window.location.origin
+    const redirect_url = `${base_url}/reset_password`
 
-    const onSubmit = async (data:  ResetPasswordRequest) => {
+    const onSubmit = async (data: any) => {
+        data.redirect_url = redirect_url
         try {
             const res = await request_password_reset(data);
             toast.success(res.message)
             reset()
             // navigate("/");
         } catch (error) {
-            toast.error("There was a problem resetting your password. Please try again.");
+            toast.success("If your email is registered, check your inbox for instructions to reset your password!");
             reset()
         }
     };

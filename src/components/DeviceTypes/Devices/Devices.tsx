@@ -112,7 +112,7 @@ export default function DeviceTypeDevices(){
         )
         }
 
-         if (isError || isLoadingError){
+        if (isError || isLoadingError){
                 return (
                     <ErrorLoading>
                         <div  className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No devices found": "Error fetching devices. Try again later."}</div>

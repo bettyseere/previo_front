@@ -12,6 +12,7 @@ import MeasurementForm from "./Form";
 import { delete_measurement } from "../../../../../api/measurements/measurements";
 import { useState } from "react";
 
+
 export default function UserTeamRecords(){
     const {hidePopup, handleHidePopup} = usePopup()
     const { currentUser } = useAuth()
@@ -53,6 +54,7 @@ export default function UserTeamRecords(){
         data_to_render.push({
             athlete: `${item.athlete.first_name} ${item.athlete.last_name}`,
             athlete_id: item.athlete.id,
+            role: item.role.name,
             activity: item.sub_activity.translations[0].name,
             measurement: item.attribute.translations[0].name,
             results: item.value + item.attribute.translations[0].units,
@@ -61,9 +63,10 @@ export default function UserTeamRecords(){
     })
 
     const table_columns = [
-        {header: "Athlte", accessorKey: "athlete"},
+        {header: "Athlete", accessorKey: "athlete"},
         {header: "Activity", accessorKey: "activity"},
         {header: "Device", accessorKey: "device"},
+        {header: "Created By", accessorKey: "role"},
         {header: "Measurement", accessorKey: "measurement"},
         {header: "Results", accessorKey: "results"}
         ]

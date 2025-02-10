@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { ResetPassword as ResetPasswordType } from "../../types/Auth";
+import { reset_password } from "../../api/authentication";
 import Button from "../Commons/Button";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
@@ -11,17 +12,20 @@ const ResetPassword = () => {
     const navigate = useNavigate();
     const { register, handleSubmit } = useForm<ResetPasswordType>();
     const [showPassword, setShowPassword] = useState(false)
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const token = urlParams.get("token") || ""
 
     const onSubmit = async (data: ResetPasswordType) => {
         if (data.confirm_password !== data.password){
             toast("Passwords do not match")
         } else {
             try {
-                console.log(data)
+                await reset_password(data, token);
                 toast.success("Password reset successfully!")
                 navigate("/login");
             } catch (error) {
-                toast.error("There was a problem resetting your password. Try again.");
+                toast.error("There was a problem resetting your password. Try again later.");
             }
         }
     };

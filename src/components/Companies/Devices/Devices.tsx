@@ -46,7 +46,9 @@ export default function CompanyDevices() {
     if (isError) {
         return (
             <ErrorLoading>
-                <div className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No devices found!": "Error fetching devices!"}</div>
+                <div className="flex items-center justify-center flex-col gap-4">
+                    <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "No devices found": "Error fetching devices"}</div>
+                </div>
             </ErrorLoading>
         )
     }
