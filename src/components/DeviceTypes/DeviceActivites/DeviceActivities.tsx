@@ -87,8 +87,8 @@ export default function DeviceActivities(){
 
     if (isError || isLoadingError){
         return (
+            <div>{hidePopup.show && popup}
             <DeviceTypeSubMenu>
-                {hidePopup.show && popup}
                 <div className="flex flex-col items-center justify-center gap-4 mt-[5rem]">
                 <div  className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No activities found": "Error fetching activities. Try again later."}</div>
                 {error.response.status == 404 && <div>
@@ -96,6 +96,7 @@ export default function DeviceActivities(){
                 </div>}
                 </div>
             </DeviceTypeSubMenu>
+            </div>
         )
         }
 
