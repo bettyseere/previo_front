@@ -43,7 +43,7 @@ export const me = async () => await request({
 })
 
 export const delete_user = async (id: string) => await request({
-    method: "GET",
+    method: "DELETE",
     url: `/auth/${id}`
 })
 

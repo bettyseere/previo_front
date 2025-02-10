@@ -1,7 +1,7 @@
 import Layout from "../../Layout/Dashboard/Layout";
 import { useApiGet } from "../../utils/hooks/query";
 import { usePopup } from "../../utils/hooks/usePopUp";
-import { get_all_users } from "../../api/authentication";
+import { get_all_users, delete_user } from "../../api/authentication";
 import Table from "../Commons/Table";
 import Button from "../Commons/Button";
 import Popup from "../Commons/Popup";
@@ -9,27 +9,47 @@ import UserForm from "./Form";
 import { BsTrash } from "react-icons/bs";
 import ConfirmModel from "../Commons/ConfirmModel";
 import ErrorLoading from "../Commons/ErrorAndLoading";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Users(){
     const {hidePopup, handleHidePopup} = usePopup()
+    const [selectedID, setSelectedID] = useState("")
     const {
             data,
             isLoading,
             isFetching,
             isPending,
             error,
+            refetch,
             isError,
             isLoadingError
         } = useApiGet(["users"], get_all_users)
 
+    const init_delete = (id: string) => {
+        setSelectedID(id)
+        handleHidePopup({show: true, type: "create", confirmModel: true})
+    }
 
-        if (isLoading || isFetching || isPending) {
-            return (
-                <ErrorLoading>
-                    <div  className="text-2xl font-bold text-secondary">Fetching users ...</div>
-                </ErrorLoading>
-            )
+    const handle_delete = async (id: string) => {
+        try {
+            await delete_user(id)
+            refetch()
+            toast("User deleted successfully")
+            handleHidePopup({show: false, type: "create", confirmModel: false})
+        } catch {
+            toast("Error deleting user.")
+            handleHidePopup({show: false, type: "create", confirmModel: false})
         }
+    }
+
+    if (isLoading || isFetching || isPending) {
+        return (
+            <ErrorLoading>
+                <div  className="text-2xl font-bold text-secondary">Fetching users ...</div>
+            </ErrorLoading>
+        )
+    }
 
         if (isError || isLoadingError){
             return (
@@ -51,9 +71,9 @@ export default function Users(){
             {
             header: "Actions",
             accessorKey: "id",
-            cell: ({ }) => {
+            cell: ({ cell, row}) => {
                 return <div className="flex gap-8 justify-center items-center">
-                    <div className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                    <div onClick={()=>init_delete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
                     </div>
                     {/* <div className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
@@ -71,7 +91,7 @@ export default function Users(){
                         {hidePopup.confirmModel ? <ConfirmModel
                             message="Are you sure you want to delete this user?"
                             title="Delete User"
-                            handleSubmit={()=>console.log("User deleted")}
+                            handleSubmit={()=>handle_delete(selectedID)}
                         />: <div>{hidePopup.type === "create" ? ( <div><UserForm /></div>) : ( <div>Other Popup Content</div>)}</div>}
                     </div>
                 </Popup>
