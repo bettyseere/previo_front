@@ -10,7 +10,6 @@ import ConfirmModel from "../../Commons/ConfirmModel"
 import Button from "../../Commons/Button"
 import { toast } from "react-toastify"
 import { useState } from "react"
-import { queryClient } from "../../../main"
 import { BsTrash } from "react-icons/bs"
 
 
