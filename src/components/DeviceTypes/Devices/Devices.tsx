@@ -30,13 +30,7 @@ export default function DeviceTypeDevices(){
             isError,
             isLoadingError,
             refetch
-        } = useApiGet(["device_type_devices"], ()=>get_device_type_devices(device_type_id.id))
-
-    const {
-            data: activities
-        } = useApiGet(["device_type_activities", device_type_id], ()=>get_device_activities(device_type_id))
-
-    console.log(activities, "these are activities")
+        } = useApiGet(["device_type_devices"], ()=>get_device_type_devices(device_type_id))
 
 
     const handleUpdate = (data: any) => {
