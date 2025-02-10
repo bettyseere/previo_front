@@ -29,6 +29,10 @@ export default function DeviceActivities(){
                 refetch
             } = useApiGet(["device_activities"], ()=>get_device_activities(device_type_id.id))
 
+    const init_delete = (id: string) =>{
+        setSelectedActivityId(id)
+        handleHidePopup({show: true, confirmModel: true, type: "create"})
+    }
     const handleDelete = async (id: string) => {
             try{
                 await delete_device_activity(device_type_id.id, id)
@@ -57,7 +61,12 @@ export default function DeviceActivities(){
 
     const table_columns = [
         {header: "Name", accessorKey: "activity_name"},
-        {header: "Description", accessorKey: "activity_description"}
+        {header: "Description", accessorKey: "activity_description"},
+        {header: "Actions", accessorKey: "activity_id", cell: ({ cell, row}) => {
+            return <div onClick={()=>init_delete(row.original.activity_id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                        <BsTrash size={20} color="red" />
+                    </div>
+        }}
     ]
 
     const button = <Button text="Create Device Activity" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
