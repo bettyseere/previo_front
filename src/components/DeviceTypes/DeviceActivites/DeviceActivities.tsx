@@ -17,6 +17,7 @@ import { BsTrash } from "react-icons/bs"
 export default function DeviceActivities(){
     const { hidePopup, handleHidePopup } = usePopup()
     let device_type_id: any = useParams()
+    console.log(window.location)
     device_type_id = device_type_id.id
     const [selectedActivityID, setSelectedActivityId] = useState("")
     const {
