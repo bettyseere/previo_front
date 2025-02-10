@@ -10,6 +10,7 @@ import ConfirmModel from "../../Commons/ConfirmModel"
 import Button from "../../Commons/Button"
 import { toast } from "react-toastify"
 import { useState } from "react"
+import { apiUrl } from "../../../utils/network"
 import { BsTrash } from "react-icons/bs"
 
 
@@ -17,7 +18,7 @@ import { BsTrash } from "react-icons/bs"
 export default function DeviceActivities(){
     const { hidePopup, handleHidePopup } = usePopup()
     let device_type_id: any = useParams()
-    console.log(window.location)
+    console.log(apiUrl)
     device_type_id = device_type_id.id
     const [selectedActivityID, setSelectedActivityId] = useState("")
     const {
