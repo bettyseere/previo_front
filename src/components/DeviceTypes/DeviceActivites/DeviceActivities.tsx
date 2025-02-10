@@ -44,25 +44,20 @@ export default function DeviceActivities(){
     let data_to_render;
 
     if (data){
-        console.log(data)
-        data_to_render = [{name: "One", what: "anything else"}]
-        // data_to_render = data.map(device => ({
-        //     id: device.id,
-        //     serial_number: device.serial_number,
-        //     mac_address: device.mac_address,
-        //     create_at: device.created_at,
-        //     owner: `${device.owner ? device.owner.first_name + " " + device.owner.last_name: ""}`,
-        //     company: `${device.company ? device.company.name: ""}`,
-        //     company_id: `${device.company ? device.company.id: ""}`,
-        //     device_type_id: device.device_type?.id || null,
-        //     device_type_name: device.device_type?.name || null
-        // }
-        // ))
+        data_to_render = data.map(device_activity => ({
+            device_type_id: device_activity.device_type_id,
+            activity_id: device_activity.activity_id,
+            activity_name: device_activity.activity.translations[0].name,
+            activity_description: device_activity.activity.translations[0].description,
+            create_at: device_activity.created_at,
+            updated_at: device_activity.updated_at
+        }
+        ))
     }
 
     const table_columns = [
-        {header: "Name", accessorKey: "name"},
-
+        {header: "Name", accessorKey: "activity_name"},
+        {header: "Description", accessorKey: "activity_description"}
     ]
 
     const button = <Button text="Create Device Activity" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
