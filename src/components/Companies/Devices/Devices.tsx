@@ -9,8 +9,11 @@ import AddUserToDeviceForm from "./Form";
 import ErrorLoading from "../../Commons/ErrorAndLoading";
 import { usePopup } from "../../../utils/hooks/usePopUp";
 import { toast } from "react-toastify";
+import Button from "../../Commons/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function CompanyDevices() {
+    const navigate = useNavigate()
     const { currentUser } = useAuth()
     const { hidePopup, handleHidePopup } = usePopup()
     let company_id: any = useParams();
@@ -34,6 +37,10 @@ export default function CompanyDevices() {
         }
     }
 
+    const popup = <Popup>
+                <AddUserToDeviceForm popup={hidePopup} company_id={company_id} />
+            </Popup>
+
 
     if (isLoading) {
         return (
@@ -45,11 +52,15 @@ export default function CompanyDevices() {
 
     if (isError) {
         return (
+            <div>
+            {hidePopup.show && popup}
             <ErrorLoading>
                 <div className="flex items-center justify-center flex-col gap-4">
                     <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "No devices found": "Error fetching devices"}</div>
+                    {error.response.status == 404 && <Button text="Add Device" handleClick={()=>navigate("/device_types")}/>}
                 </div>
             </ErrorLoading>
+            </div>
         )
     }
 
@@ -91,10 +102,6 @@ export default function CompanyDevices() {
         ]
 
         console.log(data[0], "This is the data we need")
-
-        const popup = <Popup>
-                        <AddUserToDeviceForm popup={hidePopup} company_id={company_id} />
-                    </Popup>
 
     return (
         <div>

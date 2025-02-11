@@ -11,6 +11,7 @@ import Popup from "../../Commons/Popup"
 import { useApiGet } from "../../../utils/hooks/query"
 import { user_info } from "../../../api/authentication"
 import { Link } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 
 type NavItem = {
     name: string
@@ -112,7 +113,9 @@ export default function UserInfo({children, nav_items}: Props){
                     {has_permission && <div className="flex w-full h-[3rem] gap-2 justify-between">
                         {nav_to_use.map((item, i) => <Link to={item.path} className={`${item.path === current_location ? "bg-tertiary" : "bg-primary"} w-full justify-center flex items-center text-white cursor-pointer`}><nav className="" key={i}>{item.name}</nav></Link>)}
                     </div>}
-                    <div className={`${has_permission ? "mt-4": ""}`}>{children}</div>
+                    
+                    <Outlet/><div className={`${has_permission ? "mt-4": ""}`}>{children}</div>
+                   
                 </div>
             </div>
         </StaffLayout>

@@ -80,6 +80,7 @@ export default function CompanyForm({ popup }: UpdateCompany ) {
                     </label>
                     <input
                         id="piva"
+                        minLength={11}
                         type="text"
                         defaultValue={popup.type == "edit" ? popup.data.piva: ""}
                         {...register("piva", { required: "PIVA is required" })}

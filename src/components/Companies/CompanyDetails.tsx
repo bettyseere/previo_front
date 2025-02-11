@@ -28,11 +28,11 @@ export default function CompanyLayout({children}: props) {
         <>
             <Layout>
                 {is_super && <div className="flex justify-between gap-1">
-                    {navigation.map(item=>{
+                    {/* {navigation.map(item=>{
                         const isActive = location.pathname === item.link;
                         return (<div key={item.name} onClick={()=>navigate(item.link)} className={`w-full text-center font-semibold ${isActive ? "bg-tertiary": "bg-primary"} p-4 hover:scale-95 text-white cursor-pointer hover:duration-150`}>
                         {item.name}
-                    </div>)})}
+                    </div>)})} */}
                 </div>}
                 <Outlet /><div className="pt-4 px-4">{children}</div>
             </Layout>
