@@ -12,7 +12,7 @@ export default function DashboardHeader(){
                     {is_staff ?<div className="cursor-pointer font-bold text-red-500" onClick={handleLogout}>Logout</div> :
                     <a href="/profile">
                         <div className="flex items-center gap-2 cursor-pointer">
-                            <h4 className="rounded-full bg-primary w-6 h-6 flex items-center justify-center text-white font-medium">{currentUser?.first_name[0]}</h4>
+                            <h4 className="rounded-full bg-secondary w-6 h-6 flex items-center justify-center text-white font-medium">{currentUser?.first_name[0]}</h4>
                             <h4 className="text-seere-text font-semibold">{currentUser?.first_name}</h4>
                         </div>
                     </a>
