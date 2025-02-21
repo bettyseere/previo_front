@@ -54,17 +54,17 @@ export default function CompanyOverview() {
                             <ul className="flex flex-col gap-4">
                                 <li className="flex gap-2 text-sm">
                                     <GrLocationPin size={24} />
-                                    <h6 className="font-bold text-tertiary">Address:</h6>
+                                    <h6 className="font-bold text-secondary">Address:</h6>
                                     <p className="font-bold max-w-36"> {data.address}</p>
                                 </li>
                                 <li className="flex gap-2 text-sm">
                                     <BsMailbox size={24} />
-                                    <h6 className="font-bold text-tertiary">Post Code:</h6>
+                                    <h6 className="font-bold text-secondary">Post Code:</h6>
                                     <p className="font-bold">{data.cap}</p>
                                 </li>
                                 <li className="flex gap-2 text-sm">
                                     <BiBuildingHouse size={24} />
-                                    <h6 className="font-bold text-tertiary">City / State:</h6>
+                                    <h6 className="font-bold text-secondary">City / State:</h6>
                                     <p className="font-bold">{data.city}, {data.country}</p>
                                 </li>
                             </ul>
@@ -77,17 +77,17 @@ export default function CompanyOverview() {
                             <ul className="flex flex-col gap-4">
                                 <li className="flex gap-2 text-sm">
                                     <BsPeople size={24} />
-                                    <h6 className="font-bold text-tertiary">Users:</h6>
+                                    <h6 className="font-bold text-secondary">Users:</h6>
                                     <p className="font-bold"> {data.users.length} users</p>
                                 </li>
                                 <li className="flex gap-2 text-sm">
                                     <FaPeopleGroup size={24} />
-                                    <h6 className="font-bold text-tertiary">Teams:</h6>
+                                    <h6 className="font-bold text-secondary">Teams:</h6>
                                     <p className="font-bold">{data.teams.length} teams</p>
                                 </li>
                                 <li className="flex gap-2 text-sm">
                                     <BsTablet size={24} />
-                                    <h6 className="font-bold text-tertiary">Devices:</h6>
+                                    <h6 className="font-bold text-secondary">Devices:</h6>
                                     <p className="font-bold">{data.devices.length} devices</p>
                                 </li>
                             </ul>
