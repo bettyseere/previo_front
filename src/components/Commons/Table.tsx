@@ -66,7 +66,7 @@ export default function Table<T>({
     <div className="">
       {/* Search Input */}
       <div className="flex items-center justify-between mb-4">
-        {entity_name && <h4 className="font-semibold text-xl text-tertiary uppercase">{entity_name}</h4>}
+        {entity_name && <h4 className="font-semibold text-xl text-secondary uppercase">{entity_name}</h4>}
         <div className="w-[24rem]">
           <input
             type="text"

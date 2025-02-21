@@ -34,7 +34,7 @@ export default function Sidebar() {
 
     return (
         <div className="h-screen w-[14rem] bg-[#FFF] relative">
-            <div className="px-4">
+            <div className="px-4 flex flex-col items-center">
                 <SeereLogo />
                 <div className="flex flex-col gap-8 overflow-hidden max-h-[28rem] mt-12">
                     {top_nav_items.map((item) => {
@@ -44,7 +44,7 @@ export default function Sidebar() {
                                 href={item.link}
                                 key={item.name}
                                 className={`flex gap-2 items-center cursor-pointer px-2 py-2 rounded-md ${
-                                    isActive ? "bg-primary text-white" : "text-seere-text hover:text-tertiary"
+                                    isActive ? "bg-primary text-white" : "text-seere-text hover:text-secondary"
                                 }`}
                             >
                                 <p>{item.logo}</p>

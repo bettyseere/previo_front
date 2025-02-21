@@ -33,7 +33,7 @@ const CreateAccount = () => {
             <div className="w-[70%] h-full flex items-center justify-center">
                 <img width={600} src="/images/logo_seere/svg/main_logo_dark.svg" alt="seere logo" />
             </div>
-            <div className="bg-secondary h-full w-[30%] flex items-center justify-center">
+            <div className="bg-primary h-full w-[30%] flex items-center justify-center">
                 <div className="flex flex-col justify-center items-center">
                     <div className="text-white max-w-72 mb-8">
                         <h1 className="font-bold text-2xl text-center">Welcome to Seere. Create your account</h1>
