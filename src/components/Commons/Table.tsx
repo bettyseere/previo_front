@@ -165,7 +165,7 @@ export default function Table<T>({
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value));
               }}
-              className="ml-2 border-none outline-none text-white rounded px-2 py-1 bg-primary"
+              className="ml-2 border-none outline-none text-white rounded px-2 py-1 bg-secondary"
             >
               {[10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
