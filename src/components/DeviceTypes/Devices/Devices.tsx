@@ -74,14 +74,15 @@ export default function DeviceTypeDevices(){
         }
 
         const table_columns = [
-            {header: "Name", accessorKey: "device_type_name"},
-            {header: "Mac Address", accessorKey: "mac_address"},
-            {header: "Serial Number", accessorKey: "serial_number"},
-            {header: "Owner", accessorKey: "owner"},
-            {header: "Company", accessorKey: "company"},
+            {header: "Name", accessorKey: "device_type_name", enableSorting: true},
+            {header: "Mac Address", accessorKey: "mac_address", enableSorting: true},
+            {header: "Serial Number", accessorKey: "serial_number", enableSorting: true},
+            {header: "Owner", accessorKey: "owner", enableSorting: true},
+            {header: "Company", accessorKey: "company", enableSorting: true},
             {
                 header: "Created At",
                 accessorKey: "created_at",
+                enableSorting: true,
                 cell: ({cell, row}) => {
                     return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
                 }

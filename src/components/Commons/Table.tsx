@@ -56,6 +56,10 @@ export default function Table<T>({
       pagination,
       sorting,
     },
+      defaultColumn: {
+      enableSorting: false, // Disable sorting for all columns by default
+    },
+    onSortingChange: setSorting,
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -83,7 +87,7 @@ export default function Table<T>({
       <div className="overflow-hidden border-b">
       {/* Table Header */}
       <table className="min-w-full table-fixed border-collapse">
-        <thead>
+        <thead className='cursor-pointer'>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
@@ -105,7 +109,7 @@ export default function Table<T>({
                         ? ' 🔼'
                         : header.column.getIsSorted() === 'desc'
                         ? ' 🔽'
-                        : ''}
+                        : ' ⬍'}
                     </span>
                   ) : null}
                 </th>

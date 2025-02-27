@@ -130,6 +130,7 @@ export default function SubActivities(){
             {
                 header: "Created At",
                 accessorKey: "created_at",
+                enableSorting: true,
                 cell: ({cell, row}) => {
                     return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
                 }

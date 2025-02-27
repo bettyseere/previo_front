@@ -89,18 +89,19 @@ export default function Device_Types(){
 
 
         const table_columns = [
-            {header: "Name", accessorKey: "name", cell: ({cell, row}) => {
+            {header: "Name", accessorKey: "name", enableSorting: true, cell: ({cell, row}) => {
                 return <div className="text-secondary"><a href={`/device_types/${row.original.id}`}>{row.original.name}</a></div>
             }},
-            {header: "Devices", accessorKey: "devices", cell: ({cell, row}) => {
-                return <div className="text-secondary">{row.original.devices?.length}</div>
+            {header: "Devices", enableSorting: true, accessorKey: "devices", cell: ({cell, row}) => {
+                return <div className="text-secondary">{row.original.devices?.length.toString()}</div>
             }},
-            {header: "Device Activities", accessorKey: "devices", cell: ({cell, row}) => {
-                return <div className="text-secondary">{row.original.device_activities?.length}</div>
+            {header: "Device Activities", accessorKey: "devices", enableSorting: true, cell: ({cell, row}) => {
+                return <div className="text-secondary">{row.original.device_activities?.length.toString()}</div>
             }},
             {
                 header: "Created At",
                 accessorKey: "created_at",
+                enableSorting: true,
                 cell: ({cell, row}) => {
                         return <p className="text-secondary">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
                     }
