@@ -95,12 +95,13 @@ export default function Home() {
 
     const table_columns = [
         { header: "Name", accessorKey: "name", enableSorting: true, cell: ({cell, row}) => <a href={`/${row.original.id}/devices`} className="text-secondary font-bold hover:scale-110">{row.original.name}</a> },
-        { header: "Country", accessorKey: "country", enableSorting: true },
-        { header: "City", accessorKey: "city" },
-        { header: "Address", accessorKey: "address"},
+        { header: "Country", accessorKey: "country", enableSorting: true},
+        { header: "City", accessorKey: "city", enableSorting: true },
+        { header: "Address", accessorKey: "address", enableSorting: true },
         {
             header: "Created At",
             accessorKey: "created_at",
+            enableSorting: true,
             cell: ({cell, row}) => {
                 return <p>{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
             }

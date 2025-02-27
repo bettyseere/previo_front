@@ -11,6 +11,7 @@ import { usePopup } from "../../../utils/hooks/usePopUp";
 import { toast } from "react-toastify";
 import Button from "../../Commons/Button";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 export default function CompanyDevices() {
     const navigate = useNavigate()
@@ -75,7 +76,8 @@ export default function CompanyDevices() {
             owner: `${device.owner ? device.owner.first_name + " " + device.owner.last_name: ""}`,
             owner_id: `${device.owner ? device.owner.id: ""}`,
             device_type_id: device.device_type?.id || "",
-            device_type_name: device.device_type?.name || ""
+            device_type_name: device.device_type?.name || "",
+            created_at: device.created_at || ""
         }))
         }
 
@@ -84,6 +86,14 @@ export default function CompanyDevices() {
             {header: "Mac Address", accessorKey: "mac_address"},
             {header: "Serial Number", accessorKey: "serial_number"},
             {header: "Owner", accessorKey: "owner"},
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                enableSorting: true,
+                cell: ({cell, row}) => {
+                    return <p>{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                }
+            },
             {
             header: "Modify Owner",
             accessorKey: "id",

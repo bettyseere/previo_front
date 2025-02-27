@@ -35,7 +35,7 @@ export default function Sidebar() {
     return (
         <div className="h-screen w-[14rem] bg-[#FFF] relative">
             <div className="px-4 flex flex-col items-center">
-                <SeereLogo />
+                <a href="/"><SeereLogo /></a>
                 <div className="flex flex-col gap-8 overflow-hidden max-h-[28rem] mt-12">
                     {top_nav_items.map((item) => {
                         const isActive = location.pathname === item.link;
