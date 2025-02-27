@@ -14,7 +14,7 @@ import { toast } from "react-toastify"
 import Table from "../../Commons/Table"
 import ConfirmModel from "../../Commons/ConfirmModel"
 import { useState } from "react"
-import { get_device_activities } from "../../../api/device_activities"
+import moment from "moment"
 
 export default function DeviceTypeDevices(){
     let device_type_id: any = useParams()
@@ -79,6 +79,13 @@ export default function DeviceTypeDevices(){
             {header: "Serial Number", accessorKey: "serial_number"},
             {header: "Owner", accessorKey: "owner"},
             {header: "Company", accessorKey: "company"},
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                cell: ({cell, row}) => {
+                    return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                }
+            },
             {
             header: "Actions",
             accessorKey: "id",

@@ -12,6 +12,7 @@ import ErrorLoading from "../Commons/ErrorAndLoading";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "../../utils/hooks/Auth";
+import moment from "moment";
 
 export default function Users(){
     const {currentUser} = useAuth()
@@ -86,6 +87,13 @@ export default function Users(){
                 return <div>{row.original.company ? row.original.company.name: ""}</div>
                 }},
             {header: "Email", accessorKey: "email"},
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                cell: ({cell, row}) => {
+                    return <p>{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                }
+            },
             {
             header: "Actions",
             accessorKey: "id",

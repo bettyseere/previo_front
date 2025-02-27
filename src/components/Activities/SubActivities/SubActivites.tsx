@@ -11,13 +11,13 @@ import { BsTrash } from "react-icons/bs";
 import { PiPen } from "react-icons/pi";
 import { queryClient } from "../../../main";
 import ConfirmModel from "../../Commons/ConfirmModel";
-import { act, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
+import moment from "moment";
 
 
 export default function SubActivities(){
     const [selectedID, setSelectedID] = useState("")
-    const [selectedItem, setSelectedItem] = useState(null)
     const {hidePopup, handleHidePopup} = usePopup()
     let activity_id: any = useParams();
 
@@ -126,6 +126,13 @@ export default function SubActivities(){
                             </a>
                         </div>
                     }
+            },
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                cell: ({cell, row}) => {
+                    return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                }
             },
             {
                 header: "Actions",

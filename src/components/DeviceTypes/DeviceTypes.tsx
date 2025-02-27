@@ -12,6 +12,7 @@ import ErrorLoading from "../Commons/ErrorAndLoading";
 import { toast } from "react-toastify";
 import ConfirmModel from "../Commons/ConfirmModel";
 import { useState } from "react";
+import moment from "moment";
 
 
 
@@ -97,6 +98,13 @@ export default function Device_Types(){
             {header: "Device Activities", accessorKey: "devices", cell: ({cell, row}) => {
                 return <div className="text-secondary">{row.original.device_activities?.length}</div>
             }},
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                cell: ({cell, row}) => {
+                        return <p className="text-secondary">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                    }
+            },
             {
             header: "Actions",
             accessorKey: "id",

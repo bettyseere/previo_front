@@ -12,6 +12,7 @@ import ErrorLoading from "../Commons/ErrorAndLoading";
 import { toast } from "react-toastify";
 import ConfirmModel from "../Commons/ConfirmModel";
 import { useState } from "react";
+import moment from "moment";
 
 
 
@@ -94,6 +95,13 @@ export default function Roles(){
             {header: "Description", accessorKey: "description", cell: ({cell, row}) => {
                 return <div className="">{row.original.description}</div>
             }},
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                cell: ({cell, row}) => {
+                    return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                }
+            },
             {
             header: "Actions",
             accessorKey: "id",

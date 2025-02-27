@@ -12,6 +12,7 @@ import { PiPen } from "react-icons/pi";
 import { queryClient } from "../../../main";
 import ConfirmModel from "../../Commons/ConfirmModel";
 import { useState } from "react";
+import moment from "moment";
 
 
 export default function MeasurementAttributes(){
@@ -111,6 +112,13 @@ export default function MeasurementAttributes(){
         const table_columns = [
             {header: "Name", accessorKey: "name"},
             {header: "description", accessorKey: "description"},
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                cell: ({cell, row}) => {
+                    return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                }
+            },
             {
                 header: "Actions",
                 accessorKey: "id",

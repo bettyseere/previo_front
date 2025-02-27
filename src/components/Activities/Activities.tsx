@@ -12,6 +12,7 @@ import { PiPen } from "react-icons/pi";
 import { queryClient } from "../../main";
 import ConfirmModel from "../Commons/ConfirmModel";
 import { useState } from "react";
+import moment from "moment";
 
 
 export default function Activities(){
@@ -118,6 +119,13 @@ export default function Activities(){
                 cell: ({cell, row}) => (
                     <div className="cursor-pointer font-semibold text-lg text-secondary"><a href={`/activities/${row.original.id}`}>{row.original.sub_exercises ? row.original.sub_exercises.length: 0}</a></div>
                 )
+            },
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                cell: ({cell, row}) => {
+                    return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                }
             },
             {
                 header: "Actions",
