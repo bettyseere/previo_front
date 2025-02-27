@@ -12,6 +12,7 @@ import { toast } from "react-toastify"
 import { useState } from "react"
 import ErrorLoading from "../../Commons/ErrorAndLoading"
 import { BsTrash } from "react-icons/bs"
+import moment from "moment"
 
 
 
@@ -72,6 +73,13 @@ export default function DeviceActivities(){
     const table_columns = [
         {header: "Name", accessorKey: "activity_name"},
         {header: "Description", accessorKey: "activity_description"},
+        {
+            header: "Created At",
+            accessorKey: "created_at",
+            cell: ({cell, row}) => {
+                return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+            }
+        },
         {header: "Actions", accessorKey: "activity_id", cell: ({ cell, row}) => {
             return <div className="flex justify-center items-center gap-4 px-4">
                 <div onClick={()=>init_delete(row.original.activity_id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">

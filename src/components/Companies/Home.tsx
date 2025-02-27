@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import ErrorLoading from "../Commons/ErrorAndLoading";
 import ConfirmModel from "../Commons/ConfirmModel";
 import { useState } from "react";
+import moment from "moment";
 
 export default function Home() {
     const { hidePopup, handleHidePopup } = usePopup();
@@ -97,6 +98,13 @@ export default function Home() {
         { header: "Country", accessorKey: "country", enableSorting: true },
         { header: "City", accessorKey: "city" },
         { header: "Address", accessorKey: "address"},
+        {
+            header: "Created At",
+            accessorKey: "created_at",
+            cell: ({cell, row}) => {
+                return <p>{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+            }
+        },
         {
             header: "Actions",
             accessorKey: "id",

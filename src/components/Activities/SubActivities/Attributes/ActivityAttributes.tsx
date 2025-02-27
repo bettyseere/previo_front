@@ -12,6 +12,7 @@ import { queryClient } from "../../..//../main";
 import ConfirmModel from "../../..//Commons/ConfirmModel";
 import { useState } from "react";
 import ActivityAttributeForm from "./Form";
+import moment from "moment";
 
 
 export default function ActivityAttributes(){
@@ -82,7 +83,8 @@ export default function ActivityAttributes(){
                     attribute_id: item.attribute.id,
                     name: item.attribute.translations[0].name,
                     description: item.attribute.translations[0].description,
-                    units: item.attribute.translations[0].units
+                    units: item.attribute.translations[0].units,
+                    created_at: item.attribute.created_at
                 })
             })
         }
@@ -91,6 +93,13 @@ export default function ActivityAttributes(){
             {header: "Name", accessorKey: "name"},
             {header: "Description", accessorKey: "description"},
             {header: "Units", accessorKey: "units"},
+            {
+                header: "Created At",
+                accessorKey: "created_at",
+                cell: ({cell, row}) => {
+                    return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                }
+            },
             {
                 header: "Actions",
                 accessorKey: "attribute_id",

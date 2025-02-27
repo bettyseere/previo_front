@@ -128,7 +128,7 @@ export default function Table<T>({
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="px-4 py-2 border-b border-r first:border-l text-center text-[1rem] truncate"
+                    className="text-secondary px-4 py-2 border-b border-r first:border-l text-center text-[1rem] truncate"
                     style={{ width: `${cell.column.getSize()}px` }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

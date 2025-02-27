@@ -27,7 +27,7 @@ export const logout = async () => await request({
 
 export const get_all_users = async () => await request({
     method: "GET",
-    url: "/auth"
+    url: `/auth?user_type=admin`
 })
 
 export const get_company_users = (company_id: string) => request({
