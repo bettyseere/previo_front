@@ -42,8 +42,8 @@ export default function ActivityAttributes(){
         }
 
         const popup = (
-            data && <Popup>
-                {hidePopup.confirmModel ? <ConfirmModel title="Remove activity attribute" message="Are you sure you want to remove this activity attribute?" handleSubmit={handle_remove_activity_attribute} cancel_action={()=>handleHidePopup({show: false, type: "create", confirmModel: false})} /> :    <ActivityAttributeForm sub_activity_id={sub_activity_id} added_attributes={data} />}
+            <Popup>
+                {hidePopup.confirmModel ? <ConfirmModel title="Remove activity attribute" message="Are you sure you want to remove this activity attribute?" handleSubmit={handle_remove_activity_attribute} cancel_action={()=>handleHidePopup({show: false, type: "create", confirmModel: false})} /> : <ActivityAttributeForm sub_activity_id={sub_activity_id} added_attributes={data} />}
             </Popup>
         )
 
