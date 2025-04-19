@@ -7,6 +7,7 @@ import { invite_company_user } from "../../../../api/invites";
 
 
 export default function CompanyUserForm() {
+    const [errorMessage, setErrorMessage] = useState("Something went went wrong!")
     const { hidePopup, handleHidePopup } = usePopup();
     const { register, handleSubmit, reset } = useForm();
     const { mutate, isError, isSuccess, isPending, error } = useApiSend(invite_company_user, undefined, undefined, ["invites"]);
@@ -21,6 +22,7 @@ export default function CompanyUserForm() {
                 reset(); // Reset form fields
             },
             onError: (error) => {
+                setErrorMessage(error.response.data.detail)
                 console.error("Error inviting company user:", error);
             },
         });
@@ -37,6 +39,7 @@ export default function CompanyUserForm() {
                     <input
                         id="email"
                         type="text"
+                        required
                         {...register("email", { required: "Email is required" })}
                         className="outline-none border-b-2 border-primary w-full py-2"
                     />
@@ -89,7 +92,7 @@ export default function CompanyUserForm() {
             {/* Error and Success Messages */}
             {isError && (
                 <div className="mt-4 text-sm text-red-600">
-                    Error inviting user: {"Something went wrong!"}
+                    Error inviting user: {errorMessage}
                 </div>
             )}
 

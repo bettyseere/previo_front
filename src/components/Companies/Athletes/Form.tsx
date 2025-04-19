@@ -4,11 +4,13 @@ import Button from "../../Commons/Button";
 import { useApiSend } from "../../../utils/hooks/query";
 import { useForm } from "react-hook-form";
 import { invite_company_user } from "../../../api/invites";
+import { useState } from "react";
 
 
 export default function CompanyUserForm({company_id}: {company_id: string}) {
     const { hidePopup, handleHidePopup } = usePopup();
     const { register, handleSubmit, reset } = useForm();
+    const [errorMessage, setErrorMessage] = useState("Something went wrong!")
     const { mutate, isError, isSuccess, isPending, error } = useApiSend(invite_company_user, undefined, undefined, ["invites"]);
 
     // Handle form submission
@@ -22,6 +24,7 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
                 reset(); // Reset form fields
             },
             onError: (error) => {
+                setErrorMessage(error.response.data.detail)
                 console.error("Error inviting company user:", error);
             },
         });
@@ -81,7 +84,7 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
             {/* Error and Success Messages */}
             {isError && (
                 <div className="mt-4 text-sm text-red-600">
-                    Error inviting user: {"Something went wrong!"}
+                    Error inviting user: {errorMessage}
                 </div>
             )}
 
