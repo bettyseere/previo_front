@@ -4,7 +4,7 @@ import Button from "../../../Commons/Button";
 import { useApiSend } from "../../../../utils/hooks/query";
 import { useForm } from "react-hook-form";
 import { invite_company_user } from "../../../../api/invites";
-
+import { useState } from "react";
 
 export default function CompanyUserForm() {
     const [errorMessage, setErrorMessage] = useState("Something went went wrong!")
