@@ -4,15 +4,18 @@ import Button from "../../../Commons/Button";
 import { useApiSend } from "../../../../utils/hooks/query";
 import { useForm } from "react-hook-form";
 import { invite_super_user } from "../../../../api/invites";
+import { useState } from "react";
 
 
 export default function SuperUserForm() {
     const { hidePopup, handleHidePopup } = usePopup();
+    const [errorMessage, setErrorMessage] = useState("Something went went wrong!")
     const { register, handleSubmit, reset } = useForm();
-    const { mutate, isError, isSuccess, isPending, error } = useApiSend(invite_super_user, undefined, undefined, ["invites"]);
+    const { mutate, isError, isSuccess, isPending } = useApiSend(invite_super_user, undefined, undefined, ["invites"]);
 
     // Handle form submission
     const onSubmit = (data: any) => {
+        console.log("Inviting super user")
         mutate(data, {
             onSuccess: () => {
                 console.log("Super user invited successfully!", data);
@@ -20,6 +23,7 @@ export default function SuperUserForm() {
                 reset(); // Reset form fields
             },
             onError: (error) => {
+                setErrorMessage(error.response.data.detail)
                 console.error("Error inviting super user:", error);
             },
         });
@@ -35,6 +39,7 @@ export default function SuperUserForm() {
                     <input
                         id="email"
                         type="text"
+                        required
                         {...register("email", { required: "Email is required" })}
                         className="outline-none border-b-2 border-primary w-full"
                     />
@@ -45,18 +50,6 @@ export default function SuperUserForm() {
                         Notes
                     </label>
                     <textarea {...register("notes")} name="notes" rows={4} maxLength={100} className="outline-none border-b-2 border-primary w-full py-2"></textarea>
-                </div>
-
-                <div className="mb-4 mt-2 flex items-end hidden">
-                    <label htmlFor="email" className="block text-sm font-medium text-black mt-2 w-[6rem]">
-                        Birth date
-                    </label>
-                    <input
-                        id="birth_date"
-                        type="date"
-                        {...register("birth_date", { required: "Birth date is required" })}
-                        className="outline-none border-b-2 border-primary w-full py-2"
-                    />
                 </div>
             </div>
 
@@ -72,7 +65,7 @@ export default function SuperUserForm() {
             {/* Error and Success Messages */}
             {isError && (
                 <div className="mt-4 text-sm text-red-600">
-                    Error inviting user: {"Something went wrong!"}
+                    Error inviting user: {errorMessage}
                 </div>
             )}
 
