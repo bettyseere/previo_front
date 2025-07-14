@@ -52,6 +52,19 @@ export default function DeviceActivitiesForm() {
                         rules={{ required: "Activity is required" }}
                     />
                 </div>
+                <div>
+                    <label htmlFor="position" className="block text-sm font-medium text-black mb-2">
+                        Position
+                    </label>
+                    <input
+                        id="position"
+                        maxLength={13}
+                        defaultValue={hidePopup?.type == "edit" ? hidePopup.data?.position : ""}
+                        type="number"
+                        {...register("position", { required: "Position is required" })}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div>
             </div>
 
 

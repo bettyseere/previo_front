@@ -65,6 +65,7 @@ export default function DeviceActivities(){
             activity_name: device_activity.activity.translations[0].name,
             activity_description: device_activity.activity.translations[0].description,
             create_at: device_activity.created_at,
+            position: device_activity.position,
             updated_at: device_activity.updated_at
         }
         ))
@@ -72,6 +73,7 @@ export default function DeviceActivities(){
 
     const table_columns = [
         {header: "Name", accessorKey: "activity_name"},
+        {header: "Position", accessorKey: "position"},
         {header: "Description", accessorKey: "activity_description"},
         {
             header: "Created At",
