@@ -1,6 +1,6 @@
 import { writeFile } from "fs/promises";
 
-const baseUrl = "https://ashdeck.com"; // Change to your domain
+const baseUrl = "https://app.seere.cloud"; // Change to your domain
 const routes = [
   "", // homepage
   "task-manager",
