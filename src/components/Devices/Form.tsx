@@ -22,7 +22,7 @@ export default function DeviceForm({ popup }: UpdateDevice) {
     const { mutate, isError, isSuccess, isPending } = useApiSend(operation, undefined, undefined, ["devices"]);
     const { data: companies, isLoading: isCompaniesLoading } = useApiGet(["companies"], get_companies);
     const { data: device_types, isLoading: isDeviceTypesLoading } = useApiGet(["device_types"], get_device_types)
-    const { data: devices, refetch } = useApiGet(["devices"], get_devices);
+    // const { data: devices, refetch } = useApiGet(["devices"], get_devices);
 
 
     const { register, handleSubmit, reset } = useForm();

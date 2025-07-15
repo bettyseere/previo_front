@@ -13,6 +13,7 @@ import { useState } from "react"
 import ErrorLoading from "../../Commons/ErrorAndLoading"
 import { BsTrash } from "react-icons/bs"
 import moment from "moment"
+import { PiPen } from "react-icons/pi"
 
 
 
@@ -56,6 +57,11 @@ export default function DeviceActivities(){
             }
         }
 
+    const handleUpdate = (data: any) => {
+        handleHidePopup({show: true, data: data, type: "edit"})
+        console.log(data, hidePopup)
+    }
+
     let data_to_render;
 
     if (data){
@@ -86,7 +92,11 @@ export default function DeviceActivities(){
             return <div className="flex justify-center items-center gap-4 px-4">
                 <div onClick={()=>init_delete(row.original.activity_id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
-                    </div>
+                </div>
+
+                <div onClick={()=>handleUpdate(row.original)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                    <PiPen size={20} className="text-primary" />
+                </div>
                 </div>
         }}
     ]
