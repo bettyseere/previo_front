@@ -5,13 +5,13 @@ import { useApiSend, useApiGet } from "../../../utils/hooks/query";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import Dropdown from "../../Commons/Dropdown";
-import { create_device_activity } from "../../../api/device_activities";
+import { create_device_activity, update_device_activity} from "../../../api/device_activities";
 import { get_activities } from "../../../api/activities/activities";
 import { queryClient } from "../../../main";
 
 export default function DeviceActivitiesForm() {
     const { handleHidePopup, hidePopup } = usePopup();
-    const operation = create_device_activity
+    const operation = hidePopup.type === "edit" ?(data: any) => update_device_activity(data, hidePopup.data.device_type_id, hidePopup.data.activity_id) :create_device_activity
     const device_type_id: any = useParams()
 
 
@@ -40,7 +40,7 @@ export default function DeviceActivitiesForm() {
     return (
         <Form formTitle="Create New Device Activity" handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-4 items-center mt-4 w-[24rem]">
-                <div className="">
+                {hidePopup.type === "create" && <div className="">
                     <label htmlFor="serial_number" className="block text-sm font-medium text-black mb-2">
                         Select Activity
                     </label>
@@ -51,7 +51,7 @@ export default function DeviceActivitiesForm() {
                         onSelect={(val) => console.log("Selected:", val)}
                         rules={{ required: "Activity is required" }}
                     />
-                </div>
+                </div>}
                 <div>
                     <label htmlFor="position" className="block text-sm font-medium text-black mb-2">
                         Position
