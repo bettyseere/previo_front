@@ -22,7 +22,7 @@ export const delete_device_activity = (device_type_id: string, activity_id: stri
 
 export const update_device_activity = async (data: UpdateDeviceActivity, old_device_type_id: string, old_activity_id: string) => request({
     method: "PATCH",
-    url: `/device_activities/?old_device_type_id=${old_device_type_id}&old_activity_id=${old_activity_id}`,
+    url: `/device_activities?old_device_type_id=${old_device_type_id}&old_activity_id=${old_activity_id}`,
     data: data
 })
 
