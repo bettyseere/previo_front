@@ -19,7 +19,12 @@ export default function ActivityForm() {
     const { hidePopup, handleHidePopup } = usePopup();
     const [finished_translations, setFinishedTranslations] = useState(hidePopup.data?.activities || []);
     const { register, handleSubmit, reset, setValue } = useForm();
-    const operation = hidePopup.type === "create" ? create_activity : (data: any) =>  hidePopup.data.id && update_activity(hidePopup.data.id, data);
+    const operation = hidePopup.type === "create"
+  ? create_activity
+  : (data: any) => hidePopup.data?.id
+      ? update_activity(hidePopup.data.id, data)
+      : Promise.reject("No ID found for update");
+
     const { mutate, isError, isSuccess } = useApiSend(operation, undefined, undefined, ["activities"]);
 
     const flags = {
@@ -52,6 +57,7 @@ export default function ActivityForm() {
         // Send all translations to the API (you can adjust this API call as needed)
         mutate({ names_and_descriptions: finished_translations }, {
             onSuccess: () => {
+                console.log("Submitted just now")
                 queryClient.invalidateQueries(["activities"]).then(()=>{
                     setFinishedTranslations([]); // Clear the translations after submission
                     reset(); // Reset form fields
@@ -101,6 +107,11 @@ export default function ActivityForm() {
         console.log(finished_translations, "Updated finished translations");
     }, [finished_translations]);
 
+    useEffect(() => {
+    if (hidePopup.type === "edit" && !hidePopup.data?.id) {
+        console.warn("Missing ID for editing activity.");
+    }
+    }, [hidePopup]);
 
     return (
         <div>
