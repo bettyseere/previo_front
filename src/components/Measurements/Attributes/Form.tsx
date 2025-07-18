@@ -47,10 +47,12 @@ export default function AttributeForm() {
         // Send all translations to the API (you can adjust this API call as needed)
         mutate({ names_and_descriptions: finished_translations }, {
             onSuccess: () => {
-                handleHidePopup({ show: false, type: "create" }); // Close the popup on success
-                setFinishedTranslations([]); // Clear the translations after submission
-                reset(); // Reset form fields
-                queryClient.invalidateQueries(["measurement_attributes"]);
+                queryClient.invalidateQueries(["measurement_attributes"]).then(()=>{
+                    setFinishedTranslations([]); // Clear the translations after submission
+                    reset(); // Reset form field
+                    handleHidePopup({ show: false, type: "create" }); 
+                });
+                // Close the popup on success
             },
             onError: (error) => {
                 console.error("Error submitting translations:", error);

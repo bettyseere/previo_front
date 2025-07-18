@@ -52,10 +52,11 @@ export default function ActivityForm({activity_id}: activities) {
         // Send all translations to the API (you can adjust this API call as needed)
         mutate({ names_and_descriptions: finished_translations, activity_id:  activity_id}, {
             onSuccess: () => {
-                queryClient.invalidateQueries(["sub_activities"]);
-                handleHidePopup({ show: false, type: "create" }); // Close the popup on success
-                setFinishedTranslations([]); // Clear the translations after submission
-                reset(); // Reset form fields
+                queryClient.invalidateQueries(["sub_activities"]).then(()=>{
+                    setFinishedTranslations([]); // Clear the translations after submission
+                    reset(); // Reset form fields
+                    handleHidePopup({ show: false, type: "create" }); // Close the popup on success
+                });
             },
             onError: (error) => {
                 console.error("Error submitting translations:", error);
