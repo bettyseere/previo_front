@@ -52,7 +52,8 @@ export default function ActivityForm() {
         // Send all translations to the API (you can adjust this API call as needed)
         mutate({ names_and_descriptions: finished_translations }, {
             onSuccess: () => {
-                console.log("Submitted just")
+                // sometimes the update function is not fired.
+                // console.log("Submitted just now", hidePopup.data)
                 queryClient.invalidateQueries(["activities"]).then(()=>{
                     setFinishedTranslations([]); // Clear the translations after submission
                     reset(); // Reset form fields

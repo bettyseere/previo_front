@@ -71,7 +71,6 @@ export default function Activities(){
         }
 
         const handleUpdate = (item: any) => {
-            console.log("We calling updates")
             setSelectedID(item.id)
             // Filter the matching item
             const selected_item = data.find(data_item => data_item.id === item.id);
@@ -94,7 +93,7 @@ export default function Activities(){
 
             // Filter out items with null descriptions
             result = result.filter(item => item.description !== null);
-            handleHidePopup({show: true, type: "edit", data: {id: selectedID, activities: result}})
+            handleHidePopup({show: true, type: "edit", data: {id: item?.id, activities: result}})
         };
 
 
