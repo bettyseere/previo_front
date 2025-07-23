@@ -92,7 +92,7 @@ export default function MeasurementAttributes(){
             }
 
             result = result.filter(item => item.description !== null);
-            handleHidePopup({show: true, type: "edit", data: {id: selectedID, activities: result}})
+            handleHidePopup({show: true, type: "edit", data: {id: item.id, activities: result}})
         };
 
 
