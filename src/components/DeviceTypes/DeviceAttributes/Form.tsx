@@ -39,14 +39,14 @@ export default function DeviceAttributesForm() {
                 queryClient.invalidateQueries({ queryKey: ["device_type_attributes"] });
             },
             onError: (error) => {
-                console.error("Error inviting company user:", error);
+                console.error("Error adding device attribute:", error);
             },
         });
     };
 
 
     return (
-        <Form formTitle="Create New Device Activity" handleSubmit={handleSubmit(onSubmit)}>
+        <Form formTitle="Create New Device Attribute" handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-4 items-center mt-4 w-[24rem]">
                 {hidePopup.type === "create" && <div className="">
                     <label htmlFor="serial_number" className="block text-sm font-medium text-black mb-2">
