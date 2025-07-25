@@ -28,3 +28,20 @@ export type DeviceActivity = {
     created_at: Date
     updated_at: Date
 }
+
+type Attribute = {
+    id: string
+    position: string
+}
+
+export type CreateDeviceAttribute = {
+    device_type_id: string
+    attributes: Attribute[]
+}
+
+
+export type UpdateDeviceAttribute = {
+    device_type_id?: string
+    activity_id?: string
+    position?: number
+}

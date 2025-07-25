@@ -33,6 +33,7 @@ import UserTeamMembers from "../components/Users/UserInfo/Teams/Members/TeamMemb
 import UserTeamRecords from "../components/Users/UserInfo/Teams/Reports/TeamRecords";
 
 // Import all your components here (same as before)
+import DeviceAttributes from "../components/DeviceTypes/DeviceAttributes/DeviceAttributes";
 
 function AppRoutes() {
     const { currentUser } = useAuth();
@@ -102,6 +103,7 @@ function AppRoutes() {
                                 <Route index element={<Device_Types />} />
                                 <Route path=":id" element={<DeviceTypeDevices />} />
                                 <Route path=":id/activities" element={<DeviceActivities />} />
+                                <Route path=":id/attributes" element={<DeviceAttributes />} />
                             </Route>
 
                             <Route path="/:id">

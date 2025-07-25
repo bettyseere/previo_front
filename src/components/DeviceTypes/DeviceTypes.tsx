@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import ConfirmModel from "../Commons/ConfirmModel";
 import { useState } from "react";
 import moment from "moment";
+import { queryClient } from "../../main";
 
 
 
@@ -46,6 +47,7 @@ export default function Device_Types(){
             await delete_device_type(id=id)
             refetch()
             toast("Device type deleted successfully.")
+            queryClient.invalidateQueries({ queryKey: ["device_types"] })
             handleHidePopup({show: false, type: "create"})
         } catch (error) {
             toast("Error deleting device type.")
@@ -95,9 +97,12 @@ export default function Device_Types(){
             {header: "Devices", enableSorting: true, accessorKey: "devices", cell: ({cell, row}) => {
                 return <div className="text-secondary">{row.original.devices?.length.toString()}</div>
             }},
-            {header: "Device Activities", accessorKey: "devices", enableSorting: true, cell: ({cell, row}) => {
+            {header: "Activities", accessorKey: "devices", enableSorting: true, cell: ({cell, row}) => {
                 return <div className="text-secondary">{row.original.device_activities?.length.toString()}</div>
             }},
+            // {header: "Attributes", accessorKey: "devices", enableSorting: true, cell: ({cell, row}) => {
+            //     return <div className="text-secondary">{row.original.device_activities?.length.toString()}</div>
+            // }},
             {
                 header: "Created At",
                 accessorKey: "created_at",

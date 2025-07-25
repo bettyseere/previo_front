@@ -5,18 +5,18 @@ import { useApiSend, useApiGet } from "../../../utils/hooks/query";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import Dropdown from "../../Commons/Dropdown";
-import { create_device_activity, update_device_activity} from "../../../api/device_activities";
-import { get_activities } from "../../../api/activities/activities";
+import { create_device_attribute, update_device_attribute } from "../../../api/device_attributes";
+import { get_attributes } from "../../../api/measurements/attributes";
 import { queryClient } from "../../../main";
 
-export default function DeviceActivitiesForm() {
+export default function DeviceAttributesForm() {
     const { handleHidePopup, hidePopup } = usePopup();
-    const operation = hidePopup.type === "edit" ?(data: any) => update_device_activity(data, hidePopup.data.device_type_id, hidePopup.data.activity_id) :create_device_activity
+    const operation = hidePopup.type === "edit" ?(data: any) => update_device_attribute(data, hidePopup.data.device_type_id, hidePopup.data.attribute_id) :create_device_attribute
     const device_type_id: any = useParams()
 
 
-    const { mutate, isError, isSuccess,  isPending } = useApiSend(operation, undefined, undefined, ["device_activities"]);
-    const { data: activities } = useApiGet(["activities"], get_activities);
+    const { mutate, isError, isSuccess,  isPending } = useApiSend(operation, undefined, undefined, ["device_type_attributes"]);
+    const { data: attributes } = useApiGet(["attributes"], get_attributes);
 
 
     const { register, handleSubmit, reset, control } = useForm();
@@ -24,11 +24,19 @@ export default function DeviceActivitiesForm() {
     // Handle form submission
     const onSubmit = (data: any) => {
         data.device_type_id = device_type_id.id
+        if (hidePopup.type === "create"){
+            data.attributes = [
+                {
+                    id: data.attribute_id,
+                    position: data.position
+                }
+            ]
+        }
         mutate(data, {
             onSuccess: () => {
                 handleHidePopup({ show: false, type: "create" }); // Close the popup on success
                 reset(); // Reset form fields
-                queryClient.invalidateQueries(["device_activities"]);
+                queryClient.invalidateQueries({ queryKey: ["device_type_attributes"] });
             },
             onError: (error) => {
                 console.error("Error inviting company user:", error);
@@ -42,14 +50,14 @@ export default function DeviceActivitiesForm() {
             <div className="grid grid-cols-1 gap-4 items-center mt-4 w-[24rem]">
                 {hidePopup.type === "create" && <div className="">
                     <label htmlFor="serial_number" className="block text-sm font-medium text-black mb-2">
-                        Select Activity
+                        Select Attribute
                     </label>
                     <Dropdown
-                        name="activity_id"
-                        options={activities ? activities.map(activity => ({value: activity.id, label: activity.name.en})): []}
+                        name="attribute_id"
+                        options={attributes ? attributes.map(attribute => ({value: attribute.id, label: attribute.name.en})): []}
                         control={control}
                         onSelect={(val) => console.log("Selected:", val)}
-                        rules={{ required: "Activity is required" }}
+                        rules={{ required: "Activity is attribute" }}
                     />
                 </div>}
                 <div>
@@ -84,7 +92,7 @@ export default function DeviceActivitiesForm() {
 
             {isSuccess && (
                 <div className="mt-4 text-sm text-green-600">
-                    Device activity created successfully!
+                    Device attribute successfully!
                 </div>
             )}
         </Form>
