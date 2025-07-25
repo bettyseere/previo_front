@@ -16,7 +16,7 @@ export const create_device_activity = (data: CreateDeviceActivity) => request({
 
 export const delete_device_activity = (device_type_id: string, activity_id: string) => request({
     method: "DELETE",
-    url: `/device_activities/?device_type_id=${device_type_id}&activity_id=${activity_id}`
+    url: `/device_activities?device_type_id=${device_type_id}&activity_id=${activity_id}`
 })
 
 

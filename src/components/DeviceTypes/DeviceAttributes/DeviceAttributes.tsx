@@ -3,8 +3,8 @@ import { usePopup } from "../../../utils/hooks/usePopUp"
 import { useApiGet } from "../../../utils/hooks/query"
 import Table from "../../Commons/Table"
 import { useParams } from "react-router-dom"
-import { get_device_activities, delete_device_activity } from "../../../api/device_activities"
-import DeviceActivitiesForm from "./Form"
+import { get_device_attributes, delete_device_attribute } from "../../../api/device_attributes"
+import DeviceAttributesForm from "./Form"
 import Popup from "../../Commons/Popup"
 import ConfirmModel from "../../Commons/ConfirmModel"
 import Button from "../../Commons/Button"
@@ -14,15 +14,16 @@ import ErrorLoading from "../../Commons/ErrorAndLoading"
 import { BsTrash } from "react-icons/bs"
 import moment from "moment"
 import { PiPen } from "react-icons/pi"
-import { queryClient } from "../../../main"
+import { useQueryClient } from "@tanstack/react-query"
 
 
 
-export default function DeviceActivities(){
+export default function DeviceAttributes(){
     const { hidePopup, handleHidePopup } = usePopup()
     let device_type_id: any = useParams()
     device_type_id = device_type_id.id
-    const [selectedActivityID, setSelectedActivityId] = useState("")
+    const [selectedAttributeID, setSelectedAttributeId] = useState("")
+    const queryClient = useQueryClient()
     const {
                 data,
                 isLoading,
@@ -32,34 +33,35 @@ export default function DeviceActivities(){
                 isError,
                 isLoadingError,
                 refetch
-            } = useApiGet(["device_type_activities", device_type_id], ()=>get_device_activities(device_type_id))
+            } = useApiGet(["device_type_attributes", device_type_id], ()=>get_device_attributes(device_type_id))
 
     if (isLoading || isFetching || isPending){
                 return (
                 <ErrorLoading>
-                    <div  className="text-2xl font-bold text-secondary">Fetching activities ...</div>
+                    <div  className="text-2xl font-bold text-secondary">Fetching attributes ...</div>
                 </ErrorLoading>
             )
             }
 
     const init_delete = (id: string) =>{
-        setSelectedActivityId(id)
+        setSelectedAttributeId(id)
         handleHidePopup({show: true, confirmModel: true, type: "create"})
     }
     const handleDelete = async (id: string) => {
             try{
-                await delete_device_activity(device_type_id, id)
-                refetch()
+                await delete_device_attribute(device_type_id, id)
+                // refetch()
+                queryClient.invalidateQueries({ queryKey: ["device_type_attributes"] })
                 toast("Device activity deleted successfully.")
-                queryClient.invalidateQueries({ queryKey: ["device_type_activities"] })
                 handleHidePopup({show: false, type: "create"})
             } catch (error) {
-                toast("Error deleting device activity.")
+                toast("Error deleting device attribute.")
                 handleHidePopup({show: false, type: "create"})
             }
         }
 
     const handleUpdate = (data: any) => {
+        console.log(data)
         handleHidePopup({show: true, data: data, type: "edit"})
         console.log(data, hidePopup)
     }
@@ -67,14 +69,15 @@ export default function DeviceActivities(){
     let data_to_render;
 
     if (data){
-        data_to_render = data.map(device_activity => ({
-            device_type_id: device_activity.device_type_id,
-            activity_id: device_activity.activity_id,
-            activity_name: device_activity.activity.translations[0].name,
-            activity_description: device_activity.activity.translations[0].description,
-            create_at: device_activity.created_at,
-            position: device_activity.position,
-            updated_at: device_activity.updated_at
+        console.log(data, "data to map")
+        data_to_render = data.map(device_attribute => ({
+            device_type_id: device_type_id,
+            attribute_id: device_attribute.attribute.id,
+            activity_name: device_attribute.attribute.translations[0].name,
+            activity_description: device_attribute.attribute.translations[0].description,
+            create_at: device_attribute.created_at,
+            position: device_attribute.position,
+            updated_at: device_attribute.updated_at
         }
         ))
     }
@@ -82,7 +85,7 @@ export default function DeviceActivities(){
     const table_columns = [
         {header: "Name", accessorKey: "activity_name"},
         {header: "Position", accessorKey: "position"},
-        {header: "Description", accessorKey: "activity_description"},
+        {header: "Description", accessorKey: "attribute_description"},
         {
             header: "Created At",
             accessorKey: "created_at",
@@ -90,9 +93,9 @@ export default function DeviceActivities(){
                 return <p className="">{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
             }
         },
-        {header: "Actions", accessorKey: "activity_id", cell: ({ cell, row}) => {
+        {header: "Actions", accessorKey: "attribute_id", cell: ({ cell, row}) => {
             return <div className="flex justify-center items-center gap-4 px-4">
-                <div onClick={()=>init_delete(row.original.activity_id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                <div onClick={()=>init_delete(row.original.attribute_id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
                 </div>
 
@@ -103,15 +106,15 @@ export default function DeviceActivities(){
         }}
     ]
 
-    const button = <Button text="Create Device Activity" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
+    const button = <Button text="Create Device Attribute" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
 
     const popup = <Popup>
             <div>
                 {hidePopup.confirmModel ? <ConfirmModel
                     cancel_action={()=>handleHidePopup({show: false, type: "create", confirmModel: false})}
-                    title="Delete Device Activity"
-                    message="Are you sure you want to delete this device activity? This action cannot be undone."
-                    handleSubmit={()=>handleDelete(selectedActivityID)} />: <DeviceActivitiesForm />
+                    title="Delete Device Attribute"
+                    message="Are you sure you want to delete this device attribute? This action cannot be undone."
+                    handleSubmit={()=>handleDelete(selectedAttributeID)} />: <DeviceAttributesForm />
                 }
             </div>
         </Popup>
@@ -121,9 +124,9 @@ export default function DeviceActivities(){
             <div>{hidePopup.show && popup}
             <DeviceTypeSubMenu>
                 <div className="flex flex-col items-center justify-center gap-4 mt-[5rem]">
-                <div  className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No activities found": "Error fetching activities. Try again later."}</div>
+                <div  className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No attributes found": "Error fetching attributes. Try again later."}</div>
                 {error.response.status == 404 && <div>
-                    <Button text="Add Activity" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
+                    <Button text="Add Attribute" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
                 </div>}
                 </div>
             </DeviceTypeSubMenu>
@@ -136,7 +139,7 @@ export default function DeviceActivities(){
             <div>
                 {hidePopup.show && popup}
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Activities"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Attributes"} />
                 </div>}
             </div>
         </DeviceTypeSubMenu>
