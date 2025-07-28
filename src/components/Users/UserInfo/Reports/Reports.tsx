@@ -31,7 +31,7 @@ export default function UserReports(){
 
     const table_columns = [
         {header: "Activity", accessorKey: "activity"},
-        {header: "Device", accessorKey: "device"},
+        // {header: "Device", accessorKey: "device"},
         {header: "Measurement", accessorKey: "measurement"},
         {
                     header: "Date",
