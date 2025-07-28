@@ -117,19 +117,13 @@ export default function Measurements(){
             )
         },
         {
-            header: "Date",
+            header: "Date/Time",
             accessorKey: "created_at",
             cell: ({cell, row}) => {
-                return <p>{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                return <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
             }
         },
-        {
-            header: "Time",
-            accessorKey: "updated_at",
-            cell: ({cell, row}) => {
-                return <p>{moment(row.original.created_at).format("HH:mm:ss")}</p>
-            }
-        },
+       
         {
             header: "Results",
             accessorKey: "athlete",
