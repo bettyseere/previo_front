@@ -85,17 +85,17 @@ export default function Measurements(){
                 </a>
             )
         },
-        {
-            header: "Device",
-            accessorKey: "device",
-            cell: ({cell, row}) => (
-                <a className="" href="">
-                    <div>
-                        {row.original.device.device_type.name}
-                    </div>
-                </a>
-            )
-        },
+        // {
+        //     header: "Device",
+        //     accessorKey: "device",
+        //     cell: ({cell, row}) => (
+        //         <a className="" href="">
+        //             <div>
+        //                 {row.original.device.device_type.name}
+        //             </div>
+        //         </a>
+        //     )
+        // },
         {
             header: "Attribute",
             accessorKey: "attribute",
