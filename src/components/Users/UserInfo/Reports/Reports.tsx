@@ -3,7 +3,7 @@ import UserInfo from "../UserInfo";
 import Table from "../../../Commons/Table";
 import { get_user_measurements } from "../../../../api/measurements/measurements";
 import { useApiGet } from "../../../../utils/hooks/query";
-
+import moment from "moment";
 
 export default function UserReports(){
     const { currentUser } = useAuth()
@@ -23,7 +23,9 @@ export default function UserReports(){
             activity: item.sub_activity.translations[0].name,
             measurement: item.attribute.translations[0].name,
             results: item.value + item.attribute.translations[0].units,
-            device: item.device.device_type.name
+            device: item.device.device_type.name,
+            created_at: item.created_at,
+            updated_at: item.updated_at
         })
     })
 
@@ -31,6 +33,20 @@ export default function UserReports(){
         {header: "Activity", accessorKey: "activity"},
         {header: "Device", accessorKey: "device"},
         {header: "Measurement", accessorKey: "measurement"},
+        {
+                    header: "Date",
+                    accessorKey: "created_at",
+                    cell: ({cell, row}) => {
+                        return <p>{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+                    }
+                },
+        {
+                    header: "Time",
+                    accessorKey: "updated_at",
+                    cell: ({cell, row}) => {
+                        return <p>{moment(row.original.created_at).format("HH:mm:ss")}</p>
+                    }
+        },
         {header: "Results", accessorKey: "results"}
         ]
 
