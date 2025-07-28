@@ -103,7 +103,7 @@ export default function DeviceForm({ popup }: UpdateDevice) {
                     className="outline-none border-b-2 border-primary w-full py-2"
                 >
                     {popup.type === "create" && <option value="">Select Device Type</option>}
-                    {popup.type == "edit" && popup.data.device_type_id ? <option value={popup.data.device_type_id}>{popup.data.device_type_name}</option>: <option value="">Select Company</option>}
+                    {popup.type == "edit" && popup.data.device_type_id ? <option value={popup.data.device_type_id}>{popup.data.device_type_name}</option>: <option value="">Select Device Type</option>}
                     {device_types?.map((device_type: any) => (
                         <option key={device_type.id} value={device_type.id}>
                             {device_type.name}

@@ -8,6 +8,7 @@ import Popup from "../Commons/Popup";
 import ConfirmModel from "../Commons/ConfirmModel";
 import MeasurementForm from "../Users/UserInfo/Teams/Reports/Form";
 import { useState } from "react";
+import moment from "moment";
 
 
 export default function Measurements(){
@@ -114,6 +115,13 @@ export default function Measurements(){
                     {row.original.athlete.first_name} {row.original.athlete.last_name}
                 </div>
             )
+        },
+        {
+            header: "Created",
+            accessorKey: "created_at",
+            cell: ({cell, row}) => {
+                return <p>{moment(row.original.created_at).format("YYYY-MM-DD")}</p>
+            }
         },
         {
             header: "Results",
