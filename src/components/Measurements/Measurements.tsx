@@ -85,17 +85,17 @@ export default function Measurements(){
                 </a>
             )
         },
-        {
-            header: "Device",
-            accessorKey: "device",
-            cell: ({cell, row}) => (
-                <a className="" href="">
-                    <div>
-                        {row.original.device.device_type.name}
-                    </div>
-                </a>
-            )
-        },
+        // {
+        //     header: "Device",
+        //     accessorKey: "device",
+        //     cell: ({cell, row}) => (
+        //         <a className="" href="">
+        //             <div>
+        //                 {row.original.device.device_type.name}
+        //             </div>
+        //         </a>
+        //     )
+        // },
         {
             header: "Attribute",
             accessorKey: "attribute",
@@ -127,7 +127,7 @@ export default function Measurements(){
             header: "Time",
             accessorKey: "updated_at",
             cell: ({cell, row}) => {
-                return <p>{moment(row.original.created_at).format("HH:mm")}</p>
+                return <p>{moment(row.original.created_at).format("HH:mm:ss")}</p>
             }
         },
         {
