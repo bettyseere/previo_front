@@ -121,7 +121,7 @@ export default function Measurements(){
             header: "Date/Time",
             accessorKey: "created_at",
             cell: ({cell, row}) => {
-                return <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
+                return row.original.start && <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
             }
         },
        
