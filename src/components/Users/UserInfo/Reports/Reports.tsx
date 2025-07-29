@@ -24,20 +24,30 @@ export default function UserReports(){
             measurement: item.attribute.translations[0].name,
             results: item.value + item.attribute.translations[0].units,
             device: item.device.device_type.name,
+            start: item.start,
             created_at: item.created_at,
             updated_at: item.updated_at
         })
     })
 
     const table_columns = [
-        {header: "Activity", accessorKey: "activity"},
+        {
+            header: "Activity", accessorKey: "activity"
+            cell: ({cell, row}) => (
+                <a className="" href="">
+                    <div>
+                    {row.original.start && row.original.name}
+                    </div>
+                </a>
+            )
+        },
         // {header: "Device", accessorKey: "device"},
         {header: "Attribute", accessorKey: "measurement"},
         {
                     header: "Date/Time",
                     accessorKey: "created_at",
                     cell: ({cell, row}) => {
-                        return <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
+                        return row.original.start &&  <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
                     }
                 },
         {header: "Results", accessorKey: "results"}
