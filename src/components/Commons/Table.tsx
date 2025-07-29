@@ -147,7 +147,7 @@ export default function Table<T>({
 
 
       {/* Pagination Controls */}
-      <div className="absolute bottom-4 right-6 mb-4">
+      <div className="absolute right-6 mt-2">
         <div className="flex justify-between items-center mb-4">
           <div className="flex gap-2">
             <Button text="<<" handleClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()} styling="text-white" />
