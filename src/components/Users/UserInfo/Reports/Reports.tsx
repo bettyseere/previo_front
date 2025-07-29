@@ -33,19 +33,20 @@ export default function UserReports(){
     const table_columns = [
         {
             header: "Activity", accessorKey: "activity",
-            cell: ({cell, row}) => (
-                <a className="" href="">
-                    <div>
-                    {row.original.start && row.original.name}
+            cell: ({cell, row}) => {
+                // console.log(row.original.start, "row")
+                // <a className="" href="">
+                    return <div>
+                    {row.original.start === true && row.original.activity}
                     </div>
-                </a>
-            )
+                // </a>
+            }
         },
         {
                     header: "Date/Time",
                     accessorKey: "created_at",
                     cell: ({cell, row}) => {
-                        return row.original.start &&  <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
+                        return row.original.start === true &&  <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
                     }
                 },
             // {header: "Device", accessorKey: "device"},
