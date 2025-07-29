@@ -1,7 +1,7 @@
 import { useAuth } from "../../../../utils/hooks/Auth";
 import UserInfo from "../UserInfo";
 import Table from "../../../Commons/Table";
-import { get_user_measurements } from "../../../../api/measurements/measurements";
+import { get_user_measurements, delete_measurement } from "../../../../api/measurements/measurements";
 import { useApiGet } from "../../../../utils/hooks/query";
 import moment from "moment";
 
@@ -20,6 +20,7 @@ export default function UserReports(){
     data && data.forEach(item => {
         console.log(item)
         data_to_render.push({
+            id: item.id,
             activity: item.sub_activity.translations[0].name,
             measurement: item.attribute.translations[0].name,
             results: item.value + item.attribute.translations[0].units,
@@ -52,6 +53,18 @@ export default function UserReports(){
             // {header: "Device", accessorKey: "device"},
         {header: "Attribute", accessorKey: "measurement"},
         {header: "Results", accessorKey: "results"}
+        // {
+        //     header: "Delete",
+        //     accessorKey: "id",
+        //     cell: ({cell, row}) => {
+        //         return <div onClick={()=>{
+        //             delete_measurement(row.original.id).then(()=>{
+        //                 // window.location.reload()
+        //                 console.log("Deleted")
+        //             })
+        //         }} className="underline">Delete</div>
+        //     }
+        // }
         ]
 
     if (isError){
