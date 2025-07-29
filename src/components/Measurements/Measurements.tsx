@@ -67,6 +67,7 @@ export default function Measurements(){
                 device: measurement.device,
                 athlete: measurement.athlete,
                 results: results,
+                start: measurement.start,
                 created_at: measurement.created_at,
                 updated_at: measurement.updated_at
             }
@@ -80,7 +81,7 @@ export default function Measurements(){
             cell: ({cell, row}) => (
                 <a className="" href="">
                     <div>
-                        {row.original.sub_activity.name}
+                        {row.original.start && row.original.sub_activity.name}
                     </div>
                 </a>
             )
