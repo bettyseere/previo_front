@@ -32,7 +32,7 @@ export default function UserReports(){
 
     const table_columns = [
         {
-            header: "Activity", accessorKey: "activity"
+            header: "Activity", accessorKey: "activity",
             cell: ({cell, row}) => (
                 <a className="" href="">
                     <div>
