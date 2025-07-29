@@ -81,7 +81,7 @@ export default function Measurements(){
             cell: ({cell, row}) => (
                 <a className="" href="">
                     <div>
-                        {row.original.start && row.original.sub_activity.name}
+                        {row.original.start === true && row.original.sub_activity.name}
                     </div>
                 </a>
             )
@@ -121,7 +121,7 @@ export default function Measurements(){
             header: "Date/Time",
             accessorKey: "created_at",
             cell: ({cell, row}) => {
-                return row.original.start && <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
+                return row.original.start === true && <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
             }
         },
        
