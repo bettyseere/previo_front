@@ -46,7 +46,7 @@ export default function UserReports(){
                     header: "Date/Time",
                     accessorKey: "created_at",
                     cell: ({cell, row}) => {
-                        return row.original.start === true &&  <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
+                        return row.original.start === true &&  <p>{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm:ss")}</p>
                     }
                 },
             // {header: "Device", accessorKey: "device"},
