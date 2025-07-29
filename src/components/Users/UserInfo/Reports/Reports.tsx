@@ -41,8 +41,6 @@ export default function UserReports(){
                 </a>
             )
         },
-        // {header: "Device", accessorKey: "device"},
-        {header: "Attribute", accessorKey: "measurement"},
         {
                     header: "Date/Time",
                     accessorKey: "created_at",
@@ -50,6 +48,8 @@ export default function UserReports(){
                         return row.original.start &&  <p>{moment(row.original.created_at).format("YYYY-MM-DD")} {moment(row.original.created_at).format("HH:mm:ss")}</p>
                     }
                 },
+            // {header: "Device", accessorKey: "device"},
+        {header: "Attribute", accessorKey: "measurement"},
         {header: "Results", accessorKey: "results"}
         ]
 
