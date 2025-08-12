@@ -7,67 +7,94 @@ import Button from "../Commons/Button";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
-
 const ResetPassword = () => {
-    const navigate = useNavigate();
-    const { register, handleSubmit } = useForm<ResetPasswordType>();
-    const [showPassword, setShowPassword] = useState(false)
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const token = urlParams.get("token") || ""
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<ResetPasswordType>();
+  const [showPassword, setShowPassword] = useState(false);
 
-    const onSubmit = async (data: ResetPasswordType) => {
-        if (data.confirm_password !== data.password){
-            toast("Passwords do not match")
-        } else {
-            try {
-                await reset_password(data, token);
-                toast.success("Password reset successfully!")
-                navigate("/login");
-            } catch (error) {
-                toast.error("There was a problem resetting your password. Try again later.");
-            }
-        }
-    };
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const token = urlParams.get("token") || "";
 
-    return (
-        <div className="font-jarkata flex items-center h-screen">
-            <div className="w-[70%] h-full flex items-center justify-center">
-                <img width={600} src="/images/logo_seere/svg/main_logo_dark.svg" alt="seere logo" />
+  const onSubmit = async (data: ResetPasswordType) => {
+    if (data.confirm_password !== data.password) {
+      toast("Passwords do not match");
+    } else {
+      try {
+        await reset_password(data, token);
+        toast.success("Password reset successfully!");
+        navigate("/login");
+      } catch {
+        toast.error(
+          "There was a problem resetting your password. Try again later."
+        );
+      }
+    }
+  };
+
+  return (
+    <div className="font-jarkata flex flex-col md:flex-row h-screen">
+      {/* Logo Section */}
+      <div className="flex-1 flex items-center justify-center p-4 md:p-8">
+        <img
+          className="w-full max-w-[180px] sm:max-w-xs md:max-w-md lg:max-w-lg"
+          src="/images/logo_seere/png/previo-long.png"
+          alt="previo logo"
+        />
+      </div>
+
+      {/* Form Section */}
+      <div className="bg-primary flex-1 flex items-center justify-center p-6 sm:p-8 md:p-12">
+        <div className="bg-primary md:bg-transparent rounded-lg md:rounded-none w-full max-w-md">
+          <div className="text-white w-full mb-8 px-2">
+            <h1 className="font-bold text-2xl sm:text-3xl text-center leading-snug max-w-[22rem] mx-auto">
+              We got you. Reset your password here.
+            </h1>
+          </div>
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full px-2 sm:px-4 space-y-4"
+          >
+            <div className="flex gap-2 bg-white w-full justify-between items-center rounded-md py-3 px-3">
+              <input
+                className="outline-none bg-transparent flex-1 text-sm sm:text-base"
+                type={!showPassword ? "password" : "text"}
+                placeholder="Password"
+                {...register("password", { required: true })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                {!showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
-            <div className="bg-primary h-full w-[30%] flex items-center justify-center">
-                <div className="flex flex-col justify-center items-center">
-                    <div className="text-white max-w-72 mb-8">
-                        <h1 className="mb-4 font-bold text-2xl text-center">We got you. Reset your password here.</h1>
-                        {/* <p className="font-bold text-center uppercase text-lg">Login</p> */}
-                    </div>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="mb-2 flex flex-col gap-4">
-                            <div className="flex gap-1 bg-white w-[20rem] justify-between items-center rounded-md py-2 px-2 ">
-                                <input
-                                    className="outline-none"
-                                    type={!showPassword ? "password": "text"}
-                                    placeholder="Password"
-                                    {...register("password", { required: true })}
-                                />
-                                <div onClick={()=>setShowPassword(!showPassword)} >{!showPassword ? <FaEyeSlash /> : <FaEye />}</div>
-                            </div>
-                            <input
-                                className="rounded-md py-2 px-2 w-[20rem] outline-none bg-white"
-                                type="text"
-                                placeholder="Confirm Password"
-                                {...register("confirm_password", { required: true })}
-                            />
-                        </div>
-                        <a href="/login">
-                            <p className="mb-2 text-white font-semibold cursor-pointer text-sm">Back to login?</p>
-                        </a>
-                        <Button type="submit" text="Reset password" styling="px-6 py-2" />
-                    </form>
-                </div>
-            </div>
+
+            <input
+              className="rounded-md py-3 px-3 w-full outline-none bg-white text-sm sm:text-base"
+              type="text"
+              placeholder="Confirm Password"
+              {...register("confirm_password", { required: true })}
+            />
+
+            <a href="/login">
+              <p className="text-white font-semibold cursor-pointer text-xs sm:text-sm hover:underline">
+                Back to login?
+              </p>
+            </a>
+
+            <Button
+              type="submit"
+              text="Reset password"
+              styling="px-6 py-2 w-full"
+            />
+          </form>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default ResetPassword;

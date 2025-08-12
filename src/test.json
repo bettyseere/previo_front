@@ -1,0 +1,542 @@
+[
+    {
+        "id": "7223a3a6-8f6c-4c63-93da-25528f9b116a",
+        "name": "ASTA",
+        "company_id": "1ba1ec2d-dba0-4249-831c-b14c99902256",
+        "created_at": "2025-07-23T15:52:17.794054",
+        "updated_at": "2025-07-23T15:52:17.794066",
+        "team_members": [
+            {
+                "user": {
+                    "id": "a49d8dbb-23e3-453e-821d-a9ea50898144",
+                    "first_name": "Elisabetta",
+                    "last_name": "Merlo",
+                    "email": "merlo.lbt@gmail.com"
+                },
+                "team_id": "7223a3a6-8f6c-4c63-93da-25528f9b116a",
+                "role": {
+                    "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+                    "name": "Atleta",
+                    "description": "Atleta",
+                    "created_at": "2025-04-16T09:48:35.607943",
+                    "updated_at": "2025-04-16T09:48:35.607959"
+                },
+                "access_type": "individual",
+                "created_at": "2025-07-23T15:53:45.041205",
+                "updated_at": "2025-07-23T15:53:45.041207"
+            },
+            {
+                "user": {
+                    "id": "9cb249fb-0195-4a62-bb8f-787efb14d934",
+                    "first_name": "luciano",
+                    "last_name": "gemello",
+                    "email": "luciano.gemello@gmail.com"
+                },
+                "team_id": "7223a3a6-8f6c-4c63-93da-25528f9b116a",
+                "role": {
+                    "id": "0f3515f9-c442-4b04-884a-291010966b97",
+                    "name": "Coach",
+                    "description": "Coaches the team through the training sessions",
+                    "created_at": "2024-10-27T16:31:26.460420",
+                    "updated_at": "2024-10-27T16:31:26.460428"
+                },
+                "access_type": "all",
+                "created_at": "2025-07-23T15:53:45.041193",
+                "updated_at": "2025-07-23T15:53:45.041202"
+            }
+        ]
+    },
+    {
+        "id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+        "name": "Ensamble ",
+        "company_id": "74227060-75eb-4ff1-9440-a372673ecc70",
+        "created_at": "2025-07-04T09:33:32.775295",
+        "updated_at": "2025-07-04T09:33:32.775301",
+        "team_members": [
+        {
+            "user": {
+            "id": "b65bfc22-ee13-4b5a-9501-a7c6de252bac",
+            "first_name": "Andrea",
+            "last_name": "Piras",
+            "email": "seeresrl+piras@gmail.com"
+            },
+            "team_id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:34:33.175068",
+            "updated_at": "2025-07-04T09:34:33.175077"
+        },
+        {
+            "user": {
+            "id": "390ff5f7-400a-45dd-a524-8d6fc801e323",
+            "first_name": "Chiara ",
+            "last_name": "Fontana",
+            "email": "seeresrl+fontana@gmail.com"
+            },
+            "team_id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:35:43.081956",
+            "updated_at": "2025-07-04T09:35:43.081968"
+        },
+        {
+            "user": {
+            "id": "9dc853e4-648b-467f-95f2-88e8afdb01fc",
+            "first_name": "Elena",
+            "last_name": "Marchetti",
+            "email": "seeresrl+marchetti@gmail.com"
+            },
+            "team_id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+            "role": {
+            "id": "0f3515f9-c442-4b04-884a-291010966b97",
+            "name": "Coach",
+            "description": "Coaches the team through the training sessions",
+            "created_at": "2024-10-27T16:31:26.460420",
+            "updated_at": "2024-10-27T16:31:26.460428"
+            },
+            "access_type": "role",
+            "created_at": "2025-07-04T09:34:21.924770",
+            "updated_at": "2025-07-04T09:34:21.924782"
+        },
+        {
+            "user": {
+            "id": "6f57b500-852e-40c9-88b7-506aaa530682",
+            "first_name": "Fabio",
+            "last_name": "Conti",
+            "email": "seeresrl+conti@gmail.com"
+            },
+            "team_id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:35:43.081971",
+            "updated_at": "2025-07-04T09:35:43.081973"
+        },
+        {
+            "user": {
+            "id": "6121addf-0c0f-451c-9506-1efde49ebc3e",
+            "first_name": "Giovanni",
+            "last_name": "Serra",
+            "email": "seeresrl+serra@gmail.com"
+            },
+            "team_id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+            "role": {
+            "id": "0f3515f9-c442-4b04-884a-291010966b97",
+            "name": "Coach",
+            "description": "Coaches the team through the training sessions",
+            "created_at": "2024-10-27T16:31:26.460420",
+            "updated_at": "2024-10-27T16:31:26.460428"
+            },
+            "access_type": "role",
+            "created_at": "2025-07-04T09:33:52.386224",
+            "updated_at": "2025-07-04T09:33:52.386233"
+        },
+        {
+            "user": {
+            "id": "5a9bb2bc-aa66-4cc9-96bb-e4daa4761666",
+            "first_name": "Marco",
+            "last_name": "De Angelis",
+            "email": "seeresrl+deangelis@gmail.com"
+            },
+            "team_id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:35:43.081976",
+            "updated_at": "2025-07-04T09:35:43.081978"
+        },
+        {
+            "user": {
+            "id": "b6b9d2f9-edaf-4f39-bcf8-869d8ab0d00c",
+            "first_name": "Martina ",
+            "last_name": "Greco",
+            "email": "seeresrl+greco@gmail.com"
+            },
+            "team_id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:35:43.081980",
+            "updated_at": "2025-07-04T09:35:43.081982"
+        },
+        {
+            "user": {
+            "id": "c91cf197-0335-497f-bab0-405d07cf47b2",
+            "first_name": "Sara",
+            "last_name": "Moretti",
+            "email": "seeresrl+moretti@gmail.com"
+            },
+            "team_id": "ae45c6a3-b79c-43fa-a898-cbcb1b11afbf",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:37:51.210043",
+            "updated_at": "2025-07-04T09:37:51.210053"
+        }
+        ]
+    },
+    {
+        "id": "fd6e5bf9-aec2-4ce1-9834-ebaa2ec70df0",
+        "name": "Coach Marchetti",
+        "company_id": "74227060-75eb-4ff1-9440-a372673ecc70",
+        "created_at": "2025-07-04T09:05:38.330932",
+        "updated_at": "2025-07-04T09:05:38.330939",
+        "team_members": [
+        {
+            "user": {
+            "id": "b65bfc22-ee13-4b5a-9501-a7c6de252bac",
+            "first_name": "Andrea",
+            "last_name": "Piras",
+            "email": "seeresrl+piras@gmail.com"
+            },
+            "team_id": "fd6e5bf9-aec2-4ce1-9834-ebaa2ec70df0",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:06:42.691692",
+            "updated_at": "2025-07-04T09:06:42.691701"
+        },
+        {
+            "user": {
+            "id": "9dc853e4-648b-467f-95f2-88e8afdb01fc",
+            "first_name": "Elena",
+            "last_name": "Marchetti",
+            "email": "seeresrl+marchetti@gmail.com"
+            },
+            "team_id": "fd6e5bf9-aec2-4ce1-9834-ebaa2ec70df0",
+            "role": {
+            "id": "0f3515f9-c442-4b04-884a-291010966b97",
+            "name": "Coach",
+            "description": "Coaches the team through the training sessions",
+            "created_at": "2024-10-27T16:31:26.460420",
+            "updated_at": "2024-10-27T16:31:26.460428"
+            },
+            "access_type": "role",
+            "created_at": "2025-07-04T09:06:42.691703",
+            "updated_at": "2025-07-04T09:06:42.691704"
+        },
+        {
+            "user": {
+            "id": "6f57b500-852e-40c9-88b7-506aaa530682",
+            "first_name": "Fabio",
+            "last_name": "Conti",
+            "email": "seeresrl+conti@gmail.com"
+            },
+            "team_id": "fd6e5bf9-aec2-4ce1-9834-ebaa2ec70df0",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:09:02.715598",
+            "updated_at": "2025-07-04T09:09:02.715600"
+        },
+        {
+            "user": {
+            "id": "59cfc008-8546-4a04-b7f5-204814e14a2a",
+            "first_name": "Giulia",
+            "last_name": "Benedetti",
+            "email": "seeresrl+benedetti@gmail.com"
+            },
+            "team_id": "fd6e5bf9-aec2-4ce1-9834-ebaa2ec70df0",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:54:10.019417",
+            "updated_at": "2025-07-04T09:54:10.019429"
+        },
+        {
+            "user": {
+            "id": "b6b9d2f9-edaf-4f39-bcf8-869d8ab0d00c",
+            "first_name": "Martina ",
+            "last_name": "Greco",
+            "email": "seeresrl+greco@gmail.com"
+            },
+            "team_id": "fd6e5bf9-aec2-4ce1-9834-ebaa2ec70df0",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:32:07.152590",
+            "updated_at": "2025-07-04T09:32:07.152600"
+        },
+        {
+            "user": {
+            "id": "9e01fff0-5526-4d7e-9fa4-b432a3b0fc04",
+            "first_name": "Valentina",
+            "last_name": "Leone",
+            "email": "seeresrl+leone@gmail.com"
+            },
+            "team_id": "fd6e5bf9-aec2-4ce1-9834-ebaa2ec70df0",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:06:42.691710",
+            "updated_at": "2025-07-04T09:06:42.691712"
+        }
+        ]
+    },
+    {
+        "id": "3f32ecd0-4332-48e5-ae11-35f51e7b674d",
+        "name": "Coach Serra",
+        "company_id": "74227060-75eb-4ff1-9440-a372673ecc70",
+        "created_at": "2025-07-04T09:02:23.829438",
+        "updated_at": "2025-07-04T09:02:23.829451",
+        "team_members": [
+        {
+            "user": {
+            "id": "b65bfc22-ee13-4b5a-9501-a7c6de252bac",
+            "first_name": "Andrea",
+            "last_name": "Piras",
+            "email": "seeresrl+piras@gmail.com"
+            },
+            "team_id": "3f32ecd0-4332-48e5-ae11-35f51e7b674d",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:32:40.732611",
+            "updated_at": "2025-07-04T09:32:40.732629"
+        },
+        {
+            "user": {
+            "id": "390ff5f7-400a-45dd-a524-8d6fc801e323",
+            "first_name": "Chiara ",
+            "last_name": "Fontana",
+            "email": "seeresrl+fontana@gmail.com"
+            },
+            "team_id": "3f32ecd0-4332-48e5-ae11-35f51e7b674d",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:05:19.797402",
+            "updated_at": "2025-07-04T09:05:19.797403"
+        },
+        {
+            "user": {
+            "id": "6121addf-0c0f-451c-9506-1efde49ebc3e",
+            "first_name": "Giovanni",
+            "last_name": "Serra",
+            "email": "seeresrl+serra@gmail.com"
+            },
+            "team_id": "3f32ecd0-4332-48e5-ae11-35f51e7b674d",
+            "role": {
+            "id": "0f3515f9-c442-4b04-884a-291010966b97",
+            "name": "Coach",
+            "description": "Coaches the team through the training sessions",
+            "created_at": "2024-10-27T16:31:26.460420",
+            "updated_at": "2024-10-27T16:31:26.460428"
+            },
+            "access_type": "role",
+            "created_at": "2025-07-04T09:05:19.797398",
+            "updated_at": "2025-07-04T09:05:19.797399"
+        },
+        {
+            "user": {
+            "id": "7397fd30-4243-41d6-a059-0a3ae3432d2f",
+            "first_name": "Luca",
+            "last_name": "Ferri",
+            "email": "seeresrl+ferri@gmail.com"
+            },
+            "team_id": "3f32ecd0-4332-48e5-ae11-35f51e7b674d",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:05:19.797405",
+            "updated_at": "2025-07-04T09:05:19.797407"
+        },
+        {
+            "user": {
+            "id": "5a9bb2bc-aa66-4cc9-96bb-e4daa4761666",
+            "first_name": "Marco",
+            "last_name": "De Angelis",
+            "email": "seeresrl+deangelis@gmail.com"
+            },
+            "team_id": "3f32ecd0-4332-48e5-ae11-35f51e7b674d",
+            "role": null,
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:05:19.797394",
+            "updated_at": "2025-07-04T09:05:19.797395"
+        },
+        {
+            "user": {
+            "id": "a2273986-cc00-4994-8e3e-888d914ee923",
+            "first_name": "Matteo",
+            "last_name": "Riva",
+            "email": "seeresrl+riva@gmail.com"
+            },
+            "team_id": "3f32ecd0-4332-48e5-ae11-35f51e7b674d",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:03:34.303511",
+            "updated_at": "2025-07-04T09:03:34.303518"
+        },
+        {
+            "user": {
+            "id": "c91cf197-0335-497f-bab0-405d07cf47b2",
+            "first_name": "Sara",
+            "last_name": "Moretti",
+            "email": "seeresrl+moretti@gmail.com"
+            },
+            "team_id": "3f32ecd0-4332-48e5-ae11-35f51e7b674d",
+            "role": {
+            "id": "2f2e0e27-3fda-4da1-9ebe-9a3357e6e3f0",
+            "name": "Atleta",
+            "description": "Atleta",
+            "created_at": "2025-04-16T09:48:35.607943",
+            "updated_at": "2025-04-16T09:48:35.607959"
+            },
+            "access_type": "individual",
+            "created_at": "2025-07-04T09:05:19.797381",
+            "updated_at": "2025-07-04T09:05:19.797391"
+        }
+        ]
+    },
+    {
+        "id": "ce6d918e-e49c-4359-85b4-6c29f5ff20d9",
+        "name": "Uno",
+        "company_id": "d41ed5b8-62cc-471a-a5ee-c8ecb05df444",
+        "created_at": "2025-04-14T14:40:03.166430",
+        "updated_at": "2025-04-14T14:40:03.166436",
+        "team_members": [
+        {
+            "user": {
+            "id": "a531f815-cced-4203-b1d8-cda3e9529917",
+            "first_name": "Betty",
+            "last_name": "laser",
+            "email": "info@seere.cloud"
+            },
+            "team_id": "ce6d918e-e49c-4359-85b4-6c29f5ff20d9",
+            "role": {
+            "id": "0f3515f9-c442-4b04-884a-291010966b97",
+            "name": "Coach",
+            "description": "Coaches the team through the training sessions",
+            "created_at": "2024-10-27T16:31:26.460420",
+            "updated_at": "2024-10-27T16:31:26.460428"
+            },
+            "access_type": "all",
+            "created_at": "2025-04-15T08:58:23.701914",
+            "updated_at": "2025-04-15T08:58:23.701943"
+        },
+        {
+            "user": {
+            "id": "4df63c00-2fb4-4051-a110-0dbdb9b1ab87",
+            "first_name": "Elle",
+            "last_name": "Bi",
+            "email": "luigibragadin111@gmail.com"
+            },
+            "team_id": "ce6d918e-e49c-4359-85b4-6c29f5ff20d9",
+            "role": {
+            "id": "68056648-f6a1-4f51-b9db-b30cc2fe832d",
+            "name": "Fisioterapista",
+            "description": "Medico fisioterapista",
+            "created_at": "2025-04-16T09:51:12.699028",
+            "updated_at": "2025-04-16T09:51:12.699040"
+            },
+            "access_type": "all",
+            "created_at": "2025-04-19T13:47:27.132755",
+            "updated_at": "2025-04-19T13:47:27.132765"
+        },
+        {
+            "user": {
+            "id": "8a8d9199-d51a-4bd4-9b27-b9349727fc75",
+            "first_name": "Enny",
+            "last_name": "Lnatan",
+            "email": "bettylaser.em@gmail.com"
+            },
+            "team_id": "ce6d918e-e49c-4359-85b4-6c29f5ff20d9",
+            "role": null,
+            "access_type": "individual",
+            "created_at": "2025-04-15T08:58:51.250293",
+            "updated_at": "2025-04-15T08:58:51.250304"
+        },
+        {
+            "user": {
+            "id": "679893df-cc5e-487b-bfad-fd82ee0d97eb",
+            "first_name": "Luisa",
+            "last_name": "Tinton",
+            "email": "laser25@hotmail.it"
+            },
+            "team_id": "ce6d918e-e49c-4359-85b4-6c29f5ff20d9",
+            "role": null,
+            "access_type": "individual",
+            "created_at": "2025-04-14T14:40:40.050887",
+            "updated_at": "2025-04-14T14:40:40.050895"
+        }
+        ]
+    }
+]
