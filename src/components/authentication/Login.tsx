@@ -8,65 +8,86 @@ import Button from "../Commons/Button";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const Login = () => {
-    const { handleLogin, currentUser } = useAuth();
-    const navigate = useNavigate();
-    const { register, handleSubmit } = useForm<LoginData>();
-    const [showPassword, setShowPassword] = useState(false)
+  const { handleLogin, currentUser } = useAuth();
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<LoginData>();
+  const [showPassword, setShowPassword] = useState(false);
 
-    const onSubmit = async (data: LoginData) => {
-        try {
-            await handleLogin?.(data);
-            toast.success("Login Successful!")
-            navigate("/");
-        } catch (error) {
-            toast.error("Login failed. Please check your credentials.");
-        }
-    };
+  const onSubmit = async (data: LoginData) => {
+    try {
+      await handleLogin?.(data);
+      toast.success("Login Successful!");
+      navigate("/");
+    } catch {
+      toast.error("Login failed. Please check your credentials.");
+    }
+  };
 
-    useEffect(() => {
-        if (currentUser) {
-            navigate("/");
-        }
-    }, [currentUser, navigate]);
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [currentUser, navigate]);
 
-    return (
-        <div className="font-jarkata flex items-center h-screen">
-            <div className="w-[70%] h-full flex items-center justify-center">
-                <img width={600} src="/images/logo_seere/png/previo-long.png" alt="seere logo" />
+  return (
+    <div className="font-jarkata flex flex-col md:flex-row h-screen">
+      {/* Logo Section */}
+      <div className="flex-1 flex items-center justify-center p-4 md:p-8">
+        <img
+          className="w-full max-w-[180px] sm:max-w-xs md:max-w-md lg:max-w-lg"
+          src="/images/logo_seere/png/previo-long.png"
+          alt="seere logo"
+        />
+      </div>
+
+      {/* Form Section */}
+      <div className="bg-primary flex-1 flex items-center justify-center p-6 sm:p-8 md:p-12">
+        <div className="bg-primary md:bg-transparent rounded-lg md:rounded-none w-full max-w-md">
+          <div className="text-white w-full mb-8 px-2">
+            <h1 className="font-bold text-2xl sm:text-3xl text-center leading-snug max-w-[22rem] mx-auto">
+              Welcome Back to Seere. Please Login
+            </h1>
+          </div>
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full px-2 sm:px-4 space-y-4"
+          >
+            <input
+              type="text"
+              className="rounded-md py-3 px-3 w-full outline-none bg-white text-sm sm:text-base"
+              placeholder="Email"
+              {...register("email", { required: true, pattern: /^\S+@\S+$/ })}
+            />
+
+            <div className="flex gap-2 bg-white w-full justify-between items-center rounded-md py-3 px-3">
+              <input
+                className="outline-none flex-1 text-sm sm:text-base"
+                type={!showPassword ? "password" : "text"}
+                placeholder="Password"
+                {...register("password", { required: true })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                {!showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
-            <div className="bg-primary h-full w-[30%] flex items-center justify-center">
-                <div className="flex flex-col justify-center items-center">
-                    <div className="text-white max-w-72 mb-8">
-                        <h1 className="mb-4 font-bold text-2xl text-center">Welcome Back to Seere. Please Login</h1>
-                        {/* <p className="font-bold text-center uppercase text-lg">Login</p> */}
-                    </div>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="mb-2 flex flex-col gap-4">
-                            <input
-                                type="text"
-                                className="rounded-md py-2 px-2 w-[20rem] outline-none bg-white"
-                                placeholder="Email"
-                                {...register("email", { required: true, pattern: /^\S+@\S+$/ })}
-                            />
-                            <div className="flex gap-1 bg-white w-[20rem] justify-between items-center rounded-md py-2 px-2 ">
-                                <input
-                                    className="outline-none"
-                                    type={!showPassword ? "password": "text"}
-                                    placeholder="Password"
-                                    {...register("password", { required: true })}
-                                />
-                                <div onClick={()=>setShowPassword(!showPassword)} >{!showPassword ? <FaEyeSlash /> : <FaEye />}</div>
-                            </div>
-                        </div>
-                        <a href="/forgot_password">
-                            <p className="mb-2 text-white font-semibold cursor-pointer text-sm">Forgot password?</p>
-                        </a>
-                        <Button type="submit" text="Login" styling="px-6 py-2" />
-                    </form>
-                </div>
-            </div>
+
+            <a href="/forgot_password">
+              <p className="text-white font-semibold cursor-pointer text-xs sm:text-sm hover:underline">
+                Forgot password?
+              </p>
+            </a>
+
+            <Button type="submit" text="Login" styling="px-6 py-2 w-full" />
+          </form>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Login;

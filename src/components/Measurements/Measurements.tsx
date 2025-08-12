@@ -127,7 +127,7 @@ export default function Measurements(){
 
         {
             header: "Results",
-            accessorKey: "athlete",
+            accessorKey: "results",
             cell: ({cell, row}) => (
                 <div>
                     {row.original.results} {row.original.attribute.units}
@@ -156,7 +156,14 @@ export default function Measurements(){
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} searchMsg={"Search Measurements"} />
+                    <Table
+                        data={data_to_render}
+                        columns={table_columns} 
+                        initialPageSize={10}
+                        searchMsg={"Search Measurements"}
+                        enableColumnVisibility={true}
+                        // enableColumnFilters={true}
+                    />
                 </div>}
             </Layout>
         </div>

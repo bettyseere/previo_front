@@ -9,64 +9,87 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const CreateAccount = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
+    const token = urlParams.get("token");
 
     const navigate = useNavigate();
     const { register, handleSubmit, reset } = useForm<CreateUserAccount>();
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = async (data: CreateUserAccount) => {
         try {
             const res = await create_account(data, token);
-            console.log(res)
-            toast.success(res.message)
-            reset()
+            toast.success(res.message);
+            reset();
             navigate("/login");
         } catch (error) {
-            toast.error("There was a problem creating your account..");
-            reset()
+            toast.error("There was a problem creating your account.");
+            reset();
         }
     };
 
     return (
-        <div className="font-jarkata flex items-center h-screen">
-            <div className="w-[70%] h-full flex items-center justify-center">
-                <img width={600} src="/images/logo_seere/svg/main_logo_dark.svg" alt="seere logo" />
+        <div className="font-jarkata flex flex-col md:flex-row h-screen">
+            {/* Left logo section */}
+            <div className="flex-1 flex items-center justify-center p-4 md:p-8">
+                <img
+                className="w-full max-w-[180px] sm:max-w-xs md:max-w-md lg:max-w-lg"
+                src="/images/logo_seere/png/previo-long.png"
+                alt="previo logo"
+                />
             </div>
-            <div className="bg-primary h-full w-[30%] flex items-center justify-center">
-                <div className="flex flex-col justify-center items-center">
-                    <div className="text-white max-w-72 mb-8">
-                        <h1 className="font-bold text-2xl text-center">Welcome to Seere. Create your account</h1>
-                        {/* <p className="font-bold text-center uppercase text-lg">Login</p> */}
-                    </div>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="mb-2 flex flex-col gap-4">
+
+            {/* Right form section */}
+            <div className="bg-primary flex-1 flex items-center justify-center p-6 sm:p-8 md:p-12">
+                <div className="bg-primary md:bg-transparent rounded-lg md:rounded-none w-full max-w-md">
+                    <div className="text-white w-full mb-6 px-2">
+                    <h1 className="font-bold text-2xl sm:text-3xl text-center leading-snug max-w-[22rem] mx-auto">
+                    Welcome to Seere. Create your account
+                    </h1>
+                </div>
+
+                    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
+                        <input
+                            type="text"
+                            placeholder="First Name"
+                            className="rounded-md py-2 px-3 w-full outline-none bg-white focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            {...register("first_name", { required: true })}
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Last Name"
+                            className="rounded-md py-2 px-3 w-full outline-none bg-white focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            {...register("last_name", { required: true })}
+                        />
+
+                        <div className="flex items-center bg-white rounded-md px-3 py-2 w-full focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
                             <input
-                                type="text"
-                                className="rounded-md py-2 px-2 w-[20rem] outline-none bg-white"
-                                placeholder="First Name"
-                                {...register("first_name", { required: true})}
+                                minLength={8}
+                                maxLength={50}
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                className="flex-1 outline-none bg-transparent"
+                                {...register("password", { required: true })}
                             />
-                            <input
-                                className="rounded-md py-2 px-2 w-[20rem] outline-none bg-white"
-                                type="last_name"
-                                placeholder="Last Name"
-                                {...register("last_name", { required: true })}
-                            />
-                            <div className="flex gap-1 bg-white w-[20rem] justify-between items-center rounded-md py-2 px-2 ">
-                                <input
-                                    minLength={8}
-                                    maxLength={50}
-                                    className="outline-none"
-                                    type={!showPassword ? "password": "text"}
-                                    placeholder="Password"
-                                    {...register("password", { required: true })}
-                                />
-                                <div onClick={()=>setShowPassword(!showPassword)} >{!showPassword ? <FaEyeSlash /> : <FaEye />}</div>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                {showPassword ? <FaEye /> : <FaEyeSlash />}
+                            </button>
                         </div>
-                        <p className="text-white mb-2">Already have an account? <a href="/login" className="text-primary font-bold">Login</a></p>
-                        <Button type="submit" text="Create account" styling="px-6 py-2" />
+
+                        <p className="text-white text-sm text-center">
+                            Already have an account?{" "}
+                            <a href="/login" className="font-bold underline">
+                                Login
+                            </a>
+                        </p>
+
+                        <div className="pt-2">
+                            <Button type="submit" text="Create account" styling="w-full py-2" />
+                        </div>
                     </form>
                 </div>
             </div>
