@@ -29,3 +29,8 @@ export const get_single_invite = async (id: string) => request({
     url: `/invites/${id}`
 })
 
+
+export const delete_invite = async (id: string) => request({
+    method: "DELETE",
+    url: `/invites/${id}`
+})
