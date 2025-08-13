@@ -6,6 +6,7 @@ import Login from "../components/authentication/Login";
 import Home from "../components/Companies/Home";
 import UserTeamLayout from "../components/Users/UserInfo/Teams/Layout";
 import Users from "../components/Users/Users";
+import Invites from "../components/Users/Invites";
 // import Devices from "../components/Devices/Devices";
 import ForgotPassword from "../components/authentication/ForgotPassoword";
 import ResetPassword from "../components/authentication/ResetPassword";
@@ -113,6 +114,7 @@ function AppRoutes() {
                             <Route path="/attributes" element={<MeasurementAttributes />} />
                             <Route path="/users" element={<Users />} />
                             <Route path="/roles" element={<Roles />} />
+                            <Route path="/invites" element={<Invites />} />
                         </>
                     )}
 
