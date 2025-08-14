@@ -34,3 +34,8 @@ export const delete_invite = async (id: string) => request({
     method: "DELETE",
     url: `/invites/${id}`
 })
+
+export const resend_invite = async (id: string) => request({
+    method: "GET",
+    url: "/invites/resend_invite?id="+id+"&redirect_url="+window.origin+"/create_account"
+})

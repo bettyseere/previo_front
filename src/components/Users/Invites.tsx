@@ -1,7 +1,7 @@
 import { useApiGet } from "../../utils/hooks/query";
 import { usePopup } from "../../utils/hooks/usePopUp";
 import { get_all_users, delete_user } from "../../api/authentication";
-import { delete_invite, get_single_invite, invites } from "../../api/invites";
+import { delete_invite, invites, resend_invite } from "../../api/invites";
 import { TbSend } from "react-icons/tb";
 
 import Table from "../Commons/Table";
@@ -46,6 +46,15 @@ export default function Invites(){
         } catch {
             toast.error("Error deleting invite.")
             handleHidePopup({show: false, type: "create", confirmModel: false})
+        }
+    }
+
+    const handle_resend_invite = async (id: string) => {
+        try {
+            await resend_invite(id)
+            toast.success("Invite sent successfully")
+        } catch {
+            toast.error("Error resending invite")
         }
     }
 
@@ -110,7 +119,7 @@ export default function Invites(){
                     {(row.original.id !== currentUser?.id && row.original.invite_status !== "accepted") && <div onClick={()=>init_delete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <BsTrash size={20} color="red" />
                     </div>}
-                    {row.original.invite_status !== "accepted" ? <div className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                    {row.original.invite_status !== "accepted" ? <div onClick={()=>handle_resend_invite(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
                         <TbSend size={20} className="text-primary" />
                     </div>: <div></div>}
                 </div>
