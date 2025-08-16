@@ -11,7 +11,7 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
     const { hidePopup, handleHidePopup } = usePopup();
     const { register, handleSubmit, reset } = useForm();
     const [errorMessage, setErrorMessage] = useState("Something went wrong!")
-    const { mutate, isError, isSuccess, isPending, error } = useApiSend(invite_company_user, undefined, undefined, ["invites"]);
+    const { mutate, isError, isSuccess, isPending } = useApiSend(invite_company_user, undefined, undefined, ["invites"]);
 
     // Handle form submission
     const onSubmit = (data: any) => {
@@ -19,9 +19,9 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
         data.company_id = company_id
         mutate(data, {
             onSuccess: () => {
-                console.log("company user invited successfully!", data);
                 handleHidePopup({ show: false, type: "create" }); // Close the popup on success
                 reset(); // Reset form fields
+                window.location.reload()
             },
             onError: (error) => {
                 setErrorMessage(error.response.data.detail)

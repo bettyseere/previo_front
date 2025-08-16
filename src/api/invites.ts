@@ -23,6 +23,11 @@ export const invites = async () => request({
     url: "/invites"
 })
 
+export const company_invites = async (company_id: string) => request({
+    method: "GET",
+    url: "/invites/company_invites?company_id="+company_id
+})
+
 
 export const get_single_invite = async (id: string) => request({
     method: "GET",
