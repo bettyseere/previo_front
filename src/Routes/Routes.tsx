@@ -16,6 +16,7 @@ import CompanyOverview from "../components/Companies/Overview/Overview";
 import Athletes from "../components/Companies/Athletes/Athletes";
 import CompanyDevices from "../components/Companies/Devices/Devices";
 import CompanyTeams from "../components/Companies/Teams/Teams";
+import CompanyInvites from "../components/Companies/Athletes/Invites";
 import CreateAccount from "../components/authentication/CreateAccount";
 import Device_Types from "../components/DeviceTypes/DeviceTypes";
 import DeviceTypeDevices from "../components/DeviceTypes/Devices/Devices";
@@ -83,6 +84,7 @@ function AppRoutes() {
                                 <Route index element={<CompanyOverview />} />
                                 <Route path="athletes" element={<Athletes />} />
                                 <Route path="devices" element={<CompanyDevices />} />
+                                <Route path="invites" element={<CompanyInvites />} />
                                 <Route path="teams">
                                     <Route index element={<CompanyTeams />} />
                                     <Route path=":id/team_members" element={<TeamMembers />} />
