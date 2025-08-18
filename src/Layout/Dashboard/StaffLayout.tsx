@@ -1,4 +1,3 @@
-import StaffSideBar from "./components/SaffSideBar";
 import DashboardHeader from "./components/Header";
 import Board from "./components/Board";
 import { useAuth } from "../../utils/hooks/Auth";
