@@ -43,7 +43,7 @@ const CreateAccount = () => {
                 <div className="bg-primary md:bg-transparent rounded-lg md:rounded-none w-full max-w-md">
                     <div className="text-white w-full mb-6 px-2">
                     <h1 className="font-bold text-2xl sm:text-3xl text-center leading-snug max-w-[22rem] mx-auto">
-                    Welcome to Seere. Create your account
+                    Welcome to Previo®. Create your account
                     </h1>
                 </div>
 
