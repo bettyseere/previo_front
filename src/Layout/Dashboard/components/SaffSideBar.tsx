@@ -19,7 +19,7 @@ export default function StaffSideBar() {
                     <img
                         className="p-0 -mx-4 mt-2"
                         width={130}
-                        src="/images/logo_seere/svg/main_logo_dark.svg"
+                        src="/images/logo_seere/png/previo.png"
                         alt="seere logo"
                     />
                 </div>
