@@ -79,9 +79,6 @@ export default function UserTeamRecords(){
         {header: "Activity", accessorKey: "activity", cell: ({cell, row}) => {
                 return row.original.start === true &&  <p>{row.original.activity}</p>
             }},
-        {header: "Device", accessorKey: "device", cell: ({cell, row}) => (
-            row.original.start === true && <div>{row.original.device}</div>
-        )},
         {
             header: "Date/Time",
             accessorKey: "created_at",
@@ -94,7 +91,7 @@ export default function UserTeamRecords(){
         {
             header: "Jump Height", accessorKey: "id",
             cell: ({cell, row}) => {
-                const val = 4.9*(0.5 * parseInt(row.original.results)) ** 2
+                const val = 4.9*(0.5 * (parseInt(row.original.results)/1000)) ** 2
                 return <div>{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
         }
         },
