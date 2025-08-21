@@ -11,6 +11,7 @@ import ConfirmModel from "../../../../Commons/ConfirmModel";
 import MeasurementForm from "./Form";
 import { delete_measurement } from "../../../../../api/measurements/measurements";
 import { useState } from "react";
+import moment from "moment";
 
 
 export default function UserTeamRecords(){
@@ -50,10 +51,12 @@ export default function UserTeamRecords(){
         </Popup>
 
     data && data.forEach(item => {
-        console.log(item, "this is a measurement")
+        // console.log(item, "this is a measurement")
         data_to_render.push({
+            id: item.id,
             athlete: `${item.athlete.first_name} ${item.athlete.last_name}`,
             athlete_id: item.athlete.id,
+            start: item.start,
             role: item.role.name,
             activity: item.sub_activity.translations[0].name,
             measurement: item.attribute.translations[0].name,
@@ -62,13 +65,37 @@ export default function UserTeamRecords(){
         })
     })
 
+    const find_pair = (id) => {
+        const pair = data.filter(item => item.id === id)
+        console.log(pair.length, "This is a pair")
+        return "Found pair"
+    }
     const table_columns = [
-        {header: "Athlete", accessorKey: "athlete"},
-        {header: "Activity", accessorKey: "activity"},
-        {header: "Device", accessorKey: "device"},
-        {header: "Created By", accessorKey: "role"},
-        {header: "Measurement", accessorKey: "measurement"},
-        {header: "Results", accessorKey: "results"}
+        {header: "Athlete", accessorKey: "athlete", cell: ({cell, row}) => {
+                return row.original.start === true &&  <p>{row.original.athlete}</p>
+            }},
+        {header: "Activity", accessorKey: "activity", cell: ({cell, row}) => {
+                return row.original.start === true &&  <p>{row.original.activity}</p>
+            }},
+        {header: "Device", accessorKey: "device", cell: ({cell, row}) => (
+            row.original.start === true && <div>{row.original.device}</div>
+        )},
+        {
+            header: "Date/Time",
+            accessorKey: "created_at",
+            cell: ({cell, row}) => {
+                return row.original.start === true &&  <p>{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm:ss")}</p>
+            }
+        },
+        {header: "Attribute", accessorKey: "measurement"},
+        {header: "Results", accessorKey: "results"},
+        {
+            header: "Jump Height", accessorKey: "id",
+            cell: ({cell, row}) => {
+                const val = 4.9*(0.5 * parseInt(row.original.results)) ** 2
+                return <div>{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
+        }
+        }
         ]
 
     if (isError){
@@ -100,7 +127,7 @@ export default function UserTeamRecords(){
         {hidePopup.show && !hidePopup.data.base && popup}
         <UserInfo nav_items={default_nav}>
             {
-            data && <Table data={data_to_render} actionBtn={button} columns={table_columns} searchMsg="Search team records"/>
+            data && <Table data={data_to_render} columns={table_columns} searchMsg="Search team records"/>
             }
         </UserInfo>
         </div>

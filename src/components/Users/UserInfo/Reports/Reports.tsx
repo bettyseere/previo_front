@@ -52,7 +52,14 @@ export default function UserReports(){
                 },
             // {header: "Device", accessorKey: "device"},
         {header: "Attribute", accessorKey: "measurement"},
-        {header: "Results", accessorKey: "results"}
+        {header: "Results", accessorKey: "results"},
+        {
+            header: "Jump Height", accessorKey: "id",
+            cell: ({cell, row}) => {
+                const val = 4.9*(0.5 * parseInt(row.original.results)) ** 2
+                return <div>{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
+        }
+        }
         // {
         //     header: "Delete",
         //     accessorKey: "id",
