@@ -1,0 +1,190 @@
+[
+  {
+    "id": "9808df4d-0c7a-4174-9d72-6bd747d4d4d3",
+    "sub_activity": {
+      "id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+      "activity_id": "335df26d-6968-45f5-a7f9-19ac37ff0609",
+      "translations": [
+        {
+          "sub_activity_id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+          "description": "40cm drop and SCM (RIGHT)",
+          "language_code": "en",
+          "name": "DROP 40 - R"
+        },
+        {
+          "sub_activity_id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+          "description": "caduta da 40cm e SCM DX\t",
+          "language_code": "it",
+          "name": "DROP 40 - DX"
+        }
+      ]
+    },
+    "athlete": {
+      "id": "09a36f89-c383-4e29-a7b3-cb9c2e9d13ea",
+      "first_name": "Jack",
+      "last_name": "Ryan"
+    },
+    "start": true,
+    "role": {
+      "id": "0f3515f9-c442-4b04-884a-291010966b97",
+      "name": "Coach",
+      "description": "Coaches the team through the training sessions"
+    },
+    "value": "2",
+    "device": {
+      "id": "e75e0be9-0386-4f05-879a-29ef039aea58",
+      "device_type": {
+        "id": "f2988b0d-1538-4d08-8916-b8aab6f60e07",
+        "name": "FlyStep"
+      },
+      "serial_number": "JKSEKAAEEE"
+    },
+    "note": null,
+    "created_at": "2025-07-28T10:55:19.619754",
+    "updated_at": "2025-07-28T10:55:19.619763",
+    "attribute": {
+      "id": "a558290a-edd4-483d-a62b-d5c0b11a93d0",
+      "translations": [
+        {
+          "attribute_id": "a558290a-edd4-483d-a62b-d5c0b11a93d0",
+          "language_code": "en",
+          "name": "New ",
+          "description": "test attribute",
+          "units": "cm"
+        }
+      ],
+      "created_at": "2025-07-24T05:53:14.492801",
+      "updated_at": "2025-07-24T05:53:14.492813"
+    }
+  },
+  {
+    "id": "8fc8ce8e-8d03-4180-a630-f24aaa857ce5",
+    "sub_activity": {
+      "id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+      "activity_id": "335df26d-6968-45f5-a7f9-19ac37ff0609",
+      "translations": [
+        {
+          "sub_activity_id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+          "description": "40cm drop and SCM (RIGHT)",
+          "language_code": "en",
+          "name": "DROP 40 - R"
+        },
+        {
+          "sub_activity_id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+          "description": "caduta da 40cm e SCM DX\t",
+          "language_code": "it",
+          "name": "DROP 40 - DX"
+        }
+      ]
+    },
+    "athlete": {
+      "id": "9ff31fc0-7a82-4a4c-9e43-659dcfec5707",
+      "first_name": "Muwanguzi",
+      "last_name": "Bryant"
+    },
+    "start": true,
+    "role": {
+      "id": "0f3515f9-c442-4b04-884a-291010966b97",
+      "name": "Coach",
+      "description": "Coaches the team through the training sessions"
+    },
+    "value": "8",
+    "device": {
+      "id": "e75e0be9-0386-4f05-879a-29ef039aea58",
+      "device_type": {
+        "id": "f2988b0d-1538-4d08-8916-b8aab6f60e07",
+        "name": "FlyStep"
+      },
+      "serial_number": "JKSEKAAEEE"
+    },
+    "note": null,
+    "created_at": "2025-07-29T09:21:40.683973",
+    "updated_at": "2025-07-29T09:21:40.684169",
+    "attribute": {
+      "id": "f5daa493-5054-4ad2-97b0-d9db95e7cdd6",
+      "translations": [
+        {
+          "attribute_id": "f5daa493-5054-4ad2-97b0-d9db95e7cdd6",
+          "language_code": "it",
+          "name": "Tempo di contatto",
+          "description": "prova",
+          "units": "mS"
+        },
+        {
+          "attribute_id": "f5daa493-5054-4ad2-97b0-d9db95e7cdd6",
+          "language_code": "en",
+          "name": "Contact Time",
+          "description": "",
+          "units": "mS"
+        }
+      ],
+      "created_at": "2025-04-15T09:13:26.279511",
+      "updated_at": "2025-04-15T09:13:26.279528"
+    }
+  },
+  {
+    "id": "52ebd699-dfb1-4461-8f88-3aa0effcab50",
+    "sub_activity": {
+      "id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+      "activity_id": "335df26d-6968-45f5-a7f9-19ac37ff0609",
+      "translations": [
+        {
+          "sub_activity_id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+          "description": "40cm drop and SCM (RIGHT)",
+          "language_code": "en",
+          "name": "DROP 40 - R"
+        },
+        {
+          "sub_activity_id": "a7b38ab3-d491-42e2-9470-15bcaa43c955",
+          "description": "caduta da 40cm e SCM DX\t",
+          "language_code": "it",
+          "name": "DROP 40 - DX"
+        }
+      ]
+    },
+    "athlete": {
+      "id": "09a36f89-c383-4e29-a7b3-cb9c2e9d13ea",
+      "first_name": "Jack",
+      "last_name": "Ryan"
+    },
+    "start": false,
+    "role": {
+      "id": "0f3515f9-c442-4b04-884a-291010966b97",
+      "name": "Coach",
+      "description": "Coaches the team through the training sessions"
+    },
+    "value": "12",
+    "device": {
+      "id": "e75e0be9-0386-4f05-879a-29ef039aea58",
+      "device_type": {
+        "id": "f2988b0d-1538-4d08-8916-b8aab6f60e07",
+        "name": "FlyStep"
+      },
+      "serial_number": "JKSEKAAEEE"
+    },
+    "note": "Test note",
+    "created_at": "2025-08-20T16:09:25.418033",
+    "updated_at": "2025-08-20T16:09:25.418044",
+    "attribute": {
+      "id": "300b1734-aef4-439e-9e8a-d3fd6e7081f8",
+      "translations": [
+        {
+          "attribute_id": "300b1734-aef4-439e-9e8a-d3fd6e7081f8",
+          "language_code": "en",
+          "name": "Additional measurement",
+          "description": "Additional parameter to characterize the jump",
+          "units": "cm"
+        },
+        {
+          "attribute_id": "300b1734-aef4-439e-9e8a-d3fd6e7081f8",
+          "language_code": "it",
+          "name": "Misura aggiuntiva",
+          "description": "Parametro aggiuntivo per caratterizzare il salto",
+          "units": "cm"
+        }
+      ],
+      "created_at": "2025-08-19T13:32:19.119169",
+      "updated_at": "2025-08-19T13:32:19.119175"
+    }
+  }
+]
