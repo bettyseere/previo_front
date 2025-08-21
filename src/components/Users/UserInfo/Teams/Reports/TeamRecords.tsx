@@ -12,6 +12,7 @@ import MeasurementForm from "./Form";
 import { delete_measurement } from "../../../../../api/measurements/measurements";
 import { useState } from "react";
 import moment from "moment";
+import { Tooltip } from "react-tooltip";
 
 
 export default function UserTeamRecords(){
@@ -61,7 +62,8 @@ export default function UserTeamRecords(){
             activity: item.sub_activity.translations[0].name,
             measurement: item.attribute.translations[0].name,
             results: item.value + item.attribute.translations[0].units,
-            device: item.device.device_type.name
+            device: item.device.device_type.name,
+            note: item.note
         })
     })
 
@@ -84,7 +86,7 @@ export default function UserTeamRecords(){
             header: "Date/Time",
             accessorKey: "created_at",
             cell: ({cell, row}) => {
-                return row.original.start === true &&  <p>{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm:ss")}</p>
+                return <p>{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm:ss")}</p>
             }
         },
         {header: "Attribute", accessorKey: "measurement"},
@@ -95,6 +97,20 @@ export default function UserTeamRecords(){
                 const val = 4.9*(0.5 * parseInt(row.original.results)) ** 2
                 return <div>{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
         }
+        },
+        {
+            header: "Note", accessorKey: "note", cell: ({cell, row}) => {
+                return <div className="max-w-[8rem] pr-2 truncate">
+                    <div data-tooltip-id="comment-tooltip" className="max-w-[6rem] truncate">
+                        {row.original.note}
+                    </div>
+                    <Tooltip id="comment-tooltip" place="left" className="bg-black/90">
+                        <div className="p-4 bg-transparent">
+                            <p className="bg-transparent">{row.original.note}</p>
+                        </div>
+                    </Tooltip>
+                </div>
+            }
         }
         ]
 
@@ -134,3 +150,6 @@ export default function UserTeamRecords(){
     )
 
 }
+
+
+// 4,9*((1/2*(Tv/1000))*(1/2*(Tv/1000)))
