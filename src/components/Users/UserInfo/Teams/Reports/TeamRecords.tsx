@@ -91,7 +91,10 @@ export default function UserTeamRecords(){
         {
             header: "Jump Height", accessorKey: "id",
             cell: ({cell, row}) => {
-                const val = 4.9*(0.5 * (parseInt(row.original.results)/1000)) ** 2
+                let val = 0;
+                if (row.original.measurement.toLowerCase() === "flight time"){
+                    val = 4.9*(0.5 * (parseInt(row.original.results)/1000)) ** 2
+                }
                 return <div>{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
         }
         },
