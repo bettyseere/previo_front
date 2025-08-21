@@ -4,6 +4,7 @@ import Table from "../../../Commons/Table";
 import { get_user_measurements, delete_measurement } from "../../../../api/measurements/measurements";
 import { useApiGet } from "../../../../utils/hooks/query";
 import moment from "moment";
+import { Tooltip } from "react-tooltip";
 
 export default function UserReports(){
     const { currentUser } = useAuth()
@@ -27,7 +28,8 @@ export default function UserReports(){
             device: item.device.device_type.name,
             start: item.start,
             created_at: item.created_at,
-            updated_at: item.updated_at
+            updated_at: item.updated_at,
+            note: item.note
         })
     })
 
@@ -63,6 +65,20 @@ export default function UserReports(){
                 return <div>{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
         }
         },
+        {
+            header: "Note", accessorKey: "note", cell: ({cell, row}) => {
+                return <div className="max-w-[8rem] pr-2 truncate">
+                    <div data-tooltip-id="comment-tooltip" className="max-w-[6rem] truncate">
+                        {row.original.note}
+                    </div>
+                    <Tooltip id="comment-tooltip" place="left" className="bg-black/90">
+                        <div className="p-4 bg-transparent">
+                            <p className="bg-transparent">{row.original.note}</p>
+                        </div>
+                    </Tooltip>
+                </div>
+            }
+        }
         // {
         //     header: "Delete",
         //     accessorKey: "id",
