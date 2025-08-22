@@ -78,7 +78,9 @@ export default function UserReports(){
                     }
                 },
             // {header: "Device", accessorKey: "device"},
-        {header: "Attribute", accessorKey: "measurement"},
+        {header: "Attribute", accessorKey: "measurement", cell: ({cell, row}) => {
+            return <p className="text-xs">{row.original.measurement}</p>
+        }},
         {header: "Results", accessorKey: "results", cell: ({cell, row}) => {
             return <p className="text-xs">{row.original.results} {row.original.units}</p>
         }},

@@ -103,7 +103,7 @@ export default function UserTeamRecords(){
             header: "Date/Time",
             accessorKey: "created_at",
             cell: ({cell, row}) => {
-                return <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm:ss")}</p>
+                return row.original.start === true && <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm:ss")}</p>
             }
         },
         {header: "Attribute", accessorKey: "measurement", cell: ({cell, row}) => {
