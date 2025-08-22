@@ -96,7 +96,7 @@ export default function UserReports(){
                 // if (row.original.measurement.toLowerCase() === "flight time"){
                 //     val = 4.9*(0.5 * (parseInt(row.original.results)/1000)) ** 2
                 // }
-                return row.original.start === true && <div className="text-xs">{val?.toFixed(2)}</div>
+                return <div className="text-xs">{row.original.measurement.toLowerCase() === "tempo di contatto" && val?.toFixed(2)}</div>
             }
         },
         {
@@ -111,7 +111,7 @@ export default function UserReports(){
                 // if (row.original.measurement.toLowerCase() === "flight time"){
                 //     val = 4.9*(0.5 * (parseInt(row.original.results)/1000)) ** 2
                 // }
-                return row.original.start === true && <div className="text-xs">{val?.toFixed(2)}</div>
+                return <div className="text-xs">{row.original.measurement.toLowerCase() === "tempo di contatto" && val?.toFixed(2)}</div>
             }
         },
         {
@@ -121,8 +121,8 @@ export default function UserReports(){
                 if (row.original.measurement.toLowerCase() === "flight time"){
                     val = 4.9*(0.5 * (parseInt(row.original.results)/1000)) ** 2
                 }
-                return row.original.start === true && <div className="text-xs">{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
-        }
+                return <div className="text-xs">{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
+            }
         },
         {
             header: "Note", accessorKey: "note", cell: ({cell, row}) => {

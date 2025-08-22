@@ -119,7 +119,7 @@ export default function UserTeamRecords(){
                 if (row.original.measurement.toLowerCase() === "flight time"){
                     val = 4.9*(0.5 * (row.original.results/1000)) ** 2
                 }
-                return row.original.start === true && <div className="text-xs">{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
+                return <div className="text-xs">{row.original.measurement.toLowerCase() === "flight time" && (val).toFixed(2)}</div>
         }
         },
         {
@@ -131,10 +131,11 @@ export default function UserTeamRecords(){
                     console.log(rows, "pairs")
                     val = ((rows?.end.results/1000) / (rows?.start.results/1000))
                 }
+                console.log(row.original.measurement)
                 // if (row.original.measurement.toLowerCase() === "flight time"){
                 //     val = 4.9*(0.5 * (parseInt(row.original.results)/1000)) ** 2
                 // }
-                return row.original.start === true && <div className="text-xs">{val?.toFixed(2)}</div>
+                return <div className="text-xs">{row.original.measurement.toLowerCase() === "tempo di contatto" && val?.toFixed(2)}</div>
             }
         },
         {
@@ -149,7 +150,7 @@ export default function UserTeamRecords(){
                 // if (row.original.measurement.toLowerCase() === "flight time"){
                 //     val = 4.9*(0.5 * (parseInt(row.original.results)/1000)) ** 2
                 // }
-                return row.original.start === true && <div className="text-xs">{val?.toFixed(2)}</div>
+                return  <div className="text-xs">{row.original.measurement.toLowerCase() === "tempo di contatto" && val?.toFixed(2)}</div>
             }
         },
         {
