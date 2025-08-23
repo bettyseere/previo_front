@@ -157,7 +157,7 @@ export default function UserTeamRecords() {
             contactTime = contactTime && contactTime/1000
 
             // Power formula
-            const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime);
+            const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / 4 * contactTime;
 
             // assign power to the row representing flight time
             if (measA === "contact time") a.power = power;
@@ -202,7 +202,7 @@ export default function UserTeamRecords() {
       cell: ({ row }) => {
         if (normalize(row.original.measurement) !== "flight time") return null;
         const val = 4.9 * (0.5 * (row.original.results / 1000)) ** 2;
-        return <div className="text-xs">{val.toFixed(2)}</div>;
+        return <div className="text-xs">{val.toFixed(2)} m</div>;
       },
     },
     {
