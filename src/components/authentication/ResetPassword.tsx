@@ -44,7 +44,7 @@ const ResetPassword = () => {
       </div>
 
       {/* Form Section */}
-      <div className="bg-primary flex-1 flex items-center justify-center p-6 sm:p-8 md:p-12">
+      <div className="bg-primary flex-1 flex items-center justify-center p-6 sm:p-8 md:p-12 relative">
         <div className="bg-primary md:bg-transparent rounded-lg md:rounded-none w-full max-w-md">
           <div className="text-white w-full mb-8 px-2">
             <h1 className="font-bold text-2xl sm:text-3xl text-center leading-snug max-w-[22rem] mx-auto">
@@ -91,6 +91,12 @@ const ResetPassword = () => {
               styling="px-6 py-2 w-full"
             />
           </form>
+          <div className="text-white font-semibold absolute bottom-4 text-center w-full left-0 right-0 px-4 text-sm sm:text-base">
+            <p className="pt-4">Previo is a registred trademark of Seere S.r.l</p>
+            <a href="https://www.seere.cloud/privacy-policy-previo">
+              <p className="hover:text-green-500 cursor-pointer underline">Terms & Conditions</p>
+            </a>
+          </div>
         </div>
       </div>
     </div>
