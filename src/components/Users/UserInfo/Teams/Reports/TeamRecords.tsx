@@ -93,8 +93,9 @@ export default function UserTeamRecords() {
 
       if (row.start) {
         // close previous group
-        if (currentGroup.length > 0) {
+        if (currentGroup.length > 1) {
           computeRSI(currentGroup);
+          computePower(currentGroup);
         }
         currentGroup = [row];
       } else {
@@ -102,8 +103,9 @@ export default function UserTeamRecords() {
       }
     }
 
-    if (currentGroup.length > 0) {
-      computeRSI(currentGroup);
+    if (currentGroup.length > 1) {
+        computePower(currentGroup)
+        computeRSI(currentGroup);
     }
 
     setDataToRender(enriched);
@@ -130,6 +132,41 @@ export default function UserTeamRecords() {
       }
     }
   };
+
+    const computePower = (group) => {
+        if (group.length < 2) return;
+
+        // slice middle rows if group is large
+        let sliced = group.length > 2 ? group.slice(1, -1) : group;
+        console.log(sliced.length)
+
+        for (let i = 0; i < sliced.length - 1; i++) {
+            const a = sliced[i];
+            const b = sliced[i + 1];
+
+            const measA = normalize(a.measurement);
+            const measB = normalize(b.measurement);
+
+            // only calculate when we have both contact time & flight time
+            if (
+            (measA === "tempo di contatto" && measB === "flight time") ||
+            (measA === "flight time" && measB === "tempo di contatto")
+            ) {
+            let contactTime = measA === "tempo di contatto" ? a.results : b.results;
+            let flightTime = measA === "flight time" ? a.results : b.results;
+            flightTime = flightTime && flightTime/1000
+            contactTime = contactTime && contactTime/1000
+
+            // Power formula
+            const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime);
+
+            // assign power to the row representing flight time
+            if (measA === "tempo di contatto") a.power = power;
+            else b.power = power;
+            }
+        }
+    };
+
 
   const table_columns = [
     {
@@ -175,6 +212,13 @@ export default function UserTeamRecords() {
       cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi/1000).toFixed(2)}</div> : null,
     },
     {
+      header: "Power (W/Kg)",
+      accessorKey: "power",
+      cell: ({ row }) => {
+        return row.original.power ? <div className="text-xs">{row.original.power.toFixed(2)}</div> : null
+      }
+    },
+    {
       header: "Note",
       accessorKey: "note",
       cell: ({ row }) => (
@@ -198,7 +242,7 @@ export default function UserTeamRecords() {
         <div className="w-full flex justify-center flex-col items-center mt-28">
           {hidePopup.show && popup}
           <div className="text-xl font-bold text-red-400">
-            {error.response.status === 404 ? "No records found" : "Error fetching records"}
+            {error?.response.status === 404 ? "No records found" : "Error fetching records"}
           </div>
           <div>
             {error.response.status == 404 && (
