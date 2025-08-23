@@ -123,11 +123,11 @@ export default function UserTeamRecords() {
       const a = sliced[i];
       const b = sliced[i + 1];
 
-      if (normalize(a.measurement) === "tempo di contatto" && normalize(b.measurement) === "flight time") {
+      if (normalize(a.measurement) === "contact time" && normalize(b.measurement) === "flight time") {
         a.rsi = b.results / a.results;
       }
 
-      if (normalize(a.measurement) === "flight time" && normalize(b.measurement) === "tempo di contatto") {
+      if (normalize(a.measurement) === "flight time" && normalize(b.measurement) === "contact time") {
         b.rsi = a.results / b.results;
       }
     }
@@ -138,7 +138,6 @@ export default function UserTeamRecords() {
 
         // slice middle rows if group is large
         let sliced = group.length > 2 ? group.slice(1, -1) : group;
-        console.log(sliced.length)
 
         for (let i = 0; i < sliced.length - 1; i++) {
             const a = sliced[i];
@@ -149,10 +148,10 @@ export default function UserTeamRecords() {
 
             // only calculate when we have both contact time & flight time
             if (
-            (measA === "tempo di contatto" && measB === "flight time") ||
-            (measA === "flight time" && measB === "tempo di contatto")
+            (measA === "contact time" && measB === "flight time") ||
+            (measA === "flight time" && measB === "contact time")
             ) {
-            let contactTime = measA === "tempo di contatto" ? a.results : b.results;
+            let contactTime = measA === "contact time" ? a.results : b.results;
             let flightTime = measA === "flight time" ? a.results : b.results;
             flightTime = flightTime && flightTime/1000
             contactTime = contactTime && contactTime/1000
@@ -161,7 +160,7 @@ export default function UserTeamRecords() {
             const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime);
 
             // assign power to the row representing flight time
-            if (measA === "tempo di contatto") a.power = power;
+            if (measA === "contact time") a.power = power;
             else b.power = power;
             }
         }
@@ -175,12 +174,12 @@ export default function UserTeamRecords() {
       cell: ({ row }) => row.original.start === true && <p className="text-xs">{row.original.athlete}</p>,
     },
     {
-      header: "Activity",
+      header: "Item",
       accessorKey: "activity",
       cell: ({ row }) => row.original.start === true && <p className="text-xs">{row.original.activity}</p>,
     },
     {
-      header: "Date/Time",
+      header: "Date",
       accessorKey: "created_at",
       cell: ({ row }) =>
         row.original.start === true && (
@@ -198,7 +197,7 @@ export default function UserTeamRecords() {
       cell: ({ row }) => <p className="text-xs">{row.original.results} {row.original.units}</p>,
     },
     {
-      header: "Jump Height",
+      header: "JH",
       accessorKey: "id",
       cell: ({ row }) => {
         if (normalize(row.original.measurement) !== "flight time") return null;
@@ -209,10 +208,10 @@ export default function UserTeamRecords() {
     {
       header: "RSI",
       accessorKey: "rsi",
-      cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi/1000).toFixed(2)}</div> : null,
+      cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(2)}</div> : null,
     },
     {
-      header: "Power (W/Kg)",
+      header: "Power W/Kg",
       accessorKey: "power",
       cell: ({ row }) => {
         return row.original.power ? <div className="text-xs">{row.original.power.toFixed(2)}</div> : null
