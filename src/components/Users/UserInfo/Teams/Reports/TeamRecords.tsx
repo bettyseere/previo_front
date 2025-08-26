@@ -76,6 +76,7 @@ export default function UserTeamRecords() {
         role: item.role.name,
         activity: item.sub_activity.translations[0].name,
         measurement: item.attribute.translations[0].name,
+        measurement_id: item.attribute.id,
         results: parseInt(item.value),
         units: item.attribute.translations[0].units,
         device: item.device.device_type.name,
@@ -123,11 +124,11 @@ export default function UserTeamRecords() {
       const a = sliced[i];
       const b = sliced[i + 1];
 
-      if (normalize(a.measurement) === "contact time" && normalize(b.measurement) === "flight time") {
+      if (normalize(a.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
         a.rsi = b.results / a.results;
       }
 
-      if (normalize(a.measurement) === "flight time" && normalize(b.measurement) === "contact time") {
+      if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
         b.rsi = a.results / b.results;
       }
     }
@@ -143,16 +144,16 @@ export default function UserTeamRecords() {
             const a = sliced[i];
             const b = sliced[i + 1];
 
-            const measA = normalize(a.measurement);
-            const measB = normalize(b.measurement);
+            const measA = normalize(a.measurement_id);
+            const measB = normalize(b.measurement_id);
 
             // only calculate when we have both contact time & flight time
             if (
-            (measA === "contact time" && measB === "flight time") ||
-            (measA === "flight time" && measB === "contact time")
+            (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
+            (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6e")
             ) {
-            let contactTime = measA === "contact time" ? a.results : b.results;
-            let flightTime = measA === "flight time" ? a.results : b.results;
+            let contactTime = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
+            let flightTime = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
             flightTime = flightTime && flightTime/1000
             contactTime = contactTime && contactTime/1000
 
@@ -160,7 +161,7 @@ export default function UserTeamRecords() {
             const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / 4 * contactTime;
 
             // assign power to the row representing flight time
-            if (measA === "contact time") a.power = power;
+            if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
             else b.power = power;
             }
         }
@@ -200,7 +201,7 @@ export default function UserTeamRecords() {
       header: "JH",
       accessorKey: "id",
       cell: ({ row }) => {
-        if (normalize(row.original.measurement) !== "flight time") return null;
+        if (normalize(row.original.measurement_id) !== "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") return null;
         const val = 4.9 * (0.5 * (row.original.results / 1000)) ** 2;
         return <div className="text-xs">{val.toFixed(2)} m</div>;
       },
@@ -211,7 +212,7 @@ export default function UserTeamRecords() {
       cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(2)}</div> : null,
     },
     {
-      header: "Power W/Kg",
+      header: "W/Kg",
       accessorKey: "power",
       cell: ({ row }) => {
         return row.original.power ? <div className="text-xs">{row.original.power.toFixed(2)}</div> : null
