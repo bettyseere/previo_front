@@ -15,10 +15,11 @@ import { Tooltip } from "react-tooltip";
 
 export default function UserTeamRecords() {
   const { hidePopup, handleHidePopup } = usePopup();
-  const { currentUser } = useAuth();
+  const { currentUser, language } = useAuth();
   const is_staff = currentUser?.user_type == "staff";
   let team_id = useParams().id;
   const [selectedId, setSelectID] = useState("");
+  const team_name = localStorage.getItem("current_team") + " records" || "Team records"
 
   let user_team = currentUser?.teams;
   user_team = user_team?.find((team) => team.team.id == team_id);
@@ -60,6 +61,7 @@ export default function UserTeamRecords() {
 
   const normalize = (str) => str.trim().toLowerCase();
 
+
   // ⬇️ Build enriched rows (with RSI) whenever `data` changes
   useEffect(() => {
     if (!data) return;
@@ -67,6 +69,8 @@ export default function UserTeamRecords() {
     let rows: any[] = [];
 
     data.forEach((item, index) => {
+    let measurement_obj = item.attribute.translations.find(tr => tr.language_code === language) || item.attribute.translations[0]
+    const activity_obj = item.sub_activity.translations.find(sa => sa.language_code === language) || item.sub_activity.translations[0]
     rows.push({
         id: item.id,
         index: rows.length,
@@ -74,8 +78,8 @@ export default function UserTeamRecords() {
         athlete_id: item.athlete.id,
         start: item.start,
         role: item.role.name,
-        activity: item.sub_activity.translations[0].name,
-        measurement: item.attribute.translations[0].name,
+        activity: activity_obj.name,
+        measurement: measurement_obj?.name,
         measurement_id: item.attribute.id,
         results: parseInt(item.value),
         units: item.attribute.translations[0].units,
@@ -110,7 +114,7 @@ export default function UserTeamRecords() {
     }
 
     setDataToRender(enriched);
-  }, [data]);
+  }, [data, language]);
 
   const computeRSI = (group) => {
     if (group.length < 2) return;
@@ -125,11 +129,11 @@ export default function UserTeamRecords() {
       const b = sliced[i + 1];
 
       if (normalize(a.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
-        a.rsi = b.results / a.results;
+        a.rsi = a.results / b.results;
       }
 
       if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-        b.rsi = a.results / b.results;
+        b.rsi =  b.results / a.results;
       }
     }
   };
@@ -272,7 +276,7 @@ export default function UserTeamRecords() {
     <div>
       {hidePopup.show && !hidePopup.data.base && popup}
       <UserInfo nav_items={default_nav}>
-        {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" />}
+        {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" entity_name={team_name} back_path="/teams"/> }
       </UserInfo>
     </div>
   );

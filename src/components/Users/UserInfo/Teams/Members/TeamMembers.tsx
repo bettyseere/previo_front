@@ -9,7 +9,7 @@ import UserTeamLayout from "../Layout";
 
 export default function UserTeamMembers(){
     let team_id = useParams().id
-    let team_name = (new URLSearchParams(window.location.search)).get("label")
+    let team_name = localStorage.getItem("current_team")
     const { currentUser } = useAuth()
     const is_staff = currentUser?.user_type == "staff"
 
@@ -71,7 +71,7 @@ export default function UserTeamMembers(){
         <div>
             <UserInfo nav_items={default_nav}>
                 {data && <div className="">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} entity_name={team_name ? team_name + " team members" : ""} searchMsg={"Search Team Members"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} entity_name={team_name ? team_name : "Team members"} searchMsg={"Search Team Members"} back_path="/teams" />
                 </div>}
             </UserInfo>
         </div>
