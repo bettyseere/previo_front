@@ -15,6 +15,7 @@ import { BsTrash } from "react-icons/bs"
 import moment from "moment"
 import { PiPen } from "react-icons/pi"
 import { queryClient } from "../../../main"
+import { useAuth } from "../../../utils/hooks/Auth"
 
 
 
@@ -22,6 +23,7 @@ export default function DeviceActivities(){
     const { hidePopup, handleHidePopup } = usePopup()
     let device_type_id: any = useParams()
     device_type_id = device_type_id.id
+    const {language} = useAuth()
     const [selectedActivityID, setSelectedActivityId] = useState("")
     const {
                 data,
@@ -67,16 +69,20 @@ export default function DeviceActivities(){
     let data_to_render;
 
     if (data){
-        data_to_render = data.map(device_activity => ({
-            device_type_id: device_activity.device_type_id,
-            activity_id: device_activity.activity_id,
-            activity_name: device_activity.activity.translations[0].name,
-            activity_description: device_activity.activity.translations[0].description,
-            create_at: device_activity.created_at,
-            position: device_activity.position,
-            updated_at: device_activity.updated_at
+        data_to_render = data.map(device_activity => {
+            const translations = device_activity.activity.translations
+            const val = translations.find(item => item.language_code === language)
+            return {
+                device_type_id: device_activity.device_type_id,
+                activity_id: device_activity.activity_id,
+                activity_name: val?.name ? val.name: device_activity.activity.translations[0].name,
+                activity_description: val?.description ? val.description: device_activity.activity.translations[0].description,
+                created_at: device_activity.created_at,
+                position: device_activity.position,
+                updated_at: device_activity.updated_at
+            }
         }
-        ))
+        )
     }
 
     const table_columns = [
@@ -136,7 +142,7 @@ export default function DeviceActivities(){
             <div>
                 {hidePopup.show && popup}
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Activities"} />
+                    <Table back_path="/device_types" data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Activities"} />
                 </div>}
             </div>
         </DeviceTypeSubMenu>

@@ -4,7 +4,6 @@ import Table from "../../../../Commons/Table";
 import { useParams } from "react-router-dom";
 import UserInfo from "../../UserInfo";
 import { useAuth } from "../../../../../utils/hooks/Auth";
-import UserTeamLayout from "../Layout";
 
 
 export default function UserTeamMembers(){

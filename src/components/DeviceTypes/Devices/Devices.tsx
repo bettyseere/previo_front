@@ -136,7 +136,7 @@ export default function DeviceTypeDevices(){
             <div>
             {hidePopup.show && popup}
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Devices"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} back_path="/device_types" searchMsg={"Search Devices"} />
                 </div>}
         </div>
         </DeviceTypeSubMenu>

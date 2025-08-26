@@ -13,12 +13,14 @@ import { queryClient } from "../../main";
 import ConfirmModel from "../Commons/ConfirmModel";
 import { useState } from "react";
 import moment from "moment";
+import { useAuth } from "../../utils/hooks/Auth";
 
 
 export default function Activities(){
     const [selectedID, setSelectedID] = useState("")
     const [selectedItem, setSelectedItem] = useState(null)
     const {hidePopup, handleHidePopup} = usePopup()
+    const {language} = useAuth()
     const {
             data,
             isLoading,
@@ -98,12 +100,16 @@ export default function Activities(){
 
 
         let data_to_render;
-
+        const getTranslation = (obj, lang) => {
+            const targetLang = lang || 'en';
+            return obj?.[targetLang] ?? obj?.en;
+        };
+    
         if (data){
             data_to_render = data.map(exercise => ({
             id: exercise.id,
-            name: exercise.name.en,
-            description: exercise.description.en,
+            name: getTranslation(exercise.name, language),
+            description: getTranslation(exercise.description, language),
             create_at: exercise.created_at,
             sub_exercises: exercise.sub_activities
         }))

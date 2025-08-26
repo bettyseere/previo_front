@@ -12,8 +12,8 @@ export default function DashboardHeader(){
                     <div className=" px-2 gap-2 mx-[.9rem] cursor-pointer">{is_staff && <SeereLogo styling="mt-0 py-2" size={50}/>}</div>
                 </a>
                 <div className="flex gap-4 items-center">
-                    <div className=""><LanguageSelector /></div>
-                    <div className="flex md:gap-8 lg:gap-12 text-gray-800 mr-5">
+                    <div className={`${!is_staff && "order-last mr-1"}`}><LanguageSelector /></div>
+                    <div className={`flex md:gap-8 lg:gap-12 text-gray-800 ${is_staff && "mr-5"}`}>
                         {is_staff ?<div className="cursor-pointer font-bold text-red-500" onClick={handleLogout}>Logout</div> :
                         <a href="/profile">
                             <div className="flex items-center gap-2 cursor-pointer">

@@ -13,11 +13,13 @@ import { queryClient } from "../../../main";
 import ConfirmModel from "../../Commons/ConfirmModel";
 import { useState } from "react";
 import moment from "moment";
+import { useAuth } from "../../../utils/hooks/Auth";
 
 
 export default function MeasurementAttributes(){
     const [selectedID, setSelectedID] = useState("")
     const {hidePopup, handleHidePopup} = usePopup()
+    const {language} = useAuth()
     const {
             data,
             isLoading,
@@ -97,16 +99,20 @@ export default function MeasurementAttributes(){
 
 
         let data_to_render;
+        const getTranslation = (obj, lang) => {
+            const targetLang = lang || 'en';
+            return obj?.[targetLang] ?? obj?.en;
+        };
 
-        if (data){
+        if (data) {
             data_to_render = data.map(exercise => ({
-            id: exercise.id,
-            name: exercise.name.en,
-            units: exercise.units.en,
-            description: exercise.description.en,
-            create_at: exercise.created_at,
-            sub_exercises: exercise.sub_activities
-        }))
+                id: exercise.id,
+                name: getTranslation(exercise.name, language),
+                units: getTranslation(exercise.units, language),
+                description: getTranslation(exercise.description, language),
+                created_at: exercise.created_at,
+                sub_exercises: exercise.sub_activities
+            }));
         }
 
         const table_columns = [
