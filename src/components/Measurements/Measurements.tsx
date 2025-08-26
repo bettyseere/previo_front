@@ -9,11 +9,13 @@ import ConfirmModel from "../Commons/ConfirmModel";
 import MeasurementForm from "../Users/UserInfo/Teams/Reports/Form";
 import { useState } from "react";
 import moment from "moment";
+import { useAuth } from "../../utils/hooks/Auth";
 
 
 export default function Measurements(){
     const {hidePopup, handleHidePopup} = usePopup()
     const [selectId, setSelectID] = useState("")
+    const {language} = useAuth()
     const {
             data,
             isLoading,
@@ -54,10 +56,9 @@ export default function Measurements(){
 
     if (data){
         data_to_render = data.map(measurement => {
-            let set_language = "en"; // we'll make this dynamic eventually
             let sub_activity_name;
-            sub_activity_name = measurement.sub_activity.translations[0].name
-            const attribute_name = measurement.attribute ? measurement.attribute.translations[0].name: null
+            sub_activity_name = measurement.sub_activity.translations.find(ac => ac.language_code === language)?.name || measurement.sub_activity.translations[0].name
+            const attribute_name = measurement.attribute ? measurement.attribute.translations.find(at => at.language_code == language)?.name || measurement.attribute.translations[0].name: null
             const attribute_units = measurement.attribute ? measurement.attribute.translations[0].units: null
             const results = measurement.value
             return {
@@ -79,11 +80,11 @@ export default function Measurements(){
             header: "Activity",
             accessorKey: "sub_activity",
             cell: ({cell, row}) => (
-                <a className="" href="">
+                // <a className="" href="">
                     <div>
                         {row.original.start === true && row.original.sub_activity.name}
                     </div>
-                </a>
+                // </a>
             )
         },
         {

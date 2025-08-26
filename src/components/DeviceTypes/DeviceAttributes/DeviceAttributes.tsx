@@ -15,11 +15,13 @@ import { BsTrash } from "react-icons/bs"
 import moment from "moment"
 import { PiPen } from "react-icons/pi"
 import { useQueryClient } from "@tanstack/react-query"
+import { useAuth } from "../../../utils/hooks/Auth"
 
 
 
 export default function DeviceAttributes(){
     const { hidePopup, handleHidePopup } = usePopup()
+    const {language} = useAuth()
     let device_type_id: any = useParams()
     device_type_id = device_type_id.id
     const [selectedAttributeID, setSelectedAttributeId] = useState("")
@@ -68,18 +70,21 @@ export default function DeviceAttributes(){
 
     let data_to_render;
 
-    if (data){
-        console.log(data, "data to map")
-        data_to_render = data.map(device_attribute => ({
-            device_type_id: device_type_id,
-            attribute_id: device_attribute.attribute.id,
-            activity_name: device_attribute.attribute.translations[0].name,
-            activity_description: device_attribute.attribute.translations[0].description,
-            create_at: device_attribute.created_at,
-            position: device_attribute.position,
-            updated_at: device_attribute.updated_at
-        }
-        ))
+    if (data) {
+        data_to_render = data.map(device_attribute => {
+            const translations = device_attribute.attribute.translations;
+            const translation = translations.find(t => t.language_code === language) || translations[0];
+
+            return {
+                device_type_id: device_type_id,
+                attribute_id: device_attribute.attribute.id,
+                activity_name: translation?.name,
+                activity_description: translation?.description,
+                created_at: device_attribute.created_at,
+                position: device_attribute.position,
+                updated_at: device_attribute.updated_at
+            };
+        });
     }
 
     const table_columns = [
@@ -139,7 +144,7 @@ export default function DeviceAttributes(){
             <div>
                 {hidePopup.show && popup}
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Attributes"} />
+                    <Table data={data_to_render} back_path="/device_types" columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Attributes"} />
                 </div>}
             </div>
         </DeviceTypeSubMenu>

@@ -11,6 +11,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
+import { Tooltip } from "react-tooltip";
 
 interface TableWithPaginationProps<T> {
   columns: ColumnDef<T, any>[]; // Table column definitions
@@ -89,28 +90,30 @@ export default function Table<T>({
       {/* Top Controls */}
       <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
         <div className="flex items-center gap-2">
-          {back_path && (
-            <a href={back_path}>
-              <div className="font-bold gap-2 flex items-center hover:scale-105 hover:duration-200">
-                <MdKeyboardBackspace size={15} className="text-primary" />
-                <p className="text-primary">Back</p>
-              </div>
-            </a>
-          )}
-          {entity_name && (
-            <h4 className="font-semibold text-xl text-secondary capitalize">
-              {entity_name}
-            </h4>
-          )}
-        </div>
-        <div className="w-[24rem]">
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder={searchMsg}
-            className="border px-4 py-2 rounded w-full outline-none text-gray-700"
-          />
+          {(back_path || entity_name) && <div className="flex items-center gap-2">
+            {back_path && (
+              <a href={back_path}>
+                <div className="font-bold gap-1 flex items-center hover:scale-105 hover:duration-200">
+                  <MdKeyboardBackspace size={15} className="text-primary" />
+                  <p className="text-primary">Back</p>
+                </div>
+              </a>
+            )}
+            {entity_name && (
+              <h4 className="font-semibold text-xl text-secondary capitalize">
+                {entity_name}
+              </h4>
+            )}
+          </div>}
+          <div className="w-[24rem]">
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder={searchMsg}
+              className="border px-4 py-2 rounded w-full outline-none text-gray-700"
+            />
+          </div>
         </div>
         {actionBtn && <div onClick={handleBtn}>{actionBtn}</div>}
       </div>
@@ -206,7 +209,7 @@ export default function Table<T>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="text-secondary px-4 py-2 border-b border-r first:border-l text-center text-[1rem] truncate"
+                      className="text-secondary px-4 py-2 border-b border-r first:border-l text-center text-[1rem]"
                       style={{ width: `${cell.column.getSize()}px` }}
                     >
                       {flexRender(

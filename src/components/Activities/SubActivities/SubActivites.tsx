@@ -14,11 +14,13 @@ import ConfirmModel from "../../Commons/ConfirmModel";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import moment from "moment";
+import { useAuth } from "../../../utils/hooks/Auth";
 
 
 export default function SubActivities(){
     const [selectedID, setSelectedID] = useState("")
     const {hidePopup, handleHidePopup} = usePopup()
+    const {language} = useAuth()
     let activity_id: any = useParams();
 
     activity_id = activity_id.id
@@ -101,12 +103,17 @@ export default function SubActivities(){
 
         let data_to_render;
 
+        const getTranslation = (obj, lang) => {
+            const targetLang = lang || 'en';
+            return obj?.[targetLang] ?? obj?.en;
+        };
+
 
         if (data){
             data_to_render = data.map(exercise => ({
             id: exercise.id,
-            name: exercise.name.en,
-            description: exercise.description.en,
+            name: getTranslation(exercise.name, language),
+            description: getTranslation(exercise.description, language),
             create_at: exercise.created_at,
             sub_exercises: exercise.sub_activities,
             activity_attributes: exercise.activity_attributes
@@ -158,7 +165,7 @@ export default function SubActivities(){
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Sub Activities"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} back_path="/activities" searchMsg={"Search Sub Activities"} />
                 </div>}
             </Layout>
         </div>

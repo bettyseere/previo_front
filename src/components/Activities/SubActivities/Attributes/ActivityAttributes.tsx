@@ -13,11 +13,13 @@ import ConfirmModel from "../../..//Commons/ConfirmModel";
 import { useState } from "react";
 import ActivityAttributeForm from "./Form";
 import moment from "moment";
+import { useAuth } from "../../../../utils/hooks/Auth";
 
 
 export default function ActivityAttributes(){
     const [selectedID, setSelectedID] = useState("")
     const {hidePopup, handleHidePopup} = usePopup()
+    const {language} = useAuth()
 
     let sub_activity_id = (new URLSearchParams(window.location.search)).get("sub_activity_id")
 
@@ -79,11 +81,13 @@ export default function ActivityAttributes(){
 
         if (data){
             data.map(item => {
+                const translations = item.attribute.translations
+                const val = translations.find(tr => tr.language_code === language)
                 data_to_render.push({
                     attribute_id: item.attribute.id,
-                    name: item.attribute.translations[0].name,
-                    description: item.attribute.translations[0].description,
-                    units: item.attribute.translations[0].units,
+                    name: val?.name? val.name: translations[0].name,
+                    description: val?.description ? val.description: translations[0].description,
+                    units: val?.units ? val.units: translations[0].units,
                     created_at: item.attribute.created_at
                 })
             })
