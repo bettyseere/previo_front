@@ -119,8 +119,8 @@ export default function UserTeamRecords() {
   const computeRSI = (group) => {
     if (group.length < 2) return;
 
-    // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 flight time id
-    // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 contact time id
+    // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
+    // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
     let sliced = group
     if (group.length > 2){
         sliced = group.slice(1, -1);
@@ -130,15 +130,11 @@ export default function UserTeamRecords() {
       const a = sliced[i];
       const b = sliced[i + 1];
 
-      console.log(a.results, b.results, a.measurement, a.measurement_id)
-
       if (normalize(a.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
-        console.log(a.measurement, b.measurements, a.result, b.results, a.results / b.results, "first")
         b.rsi = a.results / b.results;
       }
 
       if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-        console.log(a.measurement, b.measurement, a.results, b.results, b.results / b.results, "last")
         a.rsi =  b.results / a.results;
       }
     }
@@ -158,8 +154,8 @@ export default function UserTeamRecords() {
             const measB = normalize(b.measurement_id);
 
             // only calculate when we have both contact time & flight time
-            // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 flight time id
-            // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 contact time id
+            // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
+            // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
             if (
             (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
             (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6e")
@@ -170,7 +166,7 @@ export default function UserTeamRecords() {
             contactTime = contactTime && contactTime/1000
 
             // Power formula
-            const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / 4 * contactTime;
+            const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime * sliced.length/2);
 
             // assign power to the row representing flight time
             if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
