@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 
 export default function UserReports(){
-    const { currentUser } = useAuth()
+    const { currentUser, language } = useAuth()
     const athlete_id = currentUser?.id
     const {
             data,
@@ -26,6 +26,8 @@ export default function UserReports(){
         let rows: any[] = [];
     
         data.forEach((item, index) => {
+        const measurement_obj = item.attribute.translations.find(tr => tr.language_code === language) || item.attribute.translations[0]
+        const activity_obj = item.sub_activity.translations.find(sa => sa.language_code === language) || item.sub_activity.translations[0]
         rows.push({
             id: item.id,
             index: rows.length,
@@ -33,8 +35,8 @@ export default function UserReports(){
             athlete_id: item.athlete.id,
             start: item.start,
             role: item.role.name,
-            activity: item.sub_activity.translations[0].name,
-            measurement: item.attribute.translations[0].name,
+            activity: activity_obj?.name,
+            measurement: measurement_obj.name,
             measurement_id: item.attribute.id,
             results: parseInt(item.value),
             units: item.attribute.translations[0].units,
@@ -68,7 +70,7 @@ export default function UserReports(){
           computePower(currentGroup);
         }
         setDataToRender(enriched);
-      }, [data]);
+      }, [data,language]);
 
 
     const computeRSI = (group) => {

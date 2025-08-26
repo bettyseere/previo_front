@@ -10,6 +10,8 @@ type AuthContext = {
     handleLogin?: (data: Login) => Promise<void>;
     handleLogout?: () => Promise<void>;
     loading?: boolean;
+    language?: string | null;
+    handleLanguage?: (lang: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContext | undefined>(undefined);
@@ -19,11 +21,13 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const [tokens, setTokens] = useState<Tokens | null>(null);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [language, setLanguage] = useState<string | null>("en")
 
     // On initial load, check localStorage for existing auth data
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         const storedTokens = localStorage.getItem("tokens");
+        let storedLanguage = localStorage.getItem("language")
 
         if (storedUser && storedTokens) {
             // If user and tokens exist in localStorage, restore the state
@@ -31,9 +35,14 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             setTokens(JSON.parse(storedTokens));
         }
         setLoading(false);
+
+        setLanguage(storedLanguage ? storedLanguage: "en")
     }, []); // Only run once when the component mounts
 
-
+    async function handleLanguage(lang: string){
+        localStorage.setItem("language", lang)
+        setLanguage(lang)
+    }
     async function handleLogin(data: Login) {
         try {
             const response = await login(data)
@@ -108,7 +117,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
 
     return (
-        <AuthContext.Provider value={{ handleLogin, handleLogout, currentUser, tokens, loading }}>
+        <AuthContext.Provider value={{ handleLogin, handleLogout, currentUser, tokens, loading, language, handleLanguage }}>
             {children}
         </AuthContext.Provider>
     );

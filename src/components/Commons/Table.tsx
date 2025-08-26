@@ -17,7 +17,7 @@ interface TableWithPaginationProps<T> {
   initialPageSize?: number; // Optional initial page size
   actionBtn?: React.JSX.Element; // Optional action button
   searchMsg?: string; // Search placeholder
-  entity_name?: string; // Optional title above the table
+  entity_name?: string | Element | undefined; // Optional title above the table
   handleBtn?: () => void; // Action button click handler
   onRowClick?: (row: T) => void; // Row click callback
   enableColumnVisibility?: boolean; // Toggle column visibility feature

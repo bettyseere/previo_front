@@ -71,7 +71,7 @@ export default function UserTeamMembers(){
         <div>
             <UserInfo nav_items={default_nav}>
                 {data && <div className="">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} entity_name={team_name ? team_name + " team members" : ""} searchMsg={"Search Team Members"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} entity_name={team_name ? <div>{team_name}</div> : "Team members"} searchMsg={"Search Team Members"} />
                 </div>}
             </UserInfo>
         </div>
