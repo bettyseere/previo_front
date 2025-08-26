@@ -119,6 +119,8 @@ export default function UserTeamRecords() {
   const computeRSI = (group) => {
     if (group.length < 2) return;
 
+    // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
+    // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
     let sliced = group
     if (group.length > 2){
         sliced = group.slice(1, -1);
@@ -129,11 +131,11 @@ export default function UserTeamRecords() {
       const b = sliced[i + 1];
 
       if (normalize(a.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
-        a.rsi = a.results / b.results;
+        b.rsi = a.results / b.results;
       }
 
       if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-        b.rsi =  b.results / a.results;
+        a.rsi =  b.results / a.results;
       }
     }
   };
@@ -152,6 +154,8 @@ export default function UserTeamRecords() {
             const measB = normalize(b.measurement_id);
 
             // only calculate when we have both contact time & flight time
+            // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
+            // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
             if (
             (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
             (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6e")
@@ -162,7 +166,7 @@ export default function UserTeamRecords() {
             contactTime = contactTime && contactTime/1000
 
             // Power formula
-            const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / 4 * contactTime;
+            const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime * sliced.length/2);
 
             // assign power to the row representing flight time
             if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
@@ -207,19 +211,19 @@ export default function UserTeamRecords() {
       cell: ({ row }) => {
         if (normalize(row.original.measurement_id) !== "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") return null;
         const val = 4.9 * (0.5 * (row.original.results / 1000)) ** 2;
-        return <div className="text-xs">{val.toFixed(2)} m</div>;
+        return <div className="text-xs">{val.toFixed(3)} m</div>;
       },
     },
     {
       header: "RSI",
       accessorKey: "rsi",
-      cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(2)}</div> : null,
+      cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(3)}</div> : null,
     },
     {
       header: "W/Kg",
       accessorKey: "power",
       cell: ({ row }) => {
-        return row.original.power ? <div className="text-xs">{row.original.power.toFixed(2)}</div> : null
+        return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)}</div> : null
       }
     },
     {
