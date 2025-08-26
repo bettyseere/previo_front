@@ -8,7 +8,9 @@ export default function DashboardHeader(){
     return (
         <div className="h-[2.5rem] rounded-md flex items-center my-2 absolute left-4 right-4 z-50">
             <div className="flex justify-between items-center w-full">
-                <div className=" px-2 gap-2 mx-[.9rem]">{is_staff && <SeereLogo styling="mt-0 py-2" size={50}/>}</div>
+                <a href="/">
+                    <div className=" px-2 gap-2 mx-[.9rem] cursor-pointer">{is_staff && <SeereLogo styling="mt-0 py-2" size={50}/>}</div>
+                </a>
                 <div className="flex gap-4 items-center">
                     <div className=""><LanguageSelector /></div>
                     <div className="flex md:gap-8 lg:gap-12 text-gray-800 mr-5">

@@ -30,7 +30,7 @@ export default function UserTeams(){
                 const href = role === "Athlete" ? "/reports" : is_staff ? `/teams/${id}?label=${name}`: `/profile/teams/${id}?label=${name}`;
 
                 return (
-                    <div className="text-secondary font-semibold">
+                    <div onClick={()=>localStorage.setItem("current_team", name)} className="text-secondary font-semibold">
                         <a href={href}>{name}</a>
                     </div>
                 );
@@ -45,7 +45,7 @@ export default function UserTeams(){
 
     return (
         <UserInfo>
-            {data_to_render.length > 0 ? <Table searchMsg="Search your teams" data={data_to_render} columns={table_columns} entity_name="Your teams" />: <div>
+            {data_to_render.length > 0 ? <Table searchMsg="Search your teams" data={data_to_render} columns={table_columns} back_path="/" entity_name="Your teams" />: <div>
                 <p className="font-semibold">You are not part of any team yet.</p>
                 </div>
             }

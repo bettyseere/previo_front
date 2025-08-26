@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import Button from "./Button";
+import { MdKeyboardBackspace } from "react-icons/md";
 import {
   ColumnDef,
   flexRender,
@@ -17,7 +18,8 @@ interface TableWithPaginationProps<T> {
   initialPageSize?: number; // Optional initial page size
   actionBtn?: React.JSX.Element; // Optional action button
   searchMsg?: string; // Search placeholder
-  entity_name?: string | Element | undefined; // Optional title above the table
+  entity_name?: string; // Optional title above the table
+  back_path?: string,
   handleBtn?: () => void; // Action button click handler
   onRowClick?: (row: T) => void; // Row click callback
   enableColumnVisibility?: boolean; // Toggle column visibility feature
@@ -31,6 +33,7 @@ export default function Table<T>({
   handleBtn = () => {},
   searchMsg = "",
   entity_name = "",
+  back_path = "",
   initialPageSize = 10,
   onRowClick,
   enableColumnVisibility = false,
@@ -85,11 +88,21 @@ export default function Table<T>({
     <div className="">
       {/* Top Controls */}
       <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
-        {entity_name && (
-          <h4 className="font-semibold text-xl text-secondary uppercase">
-            {entity_name}
-          </h4>
-        )}
+        <div className="flex items-center gap-2">
+          {back_path && (
+            <a href={back_path}>
+              <div className="font-bold gap-2 flex items-center hover:scale-105 hover:duration-200">
+                <MdKeyboardBackspace size={15} className="text-primary" />
+                <p className="text-primary">Back</p>
+              </div>
+            </a>
+          )}
+          {entity_name && (
+            <h4 className="font-semibold text-xl text-secondary capitalize">
+              {entity_name}
+            </h4>
+          )}
+        </div>
         <div className="w-[24rem]">
           <input
             type="text"

@@ -19,6 +19,7 @@ export default function UserTeamRecords() {
   const is_staff = currentUser?.user_type == "staff";
   let team_id = useParams().id;
   const [selectedId, setSelectID] = useState("");
+  const team_name = localStorage.getItem("current_team") + " records" || "Team records"
 
   let user_team = currentUser?.teams;
   user_team = user_team?.find((team) => team.team.id == team_id);
@@ -275,7 +276,7 @@ export default function UserTeamRecords() {
     <div>
       {hidePopup.show && !hidePopup.data.base && popup}
       <UserInfo nav_items={default_nav}>
-        {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" />}
+        {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" entity_name={team_name} back_path="/teams"/> }
       </UserInfo>
     </div>
   );
