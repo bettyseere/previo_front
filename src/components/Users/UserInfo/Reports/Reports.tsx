@@ -119,7 +119,7 @@ export default function UserReports(){
             contactTime = contactTime && contactTime/1000
 
             // Power formula
-            const power = (((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime * (group.length/2)))/1000;
+            const power = (((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime))/1000;
 
             // assign power to the row representing flight time
             if (measA === "contact time") a.power = power;
