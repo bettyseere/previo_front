@@ -144,7 +144,7 @@ export default function DeviceAttributes(){
             <div>
                 {hidePopup.show && popup}
                 {data && <div className="p-6">
-                    <Table data={data_to_render} back_path="/device_types" columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Attributes"} />
+                    <Table data={data_to_render} back_path="/device_types" columns={table_columns} initialPageSize={10} searchMode="double" actionBtn={button} searchMsg={"Search Attributes"} />
                 </div>}
             </div>
         </DeviceTypeSubMenu>

@@ -135,7 +135,7 @@ export default function CompanyInvites(){
             {hidePopup.show && popup}
             <CompanyLayout>
                 {data && <div className="">
-                    <Table data={data} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Invites"} />
+                    <Table data={data} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Invites"} searchMode="double" />
                 </div>}
             </CompanyLayout>
         </div>

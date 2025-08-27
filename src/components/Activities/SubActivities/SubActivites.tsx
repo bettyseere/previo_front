@@ -165,7 +165,7 @@ export default function SubActivities(){
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} back_path="/activities" searchMsg={"Search Sub Activities"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} back_path="/activities" searchMode="double" searchMsg={"Search Sub Activities"} />
                 </div>}
             </Layout>
         </div>

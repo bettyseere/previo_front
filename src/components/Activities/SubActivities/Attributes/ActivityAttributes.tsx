@@ -124,7 +124,7 @@ export default function ActivityAttributes(){
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Attributes"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Attributes"} searchMode="double" />
                 </div>}
             </Layout>
         </div>
