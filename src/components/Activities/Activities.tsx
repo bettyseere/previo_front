@@ -155,7 +155,7 @@ export default function Activities(){
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Activities"} />
+                    <Table data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Activities"} searchMode="double" />
                 </div>}
             </Layout>
         </div>

@@ -117,7 +117,7 @@ export default function CompanyTeams(){
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table columns={table_columns} data={data} initialPageSize={10} actionBtn={button} searchMsg={"Search Roles"} />
+                    <Table columns={table_columns} data={data} initialPageSize={10} actionBtn={button} searchMsg={"Search Roles"} searchMode="double" />
                 </div>}
             </Layout>
         </div>

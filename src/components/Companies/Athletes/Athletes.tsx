@@ -111,7 +111,7 @@ export default function CompanyAthletes() {
             {hidePopup.show && popup}
             <CompanyLayout>
                 <div className="">
-                    <Table data={data} searchMsg="Search Athletes" actionBtn={button} columns={table_columns} />
+                    <Table data={data} searchMode="double" searchMsg="Search Athletes" actionBtn={button} columns={table_columns} />
                 </div>
             </CompanyLayout>
         </div>

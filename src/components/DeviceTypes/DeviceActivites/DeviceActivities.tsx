@@ -142,7 +142,7 @@ export default function DeviceActivities(){
             <div>
                 {hidePopup.show && popup}
                 {data && <div className="p-6">
-                    <Table back_path="/device_types" data={data_to_render} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Activities"} />
+                    <Table back_path="/device_types" data={data_to_render} columns={table_columns} initialPageSize={10} searchMode="double" actionBtn={button} searchMsg={"Search Activities"} />
                 </div>}
             </div>
         </DeviceTypeSubMenu>

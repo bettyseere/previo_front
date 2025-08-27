@@ -163,6 +163,7 @@ export default function Measurements(){
                         initialPageSize={10}
                         searchMsg={"Search Measurements"}
                         enableColumnVisibility={true}
+                        searchMode="double"
                         // enableColumnFilters={true}
                     />
                 </div>}

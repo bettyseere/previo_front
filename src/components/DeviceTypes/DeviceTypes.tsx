@@ -133,7 +133,7 @@ export default function Device_Types(){
             {hidePopup.show && popup}
             <Layout>
                 {data && <div className="p-6">
-                    <Table data={data} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Device Types"} />
+                    <Table data={data} columns={table_columns} initialPageSize={10} actionBtn={button} searchMsg={"Search Device Types"} searchMode="double" />
                 </div>}
             </Layout>
         </div>

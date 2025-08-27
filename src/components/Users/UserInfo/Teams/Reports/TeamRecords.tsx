@@ -281,7 +281,7 @@ export default function UserTeamRecords() {
     <div>
       {hidePopup.show && !hidePopup.data.base && popup}
       <UserInfo nav_items={default_nav}>
-        {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" entity_name={team_name} back_path="/teams"/> }
+        {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" searchMode="double" entity_name={team_name} back_path="/teams"/> }
       </UserInfo>
     </div>
   );
