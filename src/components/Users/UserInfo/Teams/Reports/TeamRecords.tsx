@@ -162,11 +162,12 @@ export default function UserTeamRecords() {
             ) {
             let contactTime = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
             let flightTime = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
-            flightTime = flightTime && flightTime/1000
-            contactTime = contactTime && contactTime/1000
+            flightTime = flightTime && flightTime
+            contactTime = contactTime && contactTime
 
             // Power formula
-            const power = ((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime * sliced.length/2);
+            // ((9,8*9,8)*Tv*(Tv+Tc))/(4*Tc*Nj) / 1000
+            const power = (((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime * (group.length/2)))/1000;
 
             // assign power to the row representing flight time
             if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
