@@ -12,13 +12,14 @@ import { name_and_description } from "../../../types/Activity";
 interface activities {
     activities?:[name_and_description]
     id?: string
-    activity_id: string
+    activity_id: string,
+    operation_value?: string
 }
 
 export default function ActivityForm({activity_id}: activities) {
     const { hidePopup, handleHidePopup } = usePopup();
     const [finished_translations, setFinishedTranslations] = useState(hidePopup.data?.activities || []);
-    const { register, handleSubmit, reset, setValue } = useForm();
+    const { register, handleSubmit, reset, setValue, watch } = useForm();
     const operation = hidePopup.type === "create" ? create_sub_activity : (data: any) => update_sub_activity(hidePopup.data?.id, data);
     const { mutate, isError, isSuccess, isPending, error } = useApiSend(operation, undefined, undefined, ["sub_activities"]);
 
@@ -31,6 +32,8 @@ export default function ActivityForm({activity_id}: activities) {
     };
 
     const language_codes = ["en", "it", "de", "fr", "es"];
+    const operationValue = watch("operation_value");
+
 
     // Filter out the language codes that have already been used
     const select_codes = language_codes.filter(code => !finished_translations.some(item => item.language_code === code));
@@ -49,8 +52,9 @@ export default function ActivityForm({activity_id}: activities) {
 
     // Handle the submission of all translations to the API
     const submitAllTranslations = () => {
+        const opValue = operationValue !== undefined ? operationValue : hidePopup.data?.operation_value;
         // Send all translations to the API (you can adjust this API call as needed)
-        mutate({ names_and_descriptions: finished_translations, activity_id:  activity_id}, {
+        mutate({ names_and_descriptions: finished_translations, activity_id:  activity_id, operation_value: opValue}, {
             onSuccess: () => {
                 queryClient.invalidateQueries(["sub_activities"]).then(()=>{
                     setFinishedTranslations([]); // Clear the translations after submission
@@ -66,7 +70,6 @@ export default function ActivityForm({activity_id}: activities) {
 
     // Handle Edit button click
     const handleEdit = (index: number) => {
-        console.log("Editing")
         const itemToEdit = finished_translations[index];
 
         // Set form values with the item to edit
@@ -109,6 +112,19 @@ export default function ActivityForm({activity_id}: activities) {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                    <div className="mt-4">
+                        <label htmlFor="operation_value" className="block text-sm font-medium text-black">
+                            Operation Value (Optional)
+                        </label>
+                        <input
+                            id="operation_value"
+                            placeholder="Example (0)"
+                            type="number"
+                            defaultValue={hidePopup.data?.operation_value || ""}
+                            {...register("operation_value")}
+                            className="outline-none border-b-2 border-primary w-full py-2"
+                        />
                     </div>
                 </div>
             )}
