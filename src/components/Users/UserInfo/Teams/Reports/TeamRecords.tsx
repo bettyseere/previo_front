@@ -184,7 +184,7 @@ export default function UserTeamRecords() {
       cell: ({ row }) => row.original.start === true && <p className="text-xs">{row.original.athlete}</p>,
     },
     {
-      header: "Item",
+      header: "Test",
       accessorKey: "activity",
       cell: ({ row }) => row.original.start === true && <p className="text-xs">{row.original.activity}</p>,
     },
@@ -193,18 +193,18 @@ export default function UserTeamRecords() {
       accessorKey: "created_at",
       cell: ({ row }) =>
         row.original.start === true && (
-          <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm:ss")}</p>
+          <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm")}</p>
         ),
     },
     {
-      header: "Attribute",
+      header: "Value",
       accessorKey: "measurement",
       cell: ({ row }) => <p className="text-xs">{row.original.measurement}</p>,
     },
     {
-      header: "Results",
+      header: "Res.",
       accessorKey: "results",
-      cell: ({ row }) => <p className="text-xs">{row.original.results} {row.original.units}</p>,
+      cell: ({ row }) => <p className="text-xs">{(row.original.results/1000).toFixed(3)} {row.original.units}</p>,
     },
     {
       header: "JH",

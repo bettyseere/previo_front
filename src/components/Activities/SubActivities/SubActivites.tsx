@@ -24,7 +24,6 @@ export default function SubActivities(){
     let activity_id: any = useParams();
 
     activity_id = activity_id.id
-    console.log("\n\n\n", activity_id, "\n\n\n")
     const {
             data,
             isLoading,
@@ -97,7 +96,7 @@ export default function SubActivities(){
 
             // Filter out items with null descriptions
             result = result.filter(item => item.description !== null);
-            handleHidePopup({show: true, type: "edit", data: {id: item.id, activities: result, activity_id: activity_id}})
+            handleHidePopup({show: true, type: "edit", data: {id: item.id, activities: result, activity_id: activity_id, operation_value: item.operation_value}})
         };
 
 
@@ -112,6 +111,7 @@ export default function SubActivities(){
         if (data){
             data_to_render = data.map(exercise => ({
             id: exercise.id,
+            operation_value: exercise.operation_value,
             name: getTranslation(exercise.name, language),
             description: getTranslation(exercise.description, language),
             create_at: exercise.created_at,
@@ -133,6 +133,10 @@ export default function SubActivities(){
                             </a>
                         </div>
                     }
+            },
+            {
+                header: "OpValue",
+                accessorKey: "operation_value"
             },
             {
                 header: "Created At",

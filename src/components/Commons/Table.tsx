@@ -258,7 +258,7 @@ export default function Table<T>({
 
       {/* Table */}
       <div className="overflow-hidden border-b">
-        <table className="min-w-full table-fixed border-collapse">
+        <table className="w-full table-fixed border-collapse">
           <thead className="cursor-pointer">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -266,7 +266,7 @@ export default function Table<T>({
                   <th
                     key={header.id}
                     className="px-2 py-2 border-b bg-slate-300 text-[1rem] text-gray-500 text-center font-semibold capitalize tracking-wider text-sm"
-                    style={{ width: `${header.column.getSize()}px` }}
+                    style={{ width: `auto` }}
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     {header.isPlaceholder
@@ -293,7 +293,7 @@ export default function Table<T>({
 
         {/* Table Body */}
         <div className="max-h-[400px] overflow-y-auto scrollbar-hide">
-          <table className="min-w-full table-fixed border-collapse">
+          <table className="w-full table-fixed border-collapse">
             <tbody>
               {table.getRowModel().rows.map((row) => (
                 <tr
@@ -304,8 +304,8 @@ export default function Table<T>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="text-secondary px-4 py-2 border-b border-r first:border-l text-center text-[1rem]"
-                      style={{ width: `${cell.column.getSize()}px` }}
+                      className="text-secondary px-2 py-2 border-b border-r first:border-l text-center text-[1rem]"
+                      style={{ width: `auto` }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
