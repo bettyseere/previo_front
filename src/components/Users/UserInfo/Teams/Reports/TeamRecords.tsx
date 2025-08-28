@@ -101,6 +101,7 @@ export default function UserTeamRecords() {
         if (currentGroup.length > 1) {
           computeRSI(currentGroup);
           computePower(currentGroup);
+          computePat(currentGroup);
         }
         currentGroup = [row];
       } else {
@@ -111,6 +112,7 @@ export default function UserTeamRecords() {
     if (currentGroup.length > 1) {
         computePower(currentGroup)
         computeRSI(currentGroup);
+        computePat(currentGroup);
     }
 
     setDataToRender(enriched);
@@ -150,24 +152,26 @@ export default function UserTeamRecords() {
             const a = sliced[i];
             const b = sliced[i + 1];
 
+            console.log(a.results, b.results)
+
             const measA = normalize(a.measurement_id);
             const measB = normalize(b.measurement_id);
 
             // only calculate when we have both contact time & flight time
             // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
             // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
+            // tv - flighttime tc - contact time
             if (
             (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
-            (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6e")
+            (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6")
             ) {
-            let contactTime = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
-            let flightTime = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
-            flightTime = flightTime && flightTime
-            contactTime = contactTime && contactTime
+            let tc = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
+            let tv = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
+            const g = 9.806
 
             // Power formula
-            // ((9,8*9,8)*Tv*(Tv+Tc))/(4*Tc*Nj) / 1000
-            const power = (((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime))/1000;
+            // ((g*g)*Tv*(Tv+Tc))/(4*Tc*Nj)
+            const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
 
             // assign power to the row representing flight time
             if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
@@ -175,6 +179,48 @@ export default function UserTeamRecords() {
             }
         }
     };
+
+    const computePat = (group) => {
+    if (group.length < 2) return;
+
+    // slice middle rows if group is large
+    let sliced = group.length > 2 ? group.slice(1, -1) : group;
+
+    for (let i = 0; i < sliced.length - 1; i++) {
+        const a = sliced[i];
+        const b = sliced[i + 1];
+
+        const measA = normalize(a.measurement_id);
+        const measB = normalize(b.measurement_id);
+
+        const contact_id = "f5daa493-5054-4ad2-97b0-d9db95e7cdd6";
+        const flight_id = "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3";
+
+        // only calculate when we have both contact time & flight time
+        if (
+            (measA === contact_id && measB === flight_id) ||
+            (measA === flight_id && measB === contact_id)
+        ) {
+            let contactTime = (measA === contact_id ? a.results : b.results) / 1000; // convert ms to s
+            let flightTime = (measA === flight_id ? a.results : b.results) / 1000; // convert ms to s
+            const pc = 1; // weight
+            const g = 9.806;
+
+            console.log("Raw values - Contact:", contactTime, "Flight:", flightTime);
+
+            const pat = (pc*((flightTime*g)/(contactTime))+(pc*g))/9.806
+
+            console.log("Calculated PAT:", pat);
+
+            // assign PAT to the appropriate row
+            if (measA === contact_id) {
+                a.pat = pat;
+            } else {
+                b.pat = pat;
+            }
+        }
+    }
+};
 
 
   const table_columns = [
@@ -226,6 +272,13 @@ export default function UserTeamRecords() {
       cell: ({ row }) => {
         return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)}</div> : null
       }
+    },
+    {
+        header: "PaT",
+        accessorKey: "pat",
+        cell: ({ row }) => {
+          return row.original.pat ? <div className="text-xs">{row.original.pat.toFixed(3)}</div> : null
+        }
     },
     {
       header: "Note",
