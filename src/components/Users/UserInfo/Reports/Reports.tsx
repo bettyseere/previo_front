@@ -58,6 +58,7 @@ export default function UserReports(){
             if (currentGroup.length > 0) {
               computeRSI(currentGroup);
               computePower(currentGroup);
+              computePat(currentGroup)
             }
             currentGroup = [row];
           } else {
@@ -68,6 +69,7 @@ export default function UserReports(){
         if (currentGroup.length > 0) {
           computeRSI(currentGroup);
           computePower(currentGroup);
+          computePat(currentGroup)
         }
         setDataToRender(enriched);
       }, [data,language]);
@@ -109,21 +111,61 @@ export default function UserReports(){
             const measB = normalize(b.measurement_id);
 
             // only calculate when we have both contact time & flight time
+            // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
+            // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
             if (
-            (measA === "contact time" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") ||
-            (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "contact time")
+            (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
+            (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6")
             ) {
-            let contactTime = measA === "contact time" ? a.results : b.results;
-            let flightTime = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
-            flightTime = flightTime && flightTime/1000
-            contactTime = contactTime && contactTime/1000
+            let contactTime = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
+            let flightTime = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
+            flightTime = flightTime && flightTime
+            contactTime = contactTime && contactTime
 
             // Power formula
-            const power = (((9.8 * 9.8) * flightTime * (flightTime + contactTime)) / (4 * contactTime))/1000;
+            const power = (((9.806 * 9.806) * flightTime * (flightTime + contactTime)) / (1 * contactTime))/1000;
 
             // assign power to the row representing flight time
-            if (measA === "contact time") a.power = power;
+            if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
             else b.power = power;
+            }
+        }
+    };
+
+    const computePat = (group) => {
+        if (group.length < 2) return;
+
+        // slice middle rows if group is large
+        let sliced = group.length > 2 ? group.slice(1, -1) : group;
+
+        for (let i = 0; i < sliced.length - 1; i++) {
+            const a = sliced[i];
+            const b = sliced[i + 1];
+
+            const measA = normalize(a.measurement_id);
+            const measB = normalize(b.measurement_id);
+
+            // only calculate when we have both contact time & flight time
+            // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
+            // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
+            if (
+            (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
+            (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6")
+            ) {
+            let contactTime = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
+            let flightTime = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
+            flightTime = flightTime && (flightTime/1000)/2
+            contactTime = contactTime && (contactTime/1000)/2
+            const pc = 1 // weight
+
+
+            // Power formula
+            // (Pc*((1/2tv*g)/(1/2tc))+(Pc*g))/9,8
+            const pat = (pc*(flightTime*9.806) / (contactTime) + (pc*9.806))/9.806
+
+            // assign power to the row representing flight time
+            if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.pat = pat;
+            else b.pat = pat;
             }
         }
     };
@@ -167,12 +209,19 @@ export default function UserReports(){
           },
         },
         {
-      header: "W/Kg",
-      accessorKey: "power",
-      cell: ({ row }) => {
-        return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)}</div> : null
-      }
-      },
+          header: "W/Kg",
+          accessorKey: "power",
+          cell: ({ row }) => {
+            return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)}</div> : null
+          }
+        },
+        {
+          header: "PaT",
+          accessorKey: "pat",
+          cell: ({ row }) => {
+            return row.original.pat ? <div className="text-xs">{row.original.pat.toFixed(3)}</div> : null
+          }
+        },
         {
           header: "RSI",
           accessorKey: "rsi",
