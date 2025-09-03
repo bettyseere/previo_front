@@ -11,6 +11,13 @@ export default {
       },
       fontFamily: {
         "jarkata": ["Plus Jakarta Sans", "sans-serif"]
+      },
+      screens: {
+        "h-xs": {"raw": '(min-height: 640px)'},
+        "h-sm": {"raw": '(min-height: 768px)'},
+        "h-md": {"raw": '(min-height: 1024px)'},
+        "h-lg": {"raw": '(min-height: 1280px)'},
+        "h-xl": {"raw": '(min-height: 1536px)'},
       }
     },
   },
