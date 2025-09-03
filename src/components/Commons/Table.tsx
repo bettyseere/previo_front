@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import Button from "./Button";
 import { MdKeyboardBackspace } from "react-icons/md";
 import {
@@ -24,7 +24,9 @@ interface TableWithPaginationProps<T> {
   onRowClick?: (row: T) => void;
   enableColumnVisibility?: boolean;
   enableColumnFilters?: boolean;
-  searchMode?: "single" | "double"; // 👈 new
+  searchMode?: "single" | "double";
+  // New prop to control height behavior
+  heightMode?: "fixed" | "flexible" | "viewport";
 }
 
 export default function Table<T>({
@@ -39,7 +41,8 @@ export default function Table<T>({
   onRowClick,
   enableColumnVisibility = false,
   enableColumnFilters = false,
-  searchMode = "single", // 👈 default to single
+  searchMode = "single",
+  heightMode = "viewport", // Default to flexible height
 }: TableWithPaginationProps<T>) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -55,6 +58,8 @@ export default function Table<T>({
     }, {} as VisibilityState)
   );
   const [filters, setFilters] = useState<Record<string, string>>({});
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [availableHeight, setAvailableHeight] = useState(400);
 
   // 🔍 single search
   const [searchInput, setSearchInput] = useState("");
@@ -64,6 +69,31 @@ export default function Table<T>({
   const [search1Col, setSearch1Col] = useState<string>("");
   const [search2, setSearch2] = useState("");
   const [search2Col, setSearch2Col] = useState<string>("");
+
+  // Calculate available height for the table body
+  useEffect(() => {
+    const calculateHeight = () => {
+      if (heightMode === "viewport") {
+        // Use the full viewport height minus the space taken by other elements
+        const headerHeight = document.querySelector('header')?.clientHeight || 0;
+        const otherElementsHeight = 200; // Approximate height of controls and pagination
+        setAvailableHeight(window.innerHeight - headerHeight - otherElementsHeight - 100);
+      } else if (heightMode === "flexible" && containerRef.current) {
+        // Use the available space in the parent container
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const parentHeight = containerRef.current.parentElement?.clientHeight || 0;
+        setAvailableHeight(parentHeight - 200); // Reserve space for controls
+      }
+      // For "fixed" mode, we don't need to calculate anything
+    };
+
+    calculateHeight();
+    window.addEventListener('resize', calculateHeight);
+    
+    return () => {
+      window.removeEventListener('resize', calculateHeight);
+    };
+  }, [heightMode]);
 
   // Filtering logic
   const filteredData = useMemo(() => {
@@ -119,8 +149,22 @@ export default function Table<T>({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
+  // Determine the max height based on the selected mode
+  const getTableBodyHeight = () => {
+    switch (heightMode) {
+      case "fixed":
+        return { maxHeight: '400px' };
+      case "flexible":
+        return { maxHeight: '70vh' }; // Use 70% of viewport height
+      case "viewport":
+        return { maxHeight: `${availableHeight}px` };
+      default:
+        return { maxHeight: '400px' };
+    }
+  };
+
   return (
-    <div className="">
+    <div ref={containerRef} className="h-full flex flex-col">
       {/* Top Controls */}
       <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
         <div className="flex items-center gap-2">
@@ -256,8 +300,8 @@ export default function Table<T>({
         </div>
       )}
 
-      {/* Table */}
-      <div className="overflow-hidden border-b">
+      {/* Table Container - This will grow to fill available space */}
+      <div className="flex-1 flex flex-col overflow-hidden border-b">
         <table className="w-full table-fixed border-collapse">
           <thead className="cursor-pointer">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -291,8 +335,11 @@ export default function Table<T>({
           </thead>
         </table>
 
-        {/* Table Body */}
-        <div className="max-h-[400px] overflow-y-auto scrollbar-hide">
+        {/* Table Body - This will scroll independently */}
+        <div 
+          className="overflow-y-auto scrollbar-hide flex-1"
+          style={getTableBodyHeight()}
+        >
           <table className="w-full table-fixed border-collapse">
             <tbody>
               {table.getRowModel().rows.map((row) => (
@@ -321,7 +368,7 @@ export default function Table<T>({
       </div>
 
       {/* Pagination */}
-      <div className="absolute right-6 mt-2">
+      <div className="mt-2">
         <div className="flex justify-between items-center mb-4">
           <div className="flex gap-2">
             <Button
