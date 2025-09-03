@@ -121,6 +121,7 @@ export default function Measurements(){
         {
             header: "Date/Time",
             accessorKey: "created_at",
+            meta: "date",
             cell: ({cell, row}) => {
                 return row.original.start === true && <p>{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm:ss")}</p>
             }

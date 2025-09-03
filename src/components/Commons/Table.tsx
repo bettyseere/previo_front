@@ -29,6 +29,13 @@ interface TableWithPaginationProps<T> {
   heightMode?: "fixed" | "flexible" | "viewport";
 }
 
+// Helper function to detect if a column is a date column
+const isDateColumn = (columns: ColumnDef<any, any>[], columnId: string) => {
+  const column = columns.find(col => col.accessorKey === columnId);
+  return column?.meta?.type === 'date' || 
+         (column?.accessorKey && /date|time|created|updated/i.test(column.accessorKey as string));
+};
+
 export default function Table<T>({
   columns,
   data,
@@ -113,15 +120,22 @@ export default function Table<T>({
         let match2 = true;
 
         if (search1 && search1Col) {
-          match1 = String((row as any)[search1Col] ?? "")
-            .toLowerCase()
-            .includes(search1.toLowerCase());
+          const cellValue = String((row as any)[search1Col] ?? "");
+          if (isDateColumn(columns, search1Col)) {
+            // For date columns, check if the date matches (simple contains check)
+            match1 = cellValue.toLowerCase().includes(search1.toLowerCase());
+          } else {
+            match1 = cellValue.toLowerCase().includes(search1.toLowerCase());
+          }
         }
 
         if (search2 && search2Col) {
-          match2 = String((row as any)[search2Col] ?? "")
-            .toLowerCase()
-            .includes(search2.toLowerCase());
+          const cellValue = String((row as any)[search2Col] ?? "");
+          if (isDateColumn(columns, search2Col)) {
+            match2 = cellValue.toLowerCase().includes(search2.toLowerCase());
+          } else {
+            match2 = cellValue.toLowerCase().includes(search2.toLowerCase());
+          }
         }
 
         return match1 && match2;
@@ -129,7 +143,7 @@ export default function Table<T>({
     }
 
     return data;
-  }, [data, searchInput, search1, search1Col, search2, search2Col, searchMode]);
+  }, [data, searchInput, search1, search1Col, search2, search2Col, searchMode, columns]);
 
   // Table instance
   const table = useReactTable({
@@ -161,6 +175,30 @@ export default function Table<T>({
       default:
         return { maxHeight: '400px' };
     }
+  };
+
+  // Render appropriate input based on column type
+  const renderSearchInput = (searchValue: string, setSearchValue: (value: string) => void, columnId: string) => {
+    if (isDateColumn(columns, columnId)) {
+      return (
+        <input
+          type="date"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          className="border outline-none px-4 py-2 rounded"
+        />
+      );
+    }
+
+    return (
+      <input
+        type="text"
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        placeholder="Search..."
+        className="border outline-none px-4 py-2 rounded"
+      />
+    );
   };
 
   return (
@@ -218,13 +256,7 @@ export default function Table<T>({
                     ) : null
                   )}
                 </select>
-                <input
-                  type="text"
-                  value={search1}
-                  onChange={(e) => setSearch1(e.target.value)}
-                  placeholder="Search..."
-                  className="border outline-none px-4 py-2 rounded"
-                />
+                {renderSearchInput(search1, setSearch1, search1Col)}
               </div>
 
               {/* Search 2 */}
@@ -243,13 +275,7 @@ export default function Table<T>({
                     ) : null
                   )}
                 </select>
-                <input
-                  type="text"
-                  value={search2}
-                  onChange={(e) => setSearch2(e.target.value)}
-                  placeholder="Search..."
-                  className="border px-4 py-2 rounded outline-none"
-                />
+                {renderSearchInput(search2, setSearch2, search2Col)}
               </div>
             </div>
           )}
@@ -282,19 +308,35 @@ export default function Table<T>({
             }
 
             return (
-              <input
-                key={col.accessorKey as string}
-                type="text"
-                placeholder={`${col.header as string}`}
-                value={filters[col.accessorKey as string] || ""}
-                onChange={(e) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    [col.accessorKey as string]: e.target.value,
-                  }))
-                }
-                className="border p-2 rounded outline-none focus:border-black/50"
-              />
+              <div key={col.accessorKey as string} className="flex flex-col">
+                {isDateColumn(columns, col.accessorKey as string) ? (
+                  <input
+                    type="date"
+                    placeholder={`${col.header as string}`}
+                    value={filters[col.accessorKey as string] || ""}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        [col.accessorKey as string]: e.target.value,
+                      }))
+                    }
+                    className="border p-2 rounded outline-none focus:border-black/50"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    placeholder={`${col.header as string}`}
+                    value={filters[col.accessorKey as string] || ""}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        [col.accessorKey as string]: e.target.value,
+                      }))
+                    }
+                    className="border p-2 rounded outline-none focus:border-black/50"
+                  />
+                )}
+              </div>
             );
           })}
         </div>
