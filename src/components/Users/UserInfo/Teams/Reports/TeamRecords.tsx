@@ -139,6 +139,14 @@ export default function UserTeamRecords() {
       if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
         a.rsi =  b.results / a.results;
       }
+      a._rowSpan = { ...(a._rowSpan || {}), rsi: 2 };
+      b._rowSpan = { ...(b._rowSpan || {}), rsi: 2 };
+      a._rowSpan = { ...(a._rowSpan || {}), jh: 2 };
+      b._rowSpan = { ...(b._rowSpan || {}), jh: 2 };
+      a._rowSpan = { ...(a._rowSpan || {}), measurement: 2 };
+      b._rowSpan = { ...(b._rowSpan || {}), measurement: 2 };
+      a._rowSpan = { ...(a._rowSpan || {}), results: 2 };
+      b._rowSpan = { ...(b._rowSpan || {}), results: 2 };
     }
   };
 
@@ -168,14 +176,23 @@ export default function UserTeamRecords() {
             let tc = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
             let tv = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
             const g = 9.806
+            a.colored = true
+            b.colored = true
 
             // Power formula
             // ((g*g)*Tv*(Tv+Tc))/(4*Tc*Nj)
             const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
 
             // assign power to the row representing flight time
-            if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
-            else b.power = power;
+            if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
+              a.power = power;
+            }
+            else {
+              b.power = power;
+            }
+
+            a._rowSpan = { ...(a._rowSpan || {}), power: 2 };
+            b._rowSpan = { ...(b._rowSpan || {}), power: 2 };
             }
         }
     };
@@ -218,6 +235,8 @@ export default function UserTeamRecords() {
             } else {
                 b.pat = pat;
             }
+            a._rowSpan = { ...(a._rowSpan || {}), pat: 2 };
+            b._rowSpan = { ...(b._rowSpan || {}), pat: 2 };
         }
     }
 };
@@ -258,7 +277,7 @@ export default function UserTeamRecords() {
     },
     {
       header: "JH",
-      accessorKey: "id",
+      accessorKey: "jh",
       cell: ({ row }) => {
         if (normalize(row.original.measurement_id) !== "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") return null;
         const val = 4.9 * (0.5 * (row.original.results / 1000)) ** 2;
@@ -268,7 +287,7 @@ export default function UserTeamRecords() {
     {
       header: "RSI",
       accessorKey: "rsi",
-      cell: ({ row }) => row.original.rsi ? <td className="text-xs">{(row.original.rsi).toFixed(3)}</td> : null,
+      cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(3)}</div> : null,
     },
     {
       header: "W/Kg",
@@ -281,7 +300,7 @@ export default function UserTeamRecords() {
         header: "PaT",
         accessorKey: "pat",
         cell: ({ row }) => {
-          return row.original.pat ? <div className="text-xs">{row.original.pat.toFixed(3)}</div> : null
+          return row.original.pat ? <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)}</div> : null
         }
     },
     {

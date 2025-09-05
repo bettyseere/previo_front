@@ -466,10 +466,12 @@ export default function Table<T>({
                   className="hover:bg-gray-100 cursor-pointer"
                   onClick={() => onRowClick && onRowClick(row.original)}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <td
+                  {row.getVisibleCells().map((cell) => {
+                    const span = row.original._rowSpan?.[cell.column.id] ?? 1;
+                    console.log(span, cell.column.id)
+                    return <td
                       key={cell.id}
-                      className="text-secondary px-2 py-2 border-b border-r first:border-l text-center text-[1rem]"
+                      className={`text-secondary relative px-2 py-2 border-b border-r first:border-l text-center text-[1rem] ${span > 1 && "bg-gray-300"}`}
                       style={{ width: `auto` }}
                     >
                       {flexRender(
@@ -477,7 +479,7 @@ export default function Table<T>({
                         cell.getContext()
                       )}
                     </td>
-                  ))}
+                  })}
                 </tr>
               ))}
             </tbody>
