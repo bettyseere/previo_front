@@ -36,6 +36,13 @@ const isDateColumn = (columns: ColumnDef<any, any>[], columnId: string) => {
          (column?.accessorKey && /date|time|created|updated/i.test(column.accessorKey as string));
 };
 
+// Helper function to parse date strings
+const parseDate = (dateString: string): Date | null => {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  return isNaN(date.getTime()) ? null : date;
+};
+
 export default function Table<T>({
   columns,
   data,
@@ -102,6 +109,13 @@ export default function Table<T>({
     };
   }, [heightMode]);
 
+  // Check if both search columns are date columns
+  const bothDateColumns = useMemo(() => {
+    return search1Col && search2Col && 
+           isDateColumn(columns, search1Col) && 
+           isDateColumn(columns, search2Col);
+  }, [search1Col, search2Col, columns]);
+
   // Filtering logic
   const filteredData = useMemo(() => {
     if (searchMode === "single") {
@@ -121,6 +135,7 @@ export default function Table<T>({
 
         if (search1 && search1Col) {
           const cellValue = String((row as any)[search1Col] ?? "");
+          
           if (isDateColumn(columns, search1Col)) {
             // For date columns, check if the date matches (simple contains check)
             match1 = cellValue.toLowerCase().includes(search1.toLowerCase());
@@ -131,6 +146,7 @@ export default function Table<T>({
 
         if (search2 && search2Col) {
           const cellValue = String((row as any)[search2Col] ?? "");
+          
           if (isDateColumn(columns, search2Col)) {
             match2 = cellValue.toLowerCase().includes(search2.toLowerCase());
           } else {
@@ -138,12 +154,31 @@ export default function Table<T>({
           }
         }
 
+        // Special handling for date range search
+        if (bothDateColumns && search1 && search2) {
+          const rowDate1 = parseDate(String((row as any)[search1Col] ?? ""));
+          const rowDate2 = parseDate(String((row as any)[search2Col] ?? ""));
+          const fromDate = parseDate(search1);
+          const toDate = parseDate(search2);
+          
+          // If we have valid dates, check if either of the row dates falls within the range
+          if (rowDate1 && fromDate && toDate) {
+            match1 = rowDate1 >= fromDate && rowDate1 <= toDate;
+          }
+          if (rowDate2 && fromDate && toDate) {
+            match2 = rowDate2 >= fromDate && rowDate2 <= toDate;
+          }
+          
+          // Return true if either date in the row falls within the range
+          return match1 || match2;
+        }
+
         return match1 && match2;
       });
     }
 
     return data;
-  }, [data, searchInput, search1, search1Col, search2, search2Col, searchMode, columns]);
+  }, [data, searchInput, search1, search1Col, search2, search2Col, searchMode, columns, bothDateColumns]);
 
   // Table instance
   const table = useReactTable({
@@ -177,14 +212,43 @@ export default function Table<T>({
     }
   };
 
+  // Get minimum date for the second date input
+  const getMinDateForSecondInput = () => {
+    if (bothDateColumns && search1) {
+      return search1;
+    }
+    return undefined;
+  };
+
+  // Handle date change for first input
+  const handleFirstDateChange = (value: string) => {
+    setSearch1(value);
+    
+    // If both are date columns and the second date is earlier than the first, reset the second date
+    if (bothDateColumns && search2) {
+      const firstDate = parseDate(value);
+      const secondDate = parseDate(search2);
+      
+      if (firstDate && secondDate && secondDate < firstDate) {
+        setSearch2("");
+      }
+    }
+  };
+
   // Render appropriate input based on column type
-  const renderSearchInput = (searchValue: string, setSearchValue: (value: string) => void, columnId: string) => {
+  const renderSearchInput = (
+    searchValue: string, 
+    setSearchValue: (value: string) => void, 
+    columnId: string,
+    isSecondInput: boolean = false
+  ) => {
     if (isDateColumn(columns, columnId)) {
       return (
         <input
           type="date"
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => isSecondInput ? setSearchValue(e.target.value) : handleFirstDateChange(e.target.value)}
+          min={isSecondInput ? getMinDateForSecondInput() : undefined}
           className="border outline-none px-4 py-2 rounded"
         />
       );
@@ -239,7 +303,7 @@ export default function Table<T>({
 
           {/* 🔍 Double search */}
           {searchMode === "double" && (
-            <div className="flex gap-4">
+            <div className="flex gap-4 items-center">
               {/* Search 1 */}
               <div className="flex gap-2">
                 <select
@@ -259,6 +323,11 @@ export default function Table<T>({
                 {renderSearchInput(search1, setSearch1, search1Col)}
               </div>
 
+              {/* Show "to" label when both columns are dates */}
+              {bothDateColumns && (
+                <span className="text-gray-600 font-medium">to</span>
+              )}
+
               {/* Search 2 */}
               <div className="flex gap-2">
                 <select
@@ -275,8 +344,15 @@ export default function Table<T>({
                     ) : null
                   )}
                 </select>
-                {renderSearchInput(search2, setSearch2, search2Col)}
+                {renderSearchInput(search2, setSearch2, search2Col, true)}
               </div>
+
+              {/* Validation message */}
+              {bothDateColumns && search1 && search2 && parseDate(search2) < parseDate(search1) && (
+                <span className="text-red-500 text-sm">
+                  End date cannot be earlier than start date
+                </span>
+              )}
             </div>
           )}
         </div>

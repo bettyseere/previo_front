@@ -187,11 +187,14 @@ export default function UserReports(){
           meta: "date",
           cell: ({ row }) =>
             row.original.start === true && (
-              <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("YYYY-MM-DD HH:mm")}</p>
+              <div className="text-center">
+                <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("DD-MM-YYYY")}</p>
+                <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("HH:mm")}</p>
+              </div>
             ),
         },
         {
-          header: "Value",
+          header: "Val.",
           accessorKey: "measurement",
           cell: ({ row }) => <p className="text-xs">{row.original.measurement}</p>,
         },
