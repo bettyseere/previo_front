@@ -240,11 +240,14 @@ export default function UserTeamRecords() {
       meta: "date",
       cell: ({ row }) =>
         row.original.start === true && (
-          <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("DD-MM-YYYY HH:mm")}</p>
+          <div className="text-center">
+          <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("DD-MM-YYYY")}</p>
+          <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("HH:mm")}</p>
+          </div>
         ),
     },
     {
-      header: "Value",
+      header: "Val.",
       accessorKey: "measurement",
       cell: ({ row }) => <p className="text-xs">{row.original.measurement}</p>,
     },
@@ -265,7 +268,7 @@ export default function UserTeamRecords() {
     {
       header: "RSI",
       accessorKey: "rsi",
-      cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(3)}</div> : null,
+      cell: ({ row }) => row.original.rsi ? <td className="text-xs">{(row.original.rsi).toFixed(3)}</td> : null,
     },
     {
       header: "W/Kg",
