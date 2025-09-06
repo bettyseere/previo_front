@@ -132,6 +132,9 @@ export default function UserTeamRecords() {
       const a = sliced[i];
       const b = sliced[i + 1];
 
+      // Skip if either row is already marked as skipped
+      if (a._skipRow || b._skipRow) continue;
+
       if (normalize(a.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
         b.rsi = a.results / b.results;
       }
@@ -139,65 +142,25 @@ export default function UserTeamRecords() {
       if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
         a.rsi =  b.results / a.results;
       }
-      a._rowSpan = { ...(a._rowSpan || {}), rsi: 2 };
-      b._rowSpan = { ...(b._rowSpan || {}), rsi: 2 };
-      a._rowSpan = { ...(a._rowSpan || {}), jh: 2 };
-      b._rowSpan = { ...(b._rowSpan || {}), jh: 2 };
-      a._rowSpan = { ...(a._rowSpan || {}), measurement: 2 };
-      b._rowSpan = { ...(b._rowSpan || {}), measurement: 2 };
-      a._rowSpan = { ...(a._rowSpan || {}), results: 2 };
-      b._rowSpan = { ...(b._rowSpan || {}), results: 2 };
+
+      if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+        a._rowSpan = { ...(a._rowSpan || {}), rsi: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), rsi: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), jh: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), jh: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), measurement: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), measurement: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), results: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), results: 2 };
+        
+        // Mark next 2 rows as skipped
+        if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
+        if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
+      }
     }
   };
 
-    const computePower = (group) => {
-        if (group.length < 2) return;
-
-        // slice middle rows if group is large
-        let sliced = group.length > 2 ? group.slice(1, -1) : group;
-
-        for (let i = 0; i < sliced.length - 1; i++) {
-            const a = sliced[i];
-            const b = sliced[i + 1];
-
-            console.log(a.results, b.results)
-
-            const measA = normalize(a.measurement_id);
-            const measB = normalize(b.measurement_id);
-
-            // only calculate when we have both contact time & flight time
-            // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
-            // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
-            // tv - flighttime tc - contact time
-            if (
-            (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
-            (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6")
-            ) {
-            let tc = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
-            let tv = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
-            const g = 9.806
-            a.colored = true
-            b.colored = true
-
-            // Power formula
-            // ((g*g)*Tv*(Tv+Tc))/(4*Tc*Nj)
-            const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
-
-            // assign power to the row representing flight time
-            if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
-              a.power = power;
-            }
-            else {
-              b.power = power;
-            }
-
-            a._rowSpan = { ...(a._rowSpan || {}), power: 2 };
-            b._rowSpan = { ...(b._rowSpan || {}), power: 2 };
-            }
-        }
-    };
-
-    const computePat = (group) => {
+  const computePower = (group) => {
     if (group.length < 2) return;
 
     // slice middle rows if group is large
@@ -206,6 +169,63 @@ export default function UserTeamRecords() {
     for (let i = 0; i < sliced.length - 1; i++) {
         const a = sliced[i];
         const b = sliced[i + 1];
+
+        // Skip if either row is already marked as skipped
+        if (a._skipRow || b._skipRow) continue;
+
+        console.log(a.results, b.results)
+
+        const measA = normalize(a.measurement_id);
+        const measB = normalize(b.measurement_id);
+
+        // only calculate when we have both contact time & flight time
+        // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
+        // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
+        // tv - flighttime tc - contact time
+        if (
+        (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
+        (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6")
+        ) {
+        let tc = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
+        let tv = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
+        const g = 9.806
+
+        // Power formula
+        // ((g*g)*Tv*(Tv+Tc))/(4*Tc*Nj)
+        const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
+
+        // assign power to the row representing flight time
+        if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
+          a.power = power;
+        }
+        else {
+          b.power = power;
+        }
+
+        if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+          a._rowSpan = { ...(a._rowSpan || {}), power: 2 };
+          b._rowSpan = { ...(b._rowSpan || {}), power: 2 };
+          
+          // Mark next 2 rows as skipped
+          if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
+          if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
+        }
+        }
+    }
+  };
+
+  const computePat = (group) => {
+    if (group.length < 2) return;
+
+    // slice middle rows if group is large
+    let sliced = group.length > 2 ? group.slice(1, -1) : group;
+
+    for (let i = 0; i < sliced.length - 1; i++) {
+        const a = sliced[i];
+        const b = sliced[i + 1];
+
+        // Skip if either row is already marked as skipped
+        if (a._skipRow || b._skipRow) continue;
 
         const measA = normalize(a.measurement_id);
         const measB = normalize(b.measurement_id);
@@ -235,12 +255,18 @@ export default function UserTeamRecords() {
             } else {
                 b.pat = pat;
             }
-            a._rowSpan = { ...(a._rowSpan || {}), pat: 2 };
-            b._rowSpan = { ...(b._rowSpan || {}), pat: 2 };
+
+            if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+              a._rowSpan = { ...(a._rowSpan || {}), pat: 2 };
+              b._rowSpan = { ...(b._rowSpan || {}), pat: 2 };
+              
+              // Mark next 2 rows as skipped
+              if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
+              if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
+            }
         }
     }
-};
-
+  };
 
   const table_columns = [
     {
