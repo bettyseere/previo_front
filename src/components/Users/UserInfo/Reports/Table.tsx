@@ -2,6 +2,7 @@ import { useAuth } from "../../../../utils/hooks/Auth";
 import UserInfo from "../UserInfo";
 import Table from "../../../Commons/Table";
 import { get_user_measurements, delete_measurement } from "../../../../api/measurements/measurements";
+import UserDataChart from "./Chart";
 import { useApiGet } from "../../../../utils/hooks/query";
 import moment from "moment";
 import { useState, useEffect } from "react";
@@ -9,6 +10,7 @@ import { Tooltip } from "react-tooltip";
 
 export default function UserReports(){
     const { currentUser, language } = useAuth()
+    const [viewType, setViewType] = useState("table")
     const athlete_id = currentUser?.id
     const {
             data,
@@ -263,13 +265,22 @@ export default function UserReports(){
         )
     }
 
+    const action_btn =
+      <div className="flex items-center rounded cursor-pointer shadow-xl">
+        <button className={`${viewType === "table" ? "bg-green-500 text-white": "bg-white text-black rounded-l"} py-1 px-4 rounded-l`} onClick={()=>setViewType("table")}>Table</button>
+        <button className={`${viewType === "chart" ? "bg-green-500 px-2 text-white": "bg-white text-black"}  py-1 px-4 rounded-r`} onClick={()=>setViewType("chart")}>Chart</button>
+      </div>
+
 
 
     return (
         <UserInfo>
-            {
-            data ? <Table data={dataToRender} columns={table_columns} entity_name="Your Records" searchMsg="Search your records"/>
-            : <div className="font-semibold mt-4">You don't have any records yet</div>
+            {viewType === "table" ? <div>
+              {
+              data ? <Table data={dataToRender} columns={table_columns} actionBtn={action_btn} entity_name="Your Records" searchMsg="Search your records"/>
+              : <div className="font-semibold mt-4">You don't have any records yet</div>
+              }
+            </div>: <UserDataChart data={[...dataToRender, ...dataToRender, ...dataToRender]} action_btn={action_btn} />
             }
         </UserInfo>
     )

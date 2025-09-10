@@ -11,11 +11,11 @@ interface ChartProps<T> {
   filterableAttributes: (keyof T)[];
   yAxisLabel?: string;  
   valueKey: keyof T; 
-  displayName?: string;           // Custom display name for the value
-  action_btn?: ReactNode;         // numeric Y axis
-  xKey?: keyof T;                 // X axis (default "date")
+  displayName?: string;
+  action_btn?: ReactNode;
+  xKey?: keyof T;       // default "date"
   defaultFilter?: Record<string, string>;
-  hasDates?: boolean;             // whether data has a "date" field
+  hasDates?: boolean;
   defaultChartType?: "bar" | "line";
 }
 
@@ -26,7 +26,7 @@ function addDays(d: Date, n: number) { const x = new Date(d); x.setDate(x.getDat
 // ISO week helpers
 function startOfISOWeek(d: Date) {
   const x = startOfDay(d);
-  const day = (x.getDay() || 7); // Mon=1..Sun=7
+  const day = (x.getDay() || 7);
   if (day !== 1) x.setDate(x.getDate() - (day - 1));
   return x;
 }
@@ -39,6 +39,7 @@ function getISOWeekNumber(d: Date) {
   return { year: date.getUTCFullYear(), week: weekNo };
 }
 
+// Label buckets
 function bucketStart(date: Date, mode: Exclude<Granularity,"auto">): Date {
   const d = new Date(date);
   switch (mode) {
@@ -52,14 +53,18 @@ function bucketStart(date: Date, mode: Exclude<Granularity,"auto">): Date {
 }
 
 function formatLabel(date: Date, mode: Exclude<Granularity,"auto">) {
-  const y = date.getFullYear(), m = pad(date.getMonth()+1), dd = pad(date.getDate()), hh = pad(date.getHours());
+  const y = String(date.getFullYear()).slice(-2);
+  const m = pad(date.getMonth()+1);
+  const dd = pad(date.getDate());
+  const hh = pad(date.getHours());
+
   switch (mode) {
-    case "hourly":  return `${y}-${m}-${dd} ${hh}:00`;
-    case "2hourly": return `${y}-${m}-${dd} ${hh}:00–${pad((date.getHours()+2)%24)}:00`;
-    case "daily":   return `${y}-${m}-${dd}`;
-    case "weekly":  { const {year, week} = getISOWeekNumber(date); return `${year}-W${week}`; }
-    case "monthly": return `${y}-${m}`;
-    case "annual":  return `${y}`;
+    case "hourly":  return `${hh}`;
+    case "2hourly": return `${hh}`;
+    case "daily":   return `${dd}-${m}-${y}`;
+    case "weekly":  { const {year, week} = getISOWeekNumber(date); return `${week}/${year}`; }
+    case "monthly": return `${m}-${y}`;
+    case "annual":  return `${date.getFullYear()}`;
   }
 }
 
@@ -68,7 +73,7 @@ export default function Chart<T extends Record<string, any>>({
   filterableAttributes,
   valueKey,
   yAxisLabel,
-  displayName = "Value", // Default display name
+  displayName = "Value",
   xKey = "date",
   action_btn,
   defaultFilter = {},
@@ -77,39 +82,41 @@ export default function Chart<T extends Record<string, any>>({
 }: ChartProps<T>) {
   const [chartType, setChartType] = useState<"bar"|"line">(defaultChartType);
   const [filters, setFilters] = useState<Record<string,string>>(defaultFilter);
-  const [from, setFrom] = useState<string>(() => new Date().toISOString().slice(0,10)); // YYYY-MM-DD
+  const [from, setFrom] = useState<string>(() => new Date().toISOString().slice(0,10));
   const [to, setTo]     = useState<string>(() => new Date().toISOString().slice(0,10));
   const [granularity, setGranularity] = useState<Granularity>("auto");
+  const [preset, setPreset] = useState<string>("");
 
-  // Presets (native select) — keeps UI minimal
-  function applyPreset(preset: string) {
+  // Apply presets
+  function applyPreset(p: string) {
     const today = new Date();
     const yest = addDays(today, -1);
-    if (preset === "today") { setFrom(today.toISOString().slice(0,10)); setTo(from => today.toISOString().slice(0,10)); }
-    if (preset === "yesterday") { const s = yest.toISOString().slice(0,10); setFrom(s); setTo(s); }
-    if (preset === "thisWeek") { const s = startOfISOWeek(today); setFrom(s.toISOString().slice(0,10)); setTo(today.toISOString().slice(0,10)); }
-    if (preset === "lastWeek") {
+    if (p === "today") { setFrom(today.toISOString().slice(0,10)); setTo(today.toISOString().slice(0,10)); }
+    if (p === "yesterday") { const s = yest.toISOString().slice(0,10); setFrom(s); setTo(s); }
+    if (p === "thisWeek") { const s = startOfISOWeek(today); setFrom(s.toISOString().slice(0,10)); setTo(today.toISOString().slice(0,10)); }
+    if (p === "lastWeek") {
       const end = addDays(startOfISOWeek(today), -1);
       const start = addDays(end, -6);
       setFrom(start.toISOString().slice(0,10)); setTo(end.toISOString().slice(0,10));
     }
-    if (preset === "thisMonth") {
+    if (p === "thisMonth") {
       const start = new Date(today.getFullYear(), today.getMonth(), 1);
       setFrom(start.toISOString().slice(0,10)); setTo(today.toISOString().slice(0,10));
     }
-    if (preset === "lastMonth") {
+    if (p === "lastMonth") {
       const start = new Date(today.getFullYear(), today.getMonth()-1, 1);
       const end = new Date(today.getFullYear(), today.getMonth(), 0);
       setFrom(start.toISOString().slice(0,10)); setTo(end.toISOString().slice(0,10));
     }
+    setPreset(p);
   }
 
   // Determine effective mode
   const mode: Exclude<Granularity,"auto"> = useMemo(() => {
-    if (!hasDates || xKey !== "date") return "daily"; // categorical default
+    if (!hasDates) return "daily";
     if (granularity !== "auto") return granularity as Exclude<Granularity,"auto">;
     const start = new Date(from), end = new Date(to);
-    const diffMs = +startOfDay(addDays(end,1)) - +startOfDay(start); // inclusive days span
+    const diffMs = +startOfDay(addDays(end,1)) - +startOfDay(start);
     const diffDays = diffMs / 86400000;
     if (diffDays <= 1) return "hourly";
     if (diffDays <= 2) return "2hourly";
@@ -117,7 +124,7 @@ export default function Chart<T extends Record<string, any>>({
     if (diffDays <= 60) return "weekly";
     if (diffDays <= 365) return "monthly";
     return "annual";
-  }, [granularity, hasDates, xKey, from, to]);
+  }, [granularity, hasDates, from, to]);
 
   // Filter rows
   const filtered = useMemo(() => {
@@ -129,17 +136,16 @@ export default function Chart<T extends Record<string, any>>({
     if (hasDates) {
       const s = new Date(from); const e = new Date(to);
       rows = rows.filter(r => {
-        const d = r.date ? new Date(r.date) : null;
+        const d = r[xKey] ? new Date(r[xKey]) : null;
         return d ? d >= startOfDay(s) && d <= addDays(startOfDay(e), 1) : true;
       });
     }
     return rows;
-  }, [data, filters, hasDates, from, to]);
+  }, [data, filters, hasDates, from, to, xKey]);
 
-  // Group
+  // Group by X
   const grouped = useMemo(() => {
-    if (!hasDates || xKey !== "date") {
-      // Categorical X — group by xKey
+    if (!hasDates) {
       const map: Record<string, { label: string; value: number }> = {};
       for (const row of filtered) {
         const label = String(row[xKey]);
@@ -148,10 +154,9 @@ export default function Chart<T extends Record<string, any>>({
       }
       return Object.values(map).sort((a,b) => a.label.localeCompare(b.label));
     }
-    // Time X — group by bucket start timestamp
     const map: Record<number, { ts: number; label: string; value: number }> = {};
     for (const row of filtered) {
-      const d = row.date ? new Date(row.date) : null;
+      const d = row[xKey] ? new Date(row[xKey]) : null;
       if (!d) continue;
       const start = bucketStart(d, mode);
       const ts = +start;
@@ -161,7 +166,7 @@ export default function Chart<T extends Record<string, any>>({
     return Object.values(map).sort((a,b) => a.ts - b.ts);
   }, [filtered, valueKey, xKey, hasDates, mode]);
 
-  // Build options for native selects
+  // Build filter options
   const optionsByAttr = useMemo(() => {
     const o: Record<string, string[]> = {};
     for (const attr of filterableAttributes) {
@@ -172,9 +177,8 @@ export default function Chart<T extends Record<string, any>>({
     return o;
   }, [data, filterableAttributes]);
 
-  // ==== UI ====
   return (
-    <div className="w-full rounded border border-gray-200 p-3 md:p-4 shadow-sm bg-white">
+    <div className="w-full rounded border-gray-200 shadow-sm bg-white">
       {/* Toolbar */}
       <div className="flex flex-wrap items-end gap-2 md:gap-3">
         {/* Chart type */}
@@ -193,13 +197,12 @@ export default function Chart<T extends Record<string, any>>({
         {/* Filters */}
         {filterableAttributes.map((attr) => (
           <div key={String(attr)} className="flex items-center gap-1">
-            <label className="text-xs text-gray-600 capitalize">{String(attr)}</label>
             <select
               className="rounded border border-gray-300 px-2 py-1 text-sm"
               value={filters[String(attr)] ?? ""}
               onChange={(e)=>setFilters(f=>({...f, [String(attr)]: e.target.value}))}
             >
-              <option value="">All {String(attr)}</option>
+              <option value="">Select {String(attr)}</option>
               {optionsByAttr[String(attr)].map(v => (
                 <option key={v} value={v}>{v}</option>
               ))}
@@ -207,113 +210,81 @@ export default function Chart<T extends Record<string, any>>({
           </div>
         ))}
 
-        {/* Date controls (only if dates) */}
+        {/* Date controls */}
         {hasDates && (
           <>
-            <div className="flex items-center gap-1">
-              <label className="text-xs text-gray-600">From</label>
-              <input
-                type="date"
-                className="rounded border border-gray-300 px-2 py-1 text-sm"
-                value={from}
-                onChange={(e)=>setFrom(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center gap-1">
-              <label className="text-xs text-gray-600">To</label>
-              <input
-                type="date"
-                className="rounded border border-gray-300 px-2 py-1 text-sm"
-                value={to}
-                min={from}
-                onChange={(e)=>setTo(e.target.value)}
-              />
-            </div>
+            <input type="date" className="rounded border px-2 py-1 text-sm"
+              value={from} onChange={(e)=>setFrom(e.target.value)} />
+            <input type="date" className="rounded border px-2 py-1 text-sm"
+              value={to} min={from} onChange={(e)=>setTo(e.target.value)} />
 
             {/* Presets */}
-            <div className="flex items-center gap-1">
-              <label className="text-xs text-gray-600">Preset</label>
-              <select
-                className="rounded border border-gray-300 px-2 py-1 text-sm"
-                defaultValue=""
-                onChange={(e)=>{ if (e.target.value) { applyPreset(e.target.value); e.currentTarget.value = ""; } }}
-              >
-                <option value="">—</option>
-                <option value="today">Today</option>
-                <option value="yesterday">Yesterday</option>
-                <option value="thisWeek">This Week</option>
-                <option value="lastWeek">Last Week</option>
-                <option value="thisMonth">This Month</option>
-                <option value="lastMonth">Last Month</option>
-              </select>
-            </div>
+            <select
+              className="rounded border border-gray-300 px-2 py-1 text-sm hidden"
+              value={preset}
+              onChange={(e)=>applyPreset(e.target.value)}
+            >
+              <option value="">—</option>
+              <option value="today">Today</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="thisWeek">This Week</option>
+              <option value="lastWeek">Last Week</option>
+              <option value="thisMonth">This Month</option>
+              <option value="lastMonth">Last Month</option>
+            </select>
 
             {/* Granularity */}
-            {xKey === "date" && (
-              <div className="flex items-center gap-1">
-                <label className="text-xs text-gray-600">Group</label>
-                <select
-                  className="rounded border border-gray-300 px-2 py-1 text-sm"
-                  value={granularity}
-                  onChange={(e)=>setGranularity(e.target.value as Granularity)}
-                >
-                  <option value="auto">Auto</option>
-                  <option value="hourly">Hourly</option>
-                  <option value="2hourly">2-hourly</option>
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="annual">Annual</option>
-                </select>
-              </div>
-            )}
+            <select
+              className="rounded border border-gray-300 px-2 py-1 text-sm"
+              value={granularity}
+              onChange={(e)=>setGranularity(e.target.value as Granularity)}
+            >
+              <option value="auto">Auto</option>
+              <option value="hourly">Hourly</option>
+              <option value="2hourly">2-hourly</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="annual">Annual</option>
+            </select>
           </>
         )}
 
-
-        {/*  */}
         <div className="flex gap-4 items-center ml-auto">
-        {action_btn && action_btn}
-        
-        {/* Reset */}
-        <button
-          className="rounded border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
-          onClick={()=>{
-            setFilters({});
-            const s = new Date().toISOString().slice(0,10);
-            setFrom(s); setTo(s); setGranularity("auto");
-          }}
-        >
-          Reset
-        </button>
+          <button
+            className="rounded border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
+            onClick={()=>{
+              setFilters({});
+              const s = new Date().toISOString().slice(0,10);
+              setFrom(s); setTo(s); setGranularity("auto"); setPreset("");
+            }}
+          >
+            Reset
+          </button>
+          {action_btn && action_btn}
         </div>
       </div>
 
-      {/* Mode info */}
-      {hasDates && xKey === "date" && (
-        <div className="mt-2 text-xs text-gray-500">Mode: <span className="font-medium">{mode}</span></div>
-      )}
-
       {/* Chart */}
-      <div className="mt-3 h-[420px] h-sm:h-[500px] h-md:h-[720px] h-lg:h-[1000px] h-xl:h-[1250px] w-full">
+      <div className="mt-3 h-[420px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           {chartType === "line" ? (
             <LineChart data={grouped}>
               <CartesianGrid strokeDasharray="3 3" />
-              <YAxis label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: 'insideLeft' } : undefined} />
-              <YAxis />
+              <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={70} tick={{ fontSize: 12, fontWeight: 500 }}  />
+              <YAxis label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: 'insideLeft' } : undefined}  tick={{ fontSize: 12, fontWeight: 500 }}  />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="value" name={displayName} />
+              <Line type="monotone" dataKey="value" name={displayName} stroke="#3A8DC7" />
             </LineChart>
           ) : (
             <BarChart data={grouped}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="label" angle={-45} textAnchor="end" interval={0} height={70} tick={{ fontSize: 12, fill: "#374151"}} />
-              <YAxis label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: 'insideLeft' } : undefined} />
+              <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={70} tick={{ fontSize: 12, fontWeight: 500 }}  />
+              <YAxis label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: 'insideLeft' } : undefined}  tick={{ fontSize: 12, fontWeight: 500 }}  />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" name={displayName} fill="#3A8DC7" activeBar={{ fill: "#3A8DC7" }} />
+              <Bar dataKey="value" name={displayName} fill="#3A8DC7" />
             </BarChart>
           )}
         </ResponsiveContainer>
