@@ -280,7 +280,7 @@ export default function UserReports(){
               data ? <Table data={dataToRender} columns={table_columns} actionBtn={action_btn} entity_name="Your Records" searchMsg="Search your records"/>
               : <div className="font-semibold mt-4">You don't have any records yet</div>
               }
-            </div>: <UserDataChart data={[...dataToRender, ...dataToRender, ...dataToRender]} action_btn={action_btn} />
+            </div>: <UserDataChart data={dataToRender} action_btn={action_btn} />
             }
         </UserInfo>
     )
