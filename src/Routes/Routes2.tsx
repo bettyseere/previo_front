@@ -27,7 +27,7 @@ import ActivityAttributes from "../components/Activities/SubActivities/Attribute
 import Roles from "../components/Roles/Roles";
 import TeamMembers from "../components/Companies/Teams/TeamMembers/TeamMembers";
 // import UserDevices from "../components/Users/UserInfo/Devices/Devices";
-import UserReports from "../components/Users/UserInfo/Reports/Reports";
+import UserReports from "../components/Users/UserInfo/Reports/Table";
 import UserTeamMembers from "../components/Users/UserInfo/Teams/Members/TeamMembers";
 import UserTeamRecords from "../components/Users/UserInfo/Teams/Reports/TeamRecords/Table";
 // import { Navigate } from "react-router-dom";
