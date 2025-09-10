@@ -16,8 +16,8 @@ export default function UserTeams(){
 
     user_teams.forEach(team =>
         {
-
-            team.role && data_to_render.push({id: team.team.id, name: team.team.name, role: team.role?.name || "Athlete", access_mode: team.access_type})
+            console.log(team.role.name, "This is the role")
+            team.role && data_to_render.push({id: team.team.id, name: team.team.name, role: team.role?.name || "Athlete", access_mode: team.access_type, role_id: team.role?.id || ""})
         }
     )
 
@@ -26,12 +26,12 @@ export default function UserTeams(){
             header: "Name",
             accessorKey: "name",
             cell: ({ cell, row }) => {
-                const { role, id, name } = row.original;
-                const href = role === "Athlete" ? "/reports" : is_staff ? `/teams/${id}?label=${name}`: `/profile/teams/${id}?label=${name}`;
+                const { role, id, name} = row.original;
+                const href = is_staff ? `/teams/${id}?label=${name}`: `/profile/teams/${id}?label=${name}`;
 
                 return (
                     <div onClick={()=>localStorage.setItem("current_team", name)} className="text-secondary font-semibold">
-                        <a href={href}>{name}</a>
+                        {role === ("Atleta" || "Athlete") ? <p>{name}</p> :<a href={href}>{name}</a>}
                     </div>
                 );
             },

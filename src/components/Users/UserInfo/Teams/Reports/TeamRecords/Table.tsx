@@ -1,17 +1,18 @@
-import { useAuth } from "../../../../../utils/hooks/Auth";
-import UserInfo from "../../UserInfo";
-import Table from "../../../../Commons/Table";
-import { get_team_measurements, delete_measurement } from "../../../../../api/measurements/measurements";
-import { useApiGet } from "../../../../../utils/hooks/query";
+import { useAuth } from "../../../../../../utils/hooks/Auth";
+import UserInfo from "../../../UserInfo";
+import Table from "../../../../../Commons/Table";
+import { get_team_measurements, delete_measurement } from "../../../../../../api/measurements/measurements";
+import { useApiGet } from "../../../../../../utils/hooks/query";
 import { useParams } from "react-router-dom";
-import Button from "../../../../Commons/Button";
-import { usePopup } from "../../../../../utils/hooks/usePopUp";
-import Popup from "../../../../Commons/Popup";
-import ConfirmModel from "../../../../Commons/ConfirmModel";
-import MeasurementForm from "./Form";
+import Button from "../../../../../Commons/Button";
+import { usePopup } from "../../../../../../utils/hooks/usePopUp";
+import Popup from "../../../../../Commons/Popup";
+import ConfirmModel from "../../../../../Commons/ConfirmModel";
+import MeasurementForm from "../Form";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import { Tooltip } from "react-tooltip";
+import TeamDataChart from "./Chart";
 
 export default function UserTeamRecords() {
   const { hidePopup, handleHidePopup } = usePopup();
@@ -20,6 +21,7 @@ export default function UserTeamRecords() {
   let team_id = useParams().id;
   const [selectedId, setSelectID] = useState("");
   const team_name = localStorage.getItem("current_team") + " records" || "Team records"
+  const [viewType, setViewType] = useState("table")
 
   let user_team = currentUser?.teams;
   user_team = user_team?.find((team) => team.team.id == team_id);
@@ -379,11 +381,20 @@ export default function UserTeamRecords() {
     );
   }
 
+  const action_btn =
+      <div className="flex items-center rounded cursor-pointer shadow-xl">
+        <button className={`${viewType === "table" ? "bg-green-500 text-white": "bg-white text-black rounded-l"} py-1 px-4 rounded-l`} onClick={()=>setViewType("table")}>Table</button>
+        <button className={`${viewType === "chart" ? "bg-green-500 px-2 text-white": "bg-white text-black"}  py-1 px-4 rounded-r`} onClick={()=>setViewType("chart")}>Chart</button>
+      </div>
+
   return (
     <div>
       {hidePopup.show && !hidePopup.data.base && popup}
       <UserInfo nav_items={default_nav}>
-        {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" searchMode="double" entity_name={team_name} back_path="/teams"/> }
+        {viewType === "table" ? <div>
+          {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" actionBtn={action_btn} searchMode="double" entity_name={team_name} back_path="/teams"/> }
+        </div>:
+        <TeamDataChart action_btn={action_btn} data={dataToRender} />}
       </UserInfo>
     </div>
   );

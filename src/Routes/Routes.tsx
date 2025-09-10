@@ -32,7 +32,7 @@ import TeamMembers from "../components/Companies/Teams/TeamMembers/TeamMembers";
 // import UserDevices from "../components/Users/UserInfo/Devices/Devices";
 import UserReports from "../components/Users/UserInfo/Reports/Reports";
 import UserTeamMembers from "../components/Users/UserInfo/Teams/Members/TeamMembers";
-import UserTeamRecords from "../components/Users/UserInfo/Teams/Reports/TeamRecords";
+import UserTeamRecords from "../components/Users/UserInfo/Teams/Reports/TeamRecords/Table";
 
 // Import all your components here (same as before)
 import DeviceAttributes from "../components/DeviceTypes/DeviceAttributes/DeviceAttributes";
@@ -62,6 +62,13 @@ function AppRoutes() {
                     } />
 
                     <Route path="/profile" element={<UserReports />} />
+                    {is_admin && has_permission && (
+                        <Route path="/profile/teams" element={<UserTeamLayout />}>
+                            <Route index element={<UserTeams />} />
+                            <Route path=":id" element={<UserTeamMembers />} />
+                            <Route path=":id/records" element={<UserTeamRecords />} />
+                        </Route>
+                    )}
 
                     {/* Staff User Routes */}
                     {is_staff && has_permission && (

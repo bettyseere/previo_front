@@ -418,7 +418,6 @@ export default function Table<T>({
         </div>
       )}
 
-      {/* Table Container - This will grow to fill available space */}
       <div className="flex-1 flex flex-col overflow-hidden border-b">
         <table className="w-full table-fixed border-collapse">
           <thead className="cursor-pointer">
@@ -471,7 +470,7 @@ export default function Table<T>({
                     console.log(span, cell.column.id)
                     return <td
                       key={cell.id}
-                      className={`text-secondary relative px-2 py-2 border-b border-r first:border-l text-center text-[1rem] ${span > 1 && "bg-gray-300"}`}
+                      className={`text-secondary relative px-2 py-2 border-b border-r first:border-l text-center text-[1rem] ${span > 1 && "bg-gray-200"}`}
                       style={{ width: `auto` }}
                     >
                       {flexRender(
