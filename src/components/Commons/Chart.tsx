@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from "react";
+import React, { ReactNode, useMemo, useState, useEffect } from "react";
 import {
   LineChart, Line, BarChart, Bar,
   XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer
@@ -17,13 +17,13 @@ interface ChartProps<T> {
   defaultFilter?: Record<string, string>;
   hasDates?: boolean;
   defaultChartType?: "bar" | "line";
+  defaultSelection?: Record<string, "first" | "all">; // <-- NEW
 }
 
 function pad(n: number) { return String(n).padStart(2, "0"); }
 function startOfDay(d: Date) { const x = new Date(d); x.setHours(0,0,0,0); return x; }
 function addDays(d: Date, n: number) { const x = new Date(d); x.setDate(x.getDate()+n); return x; }
 
-// ISO week helpers
 function startOfISOWeek(d: Date) {
   const x = startOfDay(d);
   const day = (x.getDay() || 7);
@@ -39,7 +39,6 @@ function getISOWeekNumber(d: Date) {
   return { year: date.getUTCFullYear(), week: weekNo };
 }
 
-// Label buckets
 function bucketStart(date: Date, mode: Exclude<Granularity,"auto">): Date {
   const d = new Date(date);
   switch (mode) {
@@ -68,22 +67,6 @@ function formatLabel(date: Date, mode: Exclude<Granularity,"auto">) {
   }
 }
 
-// Helper: find earliest date in the current year
-function earliestDateThisYear<T>(data: T[], xKey: keyof T): string {
-  const thisYear = new Date().getFullYear();
-  let min: Date | null = null;
-
-  for (const row of data) {
-    const raw = row[xKey];
-    if (!raw) continue;
-    const d = new Date(String(raw));
-    if (d.getFullYear() !== thisYear) continue;
-    if (!min || d < min) min = d;
-  }
-
-  return min ? min.toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-}
-
 export default function Chart<T extends Record<string, any>>({
   data,
   filterableAttributes,
@@ -95,41 +78,40 @@ export default function Chart<T extends Record<string, any>>({
   defaultFilter = {},
   hasDates = false,
   defaultChartType = "bar",
+  defaultSelection = {},
 }: ChartProps<T>) {
-  const todayStr = new Date().toISOString().slice(0, 10);
-
   const [chartType, setChartType] = useState<"bar"|"line">(defaultChartType);
   const [filters, setFilters] = useState<Record<string,string>>(defaultFilter);
-  const [from, setFrom] = useState<string>(() =>
-    hasDates ? earliestDateThisYear(data, xKey) : todayStr
-  );
-  const [to, setTo] = useState<string>(todayStr);
+  const [from, setFrom] = useState<string>(() => new Date().toISOString().slice(0,10));
+  const [to, setTo]     = useState<string>(() => new Date().toISOString().slice(0,10));
   const [granularity, setGranularity] = useState<Granularity>("auto");
   const [preset, setPreset] = useState<string>("");
 
-  // Apply presets
-  function applyPreset(p: string) {
-    const today = new Date();
-    const yest = addDays(today, -1);
-    if (p === "today") { setFrom(today.toISOString().slice(0,10)); setTo(today.toISOString().slice(0,10)); }
-    if (p === "yesterday") { const s = yest.toISOString().slice(0,10); setFrom(s); setTo(s); }
-    if (p === "thisWeek") { const s = startOfISOWeek(today); setFrom(s.toISOString().slice(0,10)); setTo(today.toISOString().slice(0,10)); }
-    if (p === "lastWeek") {
-      const end = addDays(startOfISOWeek(today), -1);
-      const start = addDays(end, -6);
-      setFrom(start.toISOString().slice(0,10)); setTo(end.toISOString().slice(0,10));
+  // Build filter options
+  const optionsByAttr = useMemo(() => {
+    const o: Record<string, string[]> = {};
+    for (const attr of filterableAttributes) {
+      const set = new Set<string>();
+      data.forEach(d => d[attr] != null && set.add(String(d[attr])));
+      o[String(attr)] = Array.from(set).sort();
     }
-    if (p === "thisMonth") {
-      const start = new Date(today.getFullYear(), today.getMonth(), 1);
-      setFrom(start.toISOString().slice(0,10)); setTo(today.toISOString().slice(0,10));
+    return o;
+  }, [data, filterableAttributes]);
+
+  // Auto-select defaults (first/all)
+  useEffect(() => {
+    const newFilters: Record<string,string> = {};
+    for (const attr of filterableAttributes) {
+      const key = String(attr);
+      const opts = optionsByAttr[key] ?? [];
+      if (defaultSelection[key] === "first" && opts.length > 0) {
+        newFilters[key] = opts[0];
+      } else if (defaultSelection[key] === "all") {
+        newFilters[key] = "";
+      }
     }
-    if (p === "lastMonth") {
-      const start = new Date(today.getFullYear(), today.getMonth()-1, 1);
-      const end = new Date(today.getFullYear(), today.getMonth(), 0);
-      setFrom(start.toISOString().slice(0,10)); setTo(end.toISOString().slice(0,10));
-    }
-    setPreset(p);
-  }
+    setFilters(f => ({ ...f, ...newFilters }));
+  }, [optionsByAttr, filterableAttributes, defaultSelection]);
 
   // Determine effective mode
   const mode: Exclude<Granularity,"auto"> = useMemo(() => {
@@ -186,17 +168,6 @@ export default function Chart<T extends Record<string, any>>({
     return Object.values(map).sort((a,b) => a.ts - b.ts);
   }, [filtered, valueKey, xKey, hasDates, mode]);
 
-  // Build filter options
-  const optionsByAttr = useMemo(() => {
-    const o: Record<string, string[]> = {};
-    for (const attr of filterableAttributes) {
-      const set = new Set<string>();
-      data.forEach(d => d[attr] != null && set.add(String(d[attr])));
-      o[String(attr)] = Array.from(set).sort();
-    }
-    return o;
-  }, [data, filterableAttributes]);
-
   return (
     <div className="w-full rounded border-gray-200 shadow-sm bg-white">
       {/* Toolbar */}
@@ -222,11 +193,15 @@ export default function Chart<T extends Record<string, any>>({
               value={filters[String(attr)] ?? ""}
               onChange={(e)=>setFilters(f=>({...f, [String(attr)]: e.target.value}))}
             >
-              <option value="">Select {String(attr)}</option>
+              {/* Only show "All" option if explicitly requested */}
+              {defaultSelection?.[attr] === "all" && (
+                <option value="">All {String(attr)}</option>
+              )}
               {optionsByAttr[String(attr)].map(v => (
                 <option key={v} value={v}>{v}</option>
               ))}
             </select>
+
           </div>
         ))}
 
@@ -237,21 +212,6 @@ export default function Chart<T extends Record<string, any>>({
               value={from} onChange={(e)=>setFrom(e.target.value)} />
             <input type="date" className="rounded border px-2 py-1 text-sm"
               value={to} min={from} onChange={(e)=>setTo(e.target.value)} />
-
-            {/* Presets */}
-            <select
-              className="rounded border border-gray-300 px-2 py-1 text-sm hidden"
-              value={preset}
-              onChange={(e)=>applyPreset(e.target.value)}
-            >
-              <option value="">—</option>
-              <option value="today">Today</option>
-              <option value="yesterday">Yesterday</option>
-              <option value="thisWeek">This Week</option>
-              <option value="lastWeek">Last Week</option>
-              <option value="thisMonth">This Month</option>
-              <option value="lastMonth">Last Month</option>
-            </select>
 
             {/* Granularity */}
             <select
@@ -275,8 +235,8 @@ export default function Chart<T extends Record<string, any>>({
             className="rounded border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
             onClick={()=>{
               setFilters({});
-              const s = hasDates ? earliestDateThisYear(data, xKey) : todayStr;
-              setFrom(s); setTo(todayStr); setGranularity("auto"); setPreset("");
+              const s = new Date().toISOString().slice(0,10);
+              setFrom(s); setTo(s); setGranularity("auto"); setPreset("");
             }}
           >
             Reset

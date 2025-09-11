@@ -249,9 +249,9 @@ export default function UserReports(){
           header: "JH",
           accessorKey: "jh",
           cell: ({ row }) => {
-            if (normalize(row.original.measurement_id) !== "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") return null;
+            if (normalize(row.original.measurement_id) !== "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") return null;
             const val = 4.9 * (0.5 * (row.original.results / 1000)) ** 2;
-            return <div className="text-xs">{val.toFixed(2)} m</div>;
+            return <div className="text-xs">{val.toFixed(3)} m</div>;
           },
         },
         {
