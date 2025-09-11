@@ -261,7 +261,7 @@ export default function UserTeamRecords() {
             if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
               a._rowSpan = { ...(a._rowSpan || {}), pat: 2 };
               b._rowSpan = { ...(b._rowSpan || {}), pat: 2 };
-              
+
               // Mark next 2 rows as skipped
               if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
               if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
