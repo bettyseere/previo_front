@@ -96,7 +96,23 @@ export default function UserReports(){
       if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
         b.rsi = a.results / b.results;
       }
+
+      if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+        a._rowSpan = { ...(a._rowSpan || {}), rsi: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), rsi: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), jh: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), jh: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), measurement: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), measurement: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), results: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), results: 2 };
+        
+        // Mark next 2 rows as skipped
+        if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
+        if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
+      }
     }
+
   };
 
   const computePower = (group) => {
@@ -130,6 +146,15 @@ export default function UserReports(){
             // assign power to the row representing flight time
             if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
             else b.power = power;
+
+            if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+              a._rowSpan = { ...(a._rowSpan || {}), power: 2 };
+              b._rowSpan = { ...(b._rowSpan || {}), power: 2 };
+              
+              // Mark next 2 rows as skipped
+              if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
+              if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
+            }
             }
         }
     };
@@ -169,6 +194,15 @@ export default function UserReports(){
             if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.pat = pat;
             else b.pat = pat;
             }
+
+            if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+              a._rowSpan = { ...(a._rowSpan || {}), pat: 2 };
+              b._rowSpan = { ...(b._rowSpan || {}), pat: 2 };
+
+              // Mark next 2 rows as skipped
+              if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
+              if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
+            }
         }
     };
 
@@ -207,7 +241,7 @@ export default function UserReports(){
         },
         {
           header: "JH",
-          accessorKey: "id",
+          accessorKey: "jh",
           cell: ({ row }) => {
             if (normalize(row.original.measurement_id) !== "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") return null;
             const val = 4.9 * (0.5 * (row.original.results / 1000)) ** 2;
@@ -277,7 +311,7 @@ export default function UserReports(){
         <UserInfo>
             {viewType === "table" ? <div>
               {
-              data ? <Table data={dataToRender} columns={table_columns} actionBtn={action_btn} entity_name="Your Records" searchMsg="Search your records"/>
+              data ? <Table data={dataToRender} columns={table_columns} searchMode="double" actionBtn={action_btn} entity_name="Your Records" searchMsg="Search your records"/>
               : <div className="font-semibold mt-4">You don't have any records yet</div>
               }
             </div>: <UserDataChart data={dataToRender} action_btn={action_btn} />
