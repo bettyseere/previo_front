@@ -68,6 +68,22 @@ function formatLabel(date: Date, mode: Exclude<Granularity,"auto">) {
   }
 }
 
+// Helper: find earliest date in the current year
+function earliestDateThisYear<T>(data: T[], xKey: keyof T): string {
+  const thisYear = new Date().getFullYear();
+  let min: Date | null = null;
+
+  for (const row of data) {
+    const raw = row[xKey];
+    if (!raw) continue;
+    const d = new Date(String(raw));
+    if (d.getFullYear() !== thisYear) continue;
+    if (!min || d < min) min = d;
+  }
+
+  return min ? min.toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+}
+
 export default function Chart<T extends Record<string, any>>({
   data,
   filterableAttributes,
@@ -80,10 +96,14 @@ export default function Chart<T extends Record<string, any>>({
   hasDates = false,
   defaultChartType = "bar",
 }: ChartProps<T>) {
+  const todayStr = new Date().toISOString().slice(0, 10);
+
   const [chartType, setChartType] = useState<"bar"|"line">(defaultChartType);
   const [filters, setFilters] = useState<Record<string,string>>(defaultFilter);
-  const [from, setFrom] = useState<string>(() => new Date().toISOString().slice(0,10));
-  const [to, setTo]     = useState<string>(() => new Date().toISOString().slice(0,10));
+  const [from, setFrom] = useState<string>(() =>
+    hasDates ? earliestDateThisYear(data, xKey) : todayStr
+  );
+  const [to, setTo] = useState<string>(todayStr);
   const [granularity, setGranularity] = useState<Granularity>("auto");
   const [preset, setPreset] = useState<string>("");
 
@@ -255,8 +275,8 @@ export default function Chart<T extends Record<string, any>>({
             className="rounded border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
             onClick={()=>{
               setFilters({});
-              const s = new Date().toISOString().slice(0,10);
-              setFrom(s); setTo(s); setGranularity("auto"); setPreset("");
+              const s = hasDates ? earliestDateThisYear(data, xKey) : todayStr;
+              setFrom(s); setTo(todayStr); setGranularity("auto"); setPreset("");
             }}
           >
             Reset
