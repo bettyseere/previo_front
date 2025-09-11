@@ -97,6 +97,8 @@ export default function UserReports(){
         b.rsi = a.results / b.results;
       }
 
+      if (a._skipRow || b._skipRow) continue;
+
       if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
         a._rowSpan = { ...(a._rowSpan || {}), rsi: 2 };
         b._rowSpan = { ...(b._rowSpan || {}), rsi: 2 };
@@ -106,7 +108,7 @@ export default function UserReports(){
         b._rowSpan = { ...(b._rowSpan || {}), measurement: 2 };
         a._rowSpan = { ...(a._rowSpan || {}), results: 2 };
         b._rowSpan = { ...(b._rowSpan || {}), results: 2 };
-        
+
         // Mark next 2 rows as skipped
         if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
         if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
@@ -146,6 +148,8 @@ export default function UserReports(){
             // assign power to the row representing flight time
             if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.power = power;
             else b.power = power;
+
+            if (a._skipRow || b._skipRow) continue;
 
             if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
               a._rowSpan = { ...(a._rowSpan || {}), power: 2 };
@@ -194,6 +198,8 @@ export default function UserReports(){
             if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") a.pat = pat;
             else b.pat = pat;
             }
+
+            if (a._skipRow || b._skipRow) continue;
 
             if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
               a._rowSpan = { ...(a._rowSpan || {}), pat: 2 };

@@ -135,7 +135,6 @@ export default function UserTeamRecords() {
       const b = sliced[i + 1];
 
       // Skip if either row is already marked as skipped
-      if (a._skipRow || b._skipRow) continue;
 
       if (normalize(a.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
         b.rsi = a.results / b.results;
@@ -144,6 +143,8 @@ export default function UserTeamRecords() {
       if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
         a.rsi =  b.results / a.results;
       }
+
+      if (a._skipRow || b._skipRow) continue;
 
       if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
         a._rowSpan = { ...(a._rowSpan || {}), rsi: 2 };
@@ -173,7 +174,7 @@ export default function UserTeamRecords() {
         const b = sliced[i + 1];
 
         // Skip if either row is already marked as skipped
-        if (a._skipRow || b._skipRow) continue;
+        // if (a._skipRow || b._skipRow) continue;
 
         console.log(a.results, b.results)
 
@@ -204,6 +205,8 @@ export default function UserTeamRecords() {
           b.power = power;
         }
 
+        if (a._skipRow || b._skipRow) continue;
+
         if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
           a._rowSpan = { ...(a._rowSpan || {}), power: 2 };
           b._rowSpan = { ...(b._rowSpan || {}), power: 2 };
@@ -227,7 +230,7 @@ export default function UserTeamRecords() {
         const b = sliced[i + 1];
 
         // Skip if either row is already marked as skipped
-        if (a._skipRow || b._skipRow) continue;
+        // if (a._skipRow || b._skipRow) continue;
 
         const measA = normalize(a.measurement_id);
         const measB = normalize(b.measurement_id);
@@ -257,6 +260,8 @@ export default function UserTeamRecords() {
             } else {
                 b.pat = pat;
             }
+
+            if (a._skipRow || b._skipRow) continue;
 
             if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
               a._rowSpan = { ...(a._rowSpan || {}), pat: 2 };
