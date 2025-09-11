@@ -19,6 +19,10 @@ export default function UserDataChart({action_btn, data}: Props) {
         xKey="created_at"  // ← Still group by athlete for categorical display
         action_btn={action_btn}
         displayName="Performance"
+         defaultSelection={{
+          activity: "first",
+          measurement: "first"
+        }}
       />
     </div>
   );

@@ -6,7 +6,7 @@ interface Props {
     data: any[]
 }
 
-export default function TeamDataChart({action_btn, data}: Props) {
+export default function TeamDataChart({ action_btn, data }: Props) {
   return (
     <div className="p-4">
       {/* Athlete comparison with date filtering */}
@@ -14,11 +14,15 @@ export default function TeamDataChart({action_btn, data}: Props) {
         data={data}
         filterableAttributes={["activity", "measurement", "athlete"]}
         valueKey="results"
-        // yAxisLabel="Results"
-        hasDates={false} // ← Enable date filtering
-        xKey="athlete"  // ← Still group by athlete for categorical display
+        hasDates={false} // ← no date filtering
+        xKey="athlete"   // ← group by athlete
         action_btn={action_btn}
         displayName="Performance"
+        defaultSelection={{
+          activity: "first",
+          measurement: "first",
+          athlete: "all"
+        }}
       />
     </div>
   );
