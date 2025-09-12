@@ -255,14 +255,14 @@ export default function UserReports(){
           },
         },
         {
-          header: "W/Kg",
+          header: "Wpeak/Kg",
           accessorKey: "power",
           cell: ({ row }) => {
             return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)}</div> : null
           }
         },
         {
-          header: "PaT",
+          header: "PaTpeak",
           accessorKey: "pat",
           cell: ({ row }) => {
             return row.original.pat ? <div className="text-xs">{row.original.pat.toFixed(3)}</div> : null

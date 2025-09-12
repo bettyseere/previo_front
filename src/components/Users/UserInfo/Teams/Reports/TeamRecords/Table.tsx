@@ -73,7 +73,7 @@ export default function UserTeamRecords() {
     data.forEach((item, index) => {
     let measurement_obj = item.attribute.translations.find(tr => tr.language_code === language) || item.attribute.translations[0]
     const activity_obj = item.sub_activity.translations.find(sa => sa.language_code === language) || item.sub_activity.translations[0]
-    rows.push({
+    const parsed_row: Record<string, any> = {
         id: item.id,
         index: rows.length,
         athlete: `${item.athlete.first_name} ${item.athlete.last_name}`,
@@ -83,12 +83,17 @@ export default function UserTeamRecords() {
         activity: activity_obj.name,
         measurement: measurement_obj?.name,
         measurement_id: item.attribute.id,
-        results: parseInt(item.value),
         units: item.attribute.translations[0].units,
         device: item.device.device_type.name,
         note: item.note,
         created_at: item.created_at,
-    });
+    };
+    if (measurement_obj?.name) {
+      // console.log(measurement_obj.name, "This is the name")
+      parsed_row[measurement_obj.name.toLowerCase()] = parseInt(item.value);
+      parsed_row.results = parseInt(item.value)
+    }
+    rows.push(parsed_row)
     });
 
     // assign RSI per group
@@ -151,10 +156,14 @@ export default function UserTeamRecords() {
         b._rowSpan = { ...(b._rowSpan || {}), rsi: 2 };
         a._rowSpan = { ...(a._rowSpan || {}), jh: 2 };
         b._rowSpan = { ...(b._rowSpan || {}), jh: 2 };
-        a._rowSpan = { ...(a._rowSpan || {}), measurement: 2 };
-        b._rowSpan = { ...(b._rowSpan || {}), measurement: 2 };
-        a._rowSpan = { ...(a._rowSpan || {}), results: 2 };
-        b._rowSpan = { ...(b._rowSpan || {}), results: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), ct: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), ct: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), ft: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), ft: 2 };
+        a._rowSpan = { ...(a._rowSpan || {}), fd: 2 };
+        b._rowSpan = { ...(b._rowSpan || {}), fd: 2 };
+        // a._rowSpan = { ...(a._rowSpan || {}), results: 2 };
+        // b._rowSpan = { ...(b._rowSpan || {}), results: 2 };
         
         // Mark next 2 rows as skipped
         if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
@@ -176,7 +185,7 @@ export default function UserTeamRecords() {
         // Skip if either row is already marked as skipped
         // if (a._skipRow || b._skipRow) continue;
 
-        console.log(a.results, b.results)
+        // console.log(a.results, b.results)
 
         const measA = normalize(a.measurement_id);
         const measB = normalize(b.measurement_id);
@@ -248,11 +257,11 @@ export default function UserTeamRecords() {
             const pc = 1; // weight
             const g = 9.806;
 
-            console.log("Raw values - Contact:", contactTime, "Flight:", flightTime);
+            // console.log("Raw values - Contact:", contactTime, "Flight:", flightTime);
 
             const pat = (pc*((flightTime*g)/(contactTime))+(pc*g))/9.806
 
-            console.log("Calculated PAT:", pat);
+            // console.log("Calculated PAT:", pat);
 
             // assign PAT to the appropriate row
             if (measA === contact_id) {
@@ -299,14 +308,14 @@ export default function UserTeamRecords() {
         ),
     },
     {
-      header: "Val.",
-      accessorKey: "measurement",
-      cell: ({ row }) => <p className="text-xs">{row.original.measurement}</p>,
+      header: "Ct",
+      accessorKey: "ct",
+      cell: ({ row }) => row.original.ct && <p className="text-xs">{(row.original.ct/1000).toFixed(3)} {row.original.units}</p>,
     },
     {
-      header: "Res.",
-      accessorKey: "results",
-      cell: ({ row }) => <p className="text-xs">{(row.original.results/1000).toFixed(3)} {row.original.units}</p>,
+      header: "Ft",
+      accessorKey: "ft",
+      cell: ({ row }) => row.original.ft && <p className="text-xs">{(row.original.ft/1000).toFixed(3)} {row.original.units}</p>,
     },
     {
       header: "JH",
@@ -318,19 +327,24 @@ export default function UserTeamRecords() {
       },
     },
     {
+      header: "Fd",
+      accessorKey: "fd",
+      cell: ({ row }) => row.original.fd && <p className="text-xs">{(row.original.fd/1000).toFixed(3)} {row.original.units}</p>,
+    },
+    {
       header: "RSI",
       accessorKey: "rsi",
       cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(3)}</div> : null,
     },
     {
-      header: "W/Kg",
+      header: "Wpeak/Kg",
       accessorKey: "power",
       cell: ({ row }) => {
         return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)}</div> : null
       }
     },
     {
-        header: "PaT",
+        header: "PaTpeak",
         accessorKey: "pat",
         cell: ({ row }) => {
           return row.original.pat ? <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)}</div> : null
