@@ -30,7 +30,7 @@ export default function UserInfo({children, nav_items}: Props){
     const is_staff = currentUser?.user_type === "staff"
     const [popupType, setPopupType] = useState("edit_info")
     const current_location = window.location.pathname;
-    console.log(current_location)
+    // console.log(current_location)
     const has_permission = currentUser?.has_permission
 
 
