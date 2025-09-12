@@ -91,6 +91,7 @@ export default function UserTeamRecords() {
     if (measurement_obj?.name) {
       // console.log(measurement_obj.name, "This is the name")
       parsed_row[measurement_obj.name.toLowerCase()] = parseInt(item.value);
+      parsed_row.measurement = measurement_obj.name.toLowerCase()
       parsed_row.results = parseInt(item.value)
     }
     rows.push(parsed_row)
