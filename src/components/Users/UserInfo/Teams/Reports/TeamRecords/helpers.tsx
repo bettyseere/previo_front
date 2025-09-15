@@ -83,9 +83,9 @@ export  const computePower = (group) => {
         // Power formula
         // ((g*g)*Tv*(Tv+Tc))/(4*Tc*Nj)
         // const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
-        const vfin_val = vfin(flightTime)
-        const a_val = a_const(a.parent_activity_id, contactTime, flightTime)
-        const power = (pc*(a_val+g)*1.6)*vfin_val
+        const vfin_val = vfin(flightTime, g)
+        const a_val = a_const(a.parent_activity_id, contactTime, vfin_val)
+        const power = ((pc*(a_val+g))*1.6)/(vfin_val/2)
 
         // assign power to the row representing flight time
         if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
@@ -130,9 +130,9 @@ export  const computePat = (group) => {
             const g = 9.806;
 
             // console.log("Raw values - Contact:", contactTime, "Flight:", flightTime);
-            const vfin_val = vfin(flightTime)
-            const a_val = a_const(a.parent_activity_id, contactTime, flightTime)
-            const pat = (pc*(a_val+g)*1.6)/g
+            const vfin_val = vfin(flightTime, g)
+            const a_val = a_const(a.parent_activity_id, contactTime, vfin_val)
+            const pat = ((pc*(a_val+g))*1.6)/g
             // const pat = (pc*((flightTime*g)/(contactTime))+(pc*g))/9.806
 
             // console.log("Calculated PAT:", pat);
@@ -149,20 +149,21 @@ export  const computePat = (group) => {
 
 
 const activity_percentage_mapping = {
-    "8ee36943-154d-4a39-a81a-be8fb9fe4fc0": 58,
-    "af550580-8db6-49b5-b855-3da4a8f334e9": 77,
-    "335df26d-6968-45f5-a7f9-19ac37ff0609": 58
+    "8ee36943-154d-4a39-a81a-be8fb9fe4fc0": 0.58,
+    "af550580-8db6-49b5-b855-3da4a8f334e9": 0.77,
+    "335df26d-6968-45f5-a7f9-19ac37ff0609": 0.58
 }
 
 
-const vfin = (ft) => ft/2
+const vfin = (ft, g) => g*(ft/2)
 
 // A = Vfin / (x%tc)
-const a_const = (activity_id, ct, ft) => {
+const a_const = (activity_id, ct, vfin) => {
     const percentage = activity_percentage_mapping[activity_id];
-    return vfin(ft) / (percentage * ct);
+    return vfin / (percentage * ct);
 };
 
 export const impulse = (pc, ft) => {
-    return pc * vfin(ft)
+    const g = 9.806
+    return pc * vfin(ft, g)
 }
