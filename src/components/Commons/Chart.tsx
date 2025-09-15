@@ -17,7 +17,7 @@ interface ChartProps<T> {
   defaultFilter?: Record<string, string>;
   hasDates?: boolean;
   defaultChartType?: "bar" | "line";
-  defaultSelection?: Record<string, "first" | "all">; // <-- NEW
+  defaultSelection?: Record<string, "first" | "all">;
 }
 
 function pad(n: number) { return String(n).padStart(2, "0"); }
@@ -168,6 +168,10 @@ export default function Chart<T extends Record<string, any>>({
     return Object.values(map).sort((a,b) => a.ts - b.ts);
   }, [filtered, valueKey, xKey, hasDates, mode]);
 
+  // helper to format numbers consistently
+  const formatNumber = (val: any) =>
+    typeof val === "number" ? val.toFixed(3) : val;
+
   return (
     <div className="w-full rounded border-gray-200 shadow-sm bg-white">
       {/* Toolbar */}
@@ -193,7 +197,6 @@ export default function Chart<T extends Record<string, any>>({
               value={filters[String(attr)] ?? ""}
               onChange={(e)=>setFilters(f=>({...f, [String(attr)]: e.target.value}))}
             >
-              {/* Only show "All" option if explicitly requested */}
               {defaultSelection?.[attr] === "all" && (
                 <option value="">All {String(attr)}</option>
               )}
@@ -201,7 +204,6 @@ export default function Chart<T extends Record<string, any>>({
                 <option key={v} value={v}>{v}</option>
               ))}
             </select>
-
           </div>
         ))}
 
@@ -213,7 +215,6 @@ export default function Chart<T extends Record<string, any>>({
             <input type="date" className="rounded border px-2 py-1 text-sm"
               value={to} min={from} onChange={(e)=>setTo(e.target.value)} />
 
-            {/* Granularity */}
             <select
               className="rounded border border-gray-300 px-2 py-1 text-sm"
               value={granularity}
@@ -251,18 +252,28 @@ export default function Chart<T extends Record<string, any>>({
           {chartType === "line" ? (
             <LineChart data={grouped}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={70} tick={{ fontSize: 12, fontWeight: 500 }}  />
-              <YAxis label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: 'insideLeft' } : undefined}  tick={{ fontSize: 12, fontWeight: 500 }}  />
-              <Tooltip />
+              <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={70}
+                tick={{ fontSize: 12, fontWeight: 500 }} />
+              <YAxis
+                label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: 'insideLeft' } : undefined}
+                tick={{ fontSize: 12, fontWeight: 500 }}
+                tickFormatter={formatNumber}
+              />
+              <Tooltip formatter={formatNumber} />
               <Legend />
               <Line type="monotone" dataKey="value" name={displayName} stroke="#3A8DC7" />
             </LineChart>
           ) : (
             <BarChart data={grouped}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={70} tick={{ fontSize: 12, fontWeight: 500 }}  />
-              <YAxis label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: 'insideLeft' } : undefined}  tick={{ fontSize: 12, fontWeight: 500 }}  />
-              <Tooltip />
+              <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={70}
+                tick={{ fontSize: 12, fontWeight: 500 }} />
+              <YAxis
+                label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: 'insideLeft' } : undefined}
+                tick={{ fontSize: 12, fontWeight: 500 }}
+                tickFormatter={formatNumber}
+              />
+              <Tooltip formatter={formatNumber} />
               <Legend />
               <Bar dataKey="value" name={displayName} fill="#3A8DC7" />
             </BarChart>

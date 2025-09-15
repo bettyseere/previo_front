@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import { Tooltip } from "react-tooltip";
 import TeamDataChart from "./Chart";
+import { computePat, computePower, computeRSI, impulse } from "./helpers";
 
 export default function UserTeamRecords() {
   const { hidePopup, handleHidePopup } = usePopup();
@@ -61,8 +62,6 @@ export default function UserTeamRecords() {
     </Popup>
   );
 
-  const normalize = (str) => str.trim().toLowerCase();
-
 
   // ⬇️ Build enriched rows (with RSI) whenever `data` changes
   useEffect(() => {
@@ -72,7 +71,9 @@ export default function UserTeamRecords() {
 
     data.forEach((item, index) => {
     let measurement_obj = item.attribute.translations.find(tr => tr.language_code === language) || item.attribute.translations[0]
+    const parent_activity_id = item.sub_activity.activity_id
     const activity_obj = item.sub_activity.translations.find(sa => sa.language_code === language) || item.sub_activity.translations[0]
+
     const parsed_row: Record<string, any> = {
         id: item.id,
         index: rows.length,
@@ -81,6 +82,7 @@ export default function UserTeamRecords() {
         start: item.start,
         role: item.role.name,
         activity: activity_obj.name,
+        parent_activity_id: parent_activity_id,
         measurement: measurement_obj?.name,
         measurement_id: item.attribute.id,
         units: item.attribute.translations[0].units,
@@ -122,168 +124,10 @@ export default function UserTeamRecords() {
         computeRSI(currentGroup);
         computePat(currentGroup);
     }
-
-    setDataToRender(enriched);
+    const filteredData = enriched.filter(item => !item._shouldRemove);
+    setDataToRender(filteredData);
   }, [data, language]);
 
-  const computeRSI = (group) => {
-    if (group.length < 2) return;
-
-    // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
-    // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
-    let sliced = group
-    if (group.length > 2){
-        sliced = group.slice(1, -1);
-    }
-
-    for (let i = 0; i < sliced.length - 1; i++) {
-      const a = sliced[i];
-      const b = sliced[i + 1];
-
-      // Skip if either row is already marked as skipped
-
-      if (normalize(a.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
-        b.rsi = a.results / b.results;
-      }
-
-      if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-        a.rsi =  b.results / a.results;
-      }
-
-      if (a._skipRow || b._skipRow) continue;
-
-      if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
-        a._rowSpan = { ...(a._rowSpan || {}), rsi: 2 };
-        b._rowSpan = { ...(b._rowSpan || {}), rsi: 2 };
-        a._rowSpan = { ...(a._rowSpan || {}), jh: 2 };
-        b._rowSpan = { ...(b._rowSpan || {}), jh: 2 };
-        a._rowSpan = { ...(a._rowSpan || {}), ct: 2 };
-        b._rowSpan = { ...(b._rowSpan || {}), ct: 2 };
-        a._rowSpan = { ...(a._rowSpan || {}), ft: 2 };
-        b._rowSpan = { ...(b._rowSpan || {}), ft: 2 };
-        a._rowSpan = { ...(a._rowSpan || {}), fd: 2 };
-        b._rowSpan = { ...(b._rowSpan || {}), fd: 2 };
-        // a._rowSpan = { ...(a._rowSpan || {}), results: 2 };
-        // b._rowSpan = { ...(b._rowSpan || {}), results: 2 };
-        
-        // Mark next 2 rows as skipped
-        if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
-        if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
-      }
-    }
-  };
-
-  const computePower = (group) => {
-    if (group.length < 2) return;
-
-    // slice middle rows if group is large
-    let sliced = group.length > 2 ? group.slice(1, -1) : group;
-
-    for (let i = 0; i < sliced.length - 1; i++) {
-        const a = sliced[i];
-        const b = sliced[i + 1];
-
-        // Skip if either row is already marked as skipped
-        // if (a._skipRow || b._skipRow) continue;
-
-        // console.log(a.results, b.results)
-
-        const measA = normalize(a.measurement_id);
-        const measB = normalize(b.measurement_id);
-
-        // only calculate when we have both contact time & flight time
-        // f5daa493-5054-4ad2-97b0-d9db95e7cdd6 contact time id
-        // d4ebb79e-a0a8-4550-8bc4-e4336b8490a3 flight time id
-        // tv - flighttime tc - contact time
-        if (
-        (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && measB === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") ||
-        (measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && measB === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6")
-        ) {
-        let tc = measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" ? a.results : b.results;
-        let tv = measA === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? a.results : b.results;
-        const g = 9.806
-
-        // Power formula
-        // ((g*g)*Tv*(Tv+Tc))/(4*Tc*Nj)
-        const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
-
-        // assign power to the row representing flight time
-        if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
-          a.power = power;
-        }
-        else {
-          b.power = power;
-        }
-
-        if (a._skipRow || b._skipRow) continue;
-
-        if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
-          a._rowSpan = { ...(a._rowSpan || {}), power: 2 };
-          b._rowSpan = { ...(b._rowSpan || {}), power: 2 };
-          
-          // Mark next 2 rows as skipped
-          if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
-          if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
-        }
-        }
-    }
-  };
-
-  const computePat = (group) => {
-    if (group.length < 2) return;
-
-    // slice middle rows if group is large
-    let sliced = group.length > 2 ? group.slice(1, -1) : group;
-
-    for (let i = 0; i < sliced.length - 1; i++) {
-        const a = sliced[i];
-        const b = sliced[i + 1];
-
-        // Skip if either row is already marked as skipped
-        // if (a._skipRow || b._skipRow) continue;
-
-        const measA = normalize(a.measurement_id);
-        const measB = normalize(b.measurement_id);
-
-        const contact_id = "f5daa493-5054-4ad2-97b0-d9db95e7cdd6";
-        const flight_id = "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3";
-
-        // only calculate when we have both contact time & flight time
-        if (
-            (measA === contact_id && measB === flight_id) ||
-            (measA === flight_id && measB === contact_id)
-        ) {
-            let contactTime = (measA === contact_id ? a.results : b.results) / 1000; // convert ms to s
-            let flightTime = (measA === flight_id ? a.results : b.results) / 1000; // convert ms to s
-            const pc = 1; // weight
-            const g = 9.806;
-
-            // console.log("Raw values - Contact:", contactTime, "Flight:", flightTime);
-
-            const pat = (pc*((flightTime*g)/(contactTime))+(pc*g))/9.806
-
-            // console.log("Calculated PAT:", pat);
-
-            // assign PAT to the appropriate row
-            if (measA === contact_id) {
-                a.pat = pat;
-            } else {
-                b.pat = pat;
-            }
-
-            if (a._skipRow || b._skipRow) continue;
-
-            if (a.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" || b.measurement_id == "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
-              a._rowSpan = { ...(a._rowSpan || {}), pat: 2 };
-              b._rowSpan = { ...(b._rowSpan || {}), pat: 2 };
-
-              // Mark next 2 rows as skipped
-              if (i + 2 < sliced.length) sliced[i + 2]._skipRow = true;
-              if (i + 3 < sliced.length) sliced[i + 3]._skipRow = true;
-            }
-        }
-    }
-  };
 
   const table_columns = [
     {
@@ -316,13 +160,13 @@ export default function UserTeamRecords() {
     {
       header: "Ft",
       accessorKey: "ft",
-      cell: ({ row }) => row.original.ft && <p className="text-xs">{(row.original.ft/1000).toFixed(3)} {row.original.units}</p>,
+      cell: ({ row }) => (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && <p className="text-xs">{(row.original.ft/1000).toFixed(3)} {row.original.units}</p>,
     },
     {
       header: "JH",
       accessorKey: "jh",
       cell: ({ row }) => {
-        if (normalize(row.original.measurement_id) !== "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") return null;
+        if (!row.original.ft) return null;
         const val = 4.9 * (0.5 * (row.original.results / 1000)) ** 2;
         return <div className="text-xs">{val.toFixed(3)} m</div>;
       },
@@ -330,7 +174,7 @@ export default function UserTeamRecords() {
     {
       header: "Fd",
       accessorKey: "fd",
-      cell: ({ row }) => row.original.fd && <p className="text-xs">{(row.original.fd/1000).toFixed(3)} {row.original.units}</p>,
+      cell: ({ row }) => row.original.fd && <p className="text-xs">{(row.original.fd/1000).toFixed(3) || ""} {row.original.units}</p>,
     },
     {
       header: "RSI",
@@ -350,6 +194,11 @@ export default function UserTeamRecords() {
         cell: ({ row }) => {
           return row.original.pat ? <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)}</div> : null
         }
+    },
+    {
+      header: "Impulse",
+      accessorKey: "impulse",
+      cell: ({ row }) => (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && <p className="text-xs">{(impulse(1, row.original.results)).toFixed(3)} {""}</p>,
     },
     {
       header: "Note",
