@@ -36,20 +36,21 @@ export default function TeamDataChart({ action_btn, data }: Props) {
 
       const ftN = safeNumber(ft);
       if (ftN !== undefined) {
-        base.results = roundNum(ftN / 1000);
-        // base.measurement = "Ft"
+        const ftVal = roundNum(ftN / 1000);
+        console.log(ftVal)
+
+        // Push FT row
+        out.push({ ...base, results: roundNum(ftVal), measurement: "ft" });
+
+        // Compute JH from FT and push JH row
+        const jh = 4.9 * Math.pow(0.5 * (ftN / 1000), 2);
+        out.push({ ...base, results: roundNum(jh), measurement: "jh" });
       }
 
       const fdN = safeNumber(fd);
       if (fdN !== undefined) {
         base.results = roundNum(fdN / 1000);
         // base.measurement = "Fd"
-      }
-
-      // compute jh from ft (if ft present)
-      if (ftN !== undefined) {
-        const jh = 4.9 * Math.pow(0.5 * (ftN / 1000), 2);
-        out.push({ ...base, results: roundNum(jh), measurement: "jh" });
       }
 
       // rsi / pat / power -> new rows (guarded with safeNumber and proper rounding)
