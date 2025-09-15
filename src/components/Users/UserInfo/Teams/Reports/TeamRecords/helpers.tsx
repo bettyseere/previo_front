@@ -84,7 +84,7 @@ export  const computePower = (group) => {
         // ((g*g)*Tv*(Tv+Tc))/(4*Tc*Nj)
         // const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
         const vfin_val = vfin(flightTime)
-        const a_val = a_const(a.measurement_id, contactTime, flightTime)
+        const a_val = a_const(a.parent_activity_id, contactTime, flightTime)
         const power = (pc*(a_val+g)*1.6)*vfin_val
 
         // assign power to the row representing flight time
@@ -131,7 +131,7 @@ export  const computePat = (group) => {
 
             // console.log("Raw values - Contact:", contactTime, "Flight:", flightTime);
             const vfin_val = vfin(flightTime)
-            const a_val = a_const(a.measurement_id, contactTime, flightTime)
+            const a_val = a_const(a.parent_activity_id, contactTime, flightTime)
             const pat = (pc*(a_val+g)*1.6)/g
             // const pat = (pc*((flightTime*g)/(contactTime))+(pc*g))/9.806
 

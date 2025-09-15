@@ -189,7 +189,7 @@ export default function UserTeamRecords() {
       }
     },
     {
-        header: "PaTpeak",
+        header: `PaT \n\npeak`,
         accessorKey: "pat",
         cell: ({ row }) => {
           return row.original.pat ? <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)}</div> : null
@@ -198,7 +198,7 @@ export default function UserTeamRecords() {
     {
       header: "Impulse",
       accessorKey: "impulse",
-      cell: ({ row }) => (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && <p className="text-xs">{(impulse(1, row.original.results)).toFixed(3)} {""}</p>,
+      cell: ({ row }) => (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && <p className="text-xs">{(impulse(1, row.original.results)).toFixed(3)} {"N/s"}</p>,
     },
     {
       header: "Note",
