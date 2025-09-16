@@ -212,7 +212,17 @@ export default function UserTeamRecords() {
     {
       header: "Impulse",
       accessorKey: "impulse",
-      cell: ({ row }) => (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && <p className="text-xs">{(impulse(1, row.original.results/1000)).toFixed(3)} {"N/s"}</p>,
+      cell: ({ row }) => {
+        if ((row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && row.original.parent_activity_id !== "39ba0d2d-4a04-46e2-9a60-e208b682601c") {
+        let val; //4.96*(Ft/2 * Ft/2) * 100)
+        if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+          val = 4.96 * Math.pow((row.original.results/1000)/2, 2)*1000 ;
+          val = impulse(1, row.original.results/1000).toFixed(3)
+        } else {
+          val = impulse(1, row.original.ft/1000).toFixed(3)
+        }
+        return <div className="text-xs">{val} N/s</div>;}
+      },
     },
     {
       header: "Note",

@@ -87,8 +87,11 @@ export  const computePower = (group) => {
         // const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
         const vfin_val = vfin(flightTime/1000, g)
         const a_val = a_const(a.parent_activity_id, contactTime/1000, vfin_val)
-         console.log(vfin_val, a_val, contactTime/1000, "vfin")
-        const power = ((pc*(a_val+g))*1.6)/(vfin_val/2)
+        // const power = ((pc*(a_val+g))*1.6)/(vfin_val/2) // fix this line
+        // Modified power formula
+        const power = (pc * ((a_val + g)*1.6) * vfin_val) / 2;
+
+        // 0.681 flight time, 0,081 contanct time result 216.037
 
         // assign power to the row representing flight time
         if (measA === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
