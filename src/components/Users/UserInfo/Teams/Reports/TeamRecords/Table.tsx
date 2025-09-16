@@ -178,9 +178,9 @@ export default function UserTeamRecords() {
         if (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
         let val; //4.96*(Ft/2 * Ft/2) * 100)
         if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
-          val = 4.96 * Math.pow((row.original.results/1000)/2, 2)*1000 ;
+          val = 4.96 * Math.pow((row.original.results/1000)/2, 2)*100 ;
         } else {
-          val = 4.96 * Math.pow((row.original.ft/1000)/2, 2)*1000;
+          val = 4.96 * Math.pow((row.original.ft/1000)/2, 2)*100;
         }
         return <div className="text-xs">{(val/1000).toFixed(3)} m</div>;}
       },
