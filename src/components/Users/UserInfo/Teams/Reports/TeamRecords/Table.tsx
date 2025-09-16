@@ -155,26 +155,40 @@ export default function UserTeamRecords() {
     {
       header: "Ct",
       accessorKey: "ct",
-      cell: ({ row }) => row.original.ct && <p className="text-xs">{(row.original.ct/1000).toFixed(3)} {row.original.units}</p>,
+      cell: ({ row }) => row.original.measurement_id == "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && <p className="text-xs">{(row.original.results/1000).toFixed(3)} {row.original.units}</p>,
     },
     {
       header: "Ft",
       accessorKey: "ft",
-      cell: ({ row }) => (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && <p className="text-xs">{(row.original.ft/1000).toFixed(3)} {row.original.units}</p>,
+      cell: ({ row }) => {
+        if (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
+        let val; //4.96*(Ft/2 * Ft/2) * 100)
+        if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+          val = `${(row.original.results/1000).toFixed(3)} ${row.original.units}`;
+        } else {
+          val = row.original.ft;
+        }
+        return <div className="text-xs">{val} {row.orig}</div>;}
+      },
     },
     {
       header: "JH",
       accessorKey: "jh",
       cell: ({ row }) => {
-        if (!row.original.ft) return null;
-        const val = 4.9 * (0.5 * (row.original.results / 1000)) ** 2;
-        return <div className="text-xs">{val.toFixed(3)} m</div>;
+        if (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
+        let val; //4.96*(Ft/2 * Ft/2) * 100)
+        if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+          val = 4.96 * Math.pow((row.original.results/1000)/2, 2)*1000 ;
+        } else {
+          val = 4.96 * Math.pow((row.original.ft/1000)/2, 2)*1000;
+        }
+        return <div className="text-xs">{(val/1000).toFixed(3)} m</div>;}
       },
     },
     {
       header: "Fd",
       accessorKey: "fd",
-      cell: ({ row }) => row.original.fd && <p className="text-xs">{(row.original.fd/1000).toFixed(3) || ""} {row.original.units}</p>,
+      cell: ({ row }) => row.original.measurement_id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce" && <p className="text-xs">{(row.original.results/1000).toFixed(3) || ""} {row.original.units}</p>,
     },
     {
       header: "RSI",
@@ -189,7 +203,7 @@ export default function UserTeamRecords() {
       }
     },
     {
-        header: `PaT \n\npeak`,
+        header: `PaTpeak`,
         accessorKey: "pat",
         cell: ({ row }) => {
           return row.original.pat ? <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)}</div> : null
@@ -198,7 +212,7 @@ export default function UserTeamRecords() {
     {
       header: "Impulse",
       accessorKey: "impulse",
-      cell: ({ row }) => (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && <p className="text-xs">{(impulse(1, row.original.results)).toFixed(3)} {"N/s"}</p>,
+      cell: ({ row }) => (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && <p className="text-xs">{(impulse(1, row.original.results/1000)).toFixed(3)} {"N/s"}</p>,
     },
     {
       header: "Note",

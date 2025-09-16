@@ -37,6 +37,7 @@ export const computeRSI = (group) => {
         if (normalize(a.measurement_id) === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" && normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
             b.rsi = a.results / b.results;
             b.ft = a.results; // Store the flight time value
+            // console.log(b.ft, a.results, b.results, "trio1")
             a._shouldRemove = true;
         }
 
@@ -44,6 +45,7 @@ export const computeRSI = (group) => {
             a.rsi = b.results / a.results;
             a.ft = b.results; // Store the flight time value
             b._shouldRemove = true;
+            // console.log(a.ft, b.results, a.results, "trio2")
         }
     }
 };
@@ -83,8 +85,9 @@ export  const computePower = (group) => {
         // Power formula
         // ((g*g)*Tv*(Tv+Tc))/(4*Tc*Nj)
         // const power = (((g * g) * tv * (tv + tc)) / (4 * tc))/1000;
-        const vfin_val = vfin(flightTime, g)
-        const a_val = a_const(a.parent_activity_id, contactTime, vfin_val)
+        const vfin_val = vfin(flightTime/1000, g)
+        const a_val = a_const(a.parent_activity_id, contactTime/1000, vfin_val)
+         console.log(vfin_val, a_val, contactTime/1000, "vfin")
         const power = ((pc*(a_val+g))*1.6)/(vfin_val/2)
 
         // assign power to the row representing flight time
