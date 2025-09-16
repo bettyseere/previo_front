@@ -166,9 +166,9 @@ export default function UserTeamRecords() {
         if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
           val = `${(row.original.results/1000).toFixed(3)} ${row.original.units}`;
         } else {
-          val = row.original.ft;
+          val = (row.original.ft/1000).toFixed(3);
         }
-        return <div className="text-xs">{val} {row.orig}</div>;}
+        return <div className="text-xs">{val}</div>;}
       },
     },
     {
