@@ -44,7 +44,7 @@ export default function UserReports(){
             units: item.attribute.translations[0].units,
             device: item.device.device_type.name,
             note: item.note,
-            created_at: item.created_at,
+            created_at: item.created_at
         });
         });
 

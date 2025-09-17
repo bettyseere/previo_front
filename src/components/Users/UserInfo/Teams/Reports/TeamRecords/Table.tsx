@@ -14,6 +14,7 @@ import moment from "moment";
 import { Tooltip } from "react-tooltip";
 import TeamDataChart from "./Chart";
 import { computePat, computePower, computeRSI, impulse } from "./helpers";
+import UserTeamRecordsRaw from "./Raw";
 
 export default function UserTeamRecords() {
   const { hidePopup, handleHidePopup } = usePopup();
@@ -166,7 +167,7 @@ export default function UserTeamRecords() {
         if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
           val = `${(row.original.results/1000).toFixed(3)} ${row.original.units}`;
         } else {
-          val = (row.original.ft/1000).toFixed(3);
+          val = `${(row.original.ft/1000).toFixed(3)} s`;
         }
         return <div className="text-xs">{val}</div>;}
       },
@@ -196,17 +197,17 @@ export default function UserTeamRecords() {
       cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(3)}</div> : null,
     },
     {
-      header: "Wpeak/Kg",
+      header: "Wpeak",
       accessorKey: "power",
       cell: ({ row }) => {
-        return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)}</div> : null
+        return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)} /kg</div> : null
       }
     },
     {
         header: `PaTpeak`,
         accessorKey: "pat",
         cell: ({ row }) => {
-          return row.original.pat ? <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)}</div> : null
+          return row.original.pat ? <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)} /kg</div> : null
         }
     },
     {
@@ -278,17 +279,28 @@ export default function UserTeamRecords() {
       <div className="flex items-center rounded cursor-pointer shadow-xl">
         <button className={`${viewType === "table" ? "bg-green-500 text-white": "bg-white text-black rounded-l"} py-1 px-4 rounded-l`} onClick={()=>setViewType("table")}>Table</button>
         <button className={`${viewType === "chart" ? "bg-green-500 px-2 text-white": "bg-white text-black"}  py-1 px-4 rounded-r`} onClick={()=>setViewType("chart")}>Chart</button>
+        <button className={`${viewType === "raw" ? "bg-green-500 px-2 text-white": "bg-white text-black"}  py-1 px-4 rounded-r`} onClick={()=>setViewType("raw")}>Raw</button>
       </div>
 
+  
+  const table_component = <div>
+          {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" actionBtn={action_btn} searchMode="double" entity_name={team_name} back_path="/teams"/> }
+        </div>
+
+  const components_to_render = {
+    "raw": <UserTeamRecordsRaw action_btn={action_btn} raw_data={data} />,
+    "table": table_component,
+    "chart": <TeamDataChart action_btn={action_btn} data={dataToRender} />
+  }
+
   return (
+  data && (
     <div>
       {hidePopup.show && !hidePopup.data.base && popup}
       <UserInfo nav_items={default_nav}>
-        {viewType === "table" ? <div>
-          {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" actionBtn={action_btn} searchMode="double" entity_name={team_name} back_path="/teams"/> }
-        </div>:
-        <TeamDataChart action_btn={action_btn} data={dataToRender} />}
+        {components_to_render[viewType]}
       </UserInfo>
     </div>
-  );
+  )
+);
 }
