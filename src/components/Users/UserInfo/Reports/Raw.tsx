@@ -1,5 +1,5 @@
-import { useAuth } from "../../../../../../utils/hooks/Auth";
-import Table from "../../../../../Commons/Table";
+import { useAuth } from "../../../../utils/hooks/Auth";
+import Table from "../../../Commons/Table";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import { Tooltip } from "react-tooltip";
@@ -112,7 +112,7 @@ export default function UserTeamRecordsRaw({raw_data, action_btn}: Props) {
     return (
         raw_data && <div>
             <div>
-                {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" actionBtn={action_btn} searchMode="double" entity_name={team_name} back_path="/teams"/> }
+                {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search your records" actionBtn={action_btn} searchMode="double" entity_name={"Your records"} /> }
             </div>
         </div>
     );
