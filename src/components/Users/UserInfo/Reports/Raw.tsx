@@ -59,11 +59,6 @@ export default function UserTeamRecordsRaw({raw_data, action_btn}: Props) {
 
     const table_columns = [
         {
-            header: "Athlete",
-            accessorKey: "athlete",
-            cell: ({ row }) => row.original.start === true && <p className="text-xs">{row.original.athlete}</p>,
-        },
-        {
               header: "Date",
               accessorKey: "created_at",
               meta: "date",
