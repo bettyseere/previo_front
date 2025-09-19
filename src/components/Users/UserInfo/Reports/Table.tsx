@@ -241,11 +241,11 @@ useEffect(() => {
 
     return (
 
-        data && <div>
+        data ? <div>
               <UserInfo>
                 {components_to_render[viewType]}
               </UserInfo>
-        </div>
+        </div>: <UserInfo><div>No records found</div></UserInfo>
     )
 
 }
