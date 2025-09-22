@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import Chart from "../../../../../Commons/Chart";
+import { impulse } from "./helpers";
 
 interface Props {
   action_btn?: ReactNode;
@@ -21,7 +22,7 @@ export default function TeamDataChart({ action_btn, data }: Props) {
   // Transform data so each "rsi", "pat", "power" (and computed jh) becomes its own row
   const clean_data = () => {
     return data.flatMap((item) => {
-      const { rsi, pat, power, ct, ft, fd, ...rest } = item;
+      const { id, rsi, pat, power, ct, ft, fd, ...rest } = item;
       const out: any[] = [];
 
       // Build a converted base object (keeps rest fields like athlete, activity, etc.)
@@ -29,14 +30,26 @@ export default function TeamDataChart({ action_btn, data }: Props) {
 
       // convert ct/ft/fd to /1000 and round if present (stored on base so measurements include them)
       const ctN = safeNumber(ct);
-      if (ctN !== undefined) {
-        base.results = roundNum(ctN / 1000)
+      if (ctN !== undefined || id === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
+        if (id === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6"){ 
+          base.results = roundNum(safeNumber(item.results)/1000)
+        } else {
+          base.results = roundNum(ctN / 1000)
+        }
         // base.measurement = "Ct"
       };
 
       const ftN = safeNumber(ft);
-      if (ftN !== undefined) {
-        const ftVal = roundNum(ftN / 1000);
+      if (ftN !== undefined || id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
+        let ftVal;
+        let jhVal;
+        if (id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
+          ftVal = roundNum((safeNumber(item.results)) / 1000);
+          jhVal = 4.903 * Math.pow((item.results/1000)/2, 2)*1000;
+        } else {
+          ftVal = roundNum(ftN / 1000);
+          jhVal = 4.903 * Math.pow((ftN/1000)/2, 2)*1000;
+        }
         console.log(ftVal)
 
         // Push FT row
@@ -44,13 +57,19 @@ export default function TeamDataChart({ action_btn, data }: Props) {
 
         // Compute JH from FT and push JH row
         const jh = 4.9 * Math.pow(0.5 * (ftN / 1000), 2);
-        out.push({ ...base, results: roundNum(jh), measurement: "jh" });
+        out.push({ ...base, results: roundNum(jhVal), measurement: "jh" });
+
+        const impulse_val =  impulse(1, ftVal);
+        out.push({ ...base, results: roundNum(impulse_val), measurement: "impulse" });
       }
 
       const fdN = safeNumber(fd);
-      if (fdN !== undefined) {
-        base.results = roundNum(fdN / 1000);
-        // base.measurement = "Fd"
+      if (fdN !== undefined || id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce") {
+        if (id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce"){ 
+          base.results = roundNum(safeNumber(item.results)/1000)
+        } else {
+          base.results = roundNum(fdN / 1000)
+        }
       }
 
       // rsi / pat / power -> new rows (guarded with safeNumber and proper rounding)
