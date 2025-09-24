@@ -9,7 +9,7 @@ import { usePopup } from "../../../../../../utils/hooks/usePopUp";
 import Popup from "../../../../../Commons/Popup";
 import ConfirmModel from "../../../../../Commons/ConfirmModel";
 import MeasurementForm from "../Form";
-import { useState, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
 import moment from "moment";
 import { Tooltip } from "react-tooltip";
 import TeamDataChart from "./Chart";
@@ -22,60 +22,35 @@ export default function UserTeamRecords() {
   const is_staff = currentUser?.user_type == "staff";
   let team_id = useParams().id;
   const [selectedId, setSelectID] = useState("");
-  const team_name = localStorage.getItem("current_team") + " records" || "Team records"
-  const [viewType, setViewType] = useState("table")
+  const team_name = localStorage.getItem("current_team") + " records" || "Team records";
+  const [viewType, setViewType] = useState("table");
 
-  let user_team = currentUser?.teams;
-  user_team = user_team?.find((team) => team.team.id == team_id);
+  const user_team = currentUser?.teams?.find((team) => team.team.id == team_id);
   const role_id = user_team?.role.id;
   const access_type = user_team?.access_type;
 
-  const default_nav = [
+  const default_nav = useMemo(() => [
     { name: "Team Members", path: is_staff ? "/teams/" + team_id : "/profile/teams/" + team_id },
     { name: "Team Records", path: is_staff ? "/teams/" + team_id + "/records" : "/profile/teams/" + team_id + "/records" },
-  ];
+  ], [is_staff, team_id]);
 
   const { data, isLoading, isError, error, refetch } = useApiGet(
     ["user_measurements", team_id, access_type],
     () => get_team_measurements(team_id, access_type, role_id)
   );
 
-  const [dataToRender, setDataToRender] = useState([]);
+  // Memoize the data processing to prevent unnecessary re-renders
+  const dataToRender = useMemo(() => {
+    if (!data) return [];
 
-  const handle_remove_measurement = async (id: string) => {
-    await delete_measurement((id = id));
-    refetch();
-    handleHidePopup({ show: false, type: "create" });
-  };
+    let rows = [];
 
-  const popup = (
-    <Popup>
-      {hidePopup.confirmModel ? (
-        <ConfirmModel
-          title="Delete Measurement"
-          message="Are you sure you want to delete this measurement?"
-          handleSubmit={() => handle_remove_measurement(selectedId)}
-          cancel_action={() => handleHidePopup({ show: false, type: "create", confirmModel: false })}
-        />
-      ) : (
-        <MeasurementForm />
-      )}
-    </Popup>
-  );
+    data.forEach((item) => {
+      let measurement_obj = item.attribute.translations.find(tr => tr.language_code === language) || item.attribute.translations[0];
+      const parent_activity_id = item.sub_activity.activity_id;
+      const activity_obj = item.sub_activity.translations.find(sa => sa.language_code === language) || item.sub_activity.translations[0];
 
-
-  // ⬇️ Build enriched rows (with RSI) whenever `data` changes
-  useEffect(() => {
-    if (!data) return;
-
-    let rows: any[] = [];
-
-    data.forEach((item, index) => {
-    let measurement_obj = item.attribute.translations.find(tr => tr.language_code === language) || item.attribute.translations[0]
-    const parent_activity_id = item.sub_activity.activity_id
-    const activity_obj = item.sub_activity.translations.find(sa => sa.language_code === language) || item.sub_activity.translations[0]
-
-    const parsed_row: Record<string, any> = {
+      const parsed_row = {
         id: item.id,
         index: rows.length,
         athlete: `${item.athlete.first_name} ${item.athlete.last_name}`,
@@ -90,19 +65,19 @@ export default function UserTeamRecords() {
         device: item.device.device_type.name,
         note: item.note,
         created_at: item.created_at,
-    };
-    if (measurement_obj?.name) {
-      // console.log(measurement_obj.name, "This is the name")
-      parsed_row[measurement_obj.name.toLowerCase()] = parseInt(item.value);
-      parsed_row.measurement = measurement_obj.name.toLowerCase()
-      parsed_row.results = parseInt(item.value)
-    }
-    rows.push(parsed_row)
+      };
+      
+      if (measurement_obj?.name) {
+        parsed_row[measurement_obj.name.toLowerCase()] = parseInt(item.value);
+        parsed_row.measurement = measurement_obj.name.toLowerCase();
+        parsed_row.results = parseInt(item.value);
+      }
+      rows.push(parsed_row);
     });
 
     // assign RSI per group
-    let enriched: any[] = [...rows];
-    let currentGroup: any[] = [];
+    let enriched = [...rows];
+    let currentGroup = [];
 
     for (let i = 0; i < enriched.length; i++) {
       const row = enriched[i];
@@ -121,16 +96,41 @@ export default function UserTeamRecords() {
     }
 
     if (currentGroup.length > 1) {
-        computePower(currentGroup)
-        computeRSI(currentGroup);
-        computePat(currentGroup);
+      computePower(currentGroup);
+      computeRSI(currentGroup);
+      computePat(currentGroup);
     }
-    const filteredData = enriched.filter(item => !item._shouldRemove);
-    setDataToRender(filteredData);
+    
+    return enriched.filter(item => !item._shouldRemove);
   }, [data, language]);
 
+  const handle_remove_measurement = useCallback(async (id: string) => {
+    await delete_measurement(id);
+    refetch();
+    handleHidePopup({ show: false, type: "create" });
+  }, [refetch, handleHidePopup]);
 
-  const table_columns = [
+  const initiate_delete = useCallback((id: string) => {
+    setSelectID(id);
+    handleHidePopup({ show: true, type: "create", confirmModel: true });
+  }, [handleHidePopup]);
+
+  const popup = useMemo(() => (
+    <Popup>
+      {hidePopup.confirmModel ? (
+        <ConfirmModel
+          title="Delete Measurement"
+          message="Are you sure you want to delete this measurement?"
+          handleSubmit={() => handle_remove_measurement(selectedId)}
+          cancel_action={() => handleHidePopup({ show: false, type: "create", confirmModel: false })}
+        />
+      ) : (
+        <MeasurementForm />
+      )}
+    </Popup>
+  ), [hidePopup.confirmModel, selectedId, handle_remove_measurement, handleHidePopup]);
+
+  const table_columns = useMemo(() => [
     {
       header: "Athlete",
       accessorKey: "athlete",
@@ -148,28 +148,31 @@ export default function UserTeamRecords() {
       cell: ({ row }) =>
         row.original.start === true && (
           <div className="text-center">
-          <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("DD-MM-YYYY")}</p>
-          <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("HH:mm")}</p>
+            <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("DD-MM-YYYY")}</p>
+            <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("HH:mm")}</p>
           </div>
         ),
     },
     {
       header: "Ct",
       accessorKey: "ct",
-      cell: ({ row }) => row.original.measurement_id == "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && <p className="text-xs">{(row.original.results/1000).toFixed(3)} {row.original.units}</p>,
+      cell: ({ row }) => row.original.measurement_id == "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && 
+        <p className="text-xs">{(row.original.results/1000).toFixed(3)} {row.original.units}</p>,
     },
     {
       header: "Ft",
       accessorKey: "ft",
       cell: ({ row }) => {
         if (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-        let val; //4.96*(Ft/2 * Ft/2) * 100)
-        if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
-          val = `${(row.original.results/1000).toFixed(3)} ${row.original.units}`;
-        } else {
-          val = `${(row.original.ft/1000).toFixed(3)} s`;
+          let val;
+          if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
+            val = `${(row.original.results/1000).toFixed(3)} ${row.original.units}`;
+          } else {
+            val = `${(row.original.ft/1000).toFixed(3)} s`;
+          }
+          return <div className="text-xs">{val}</div>;
         }
-        return <div className="text-xs">{val}</div>;}
+        return null;
       },
     },
     {
@@ -177,52 +180,61 @@ export default function UserTeamRecords() {
       accessorKey: "jh",
       cell: ({ row }) => {
         if (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-        let val;
-        if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
-          val = 4.903 * Math.pow((row.original.results/1000)/2, 2)*1000 ;
-        } else {
-          val = 4.903 * Math.pow((row.original.ft/1000)/2, 2)*1000;
+          let val;
+          if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
+            val = 4.903 * Math.pow((row.original.results/1000)/2, 2)*1000;
+          } else {
+            val = 4.903 * Math.pow((row.original.ft/1000)/2, 2)*1000;
+          }
+          return <div className="text-xs">{(val/1000).toFixed(3)} m</div>;
         }
-        return <div className="text-xs">{(val/1000).toFixed(3)} m</div>;}
+        return null;
       },
     },
     {
       header: "Fd",
       accessorKey: "fd",
-      cell: ({ row }) => row.original.measurement_id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce" && <p className="text-xs">{(row.original.results/1000).toFixed(3) || ""} {row.original.units}</p>,
+      cell: ({ row }) => row.original.measurement_id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce" && 
+        <p className="text-xs">{(row.original.results/1000).toFixed(3) || ""} {row.original.units}</p>,
     },
     {
       header: "RSI",
       accessorKey: "rsi",
-      cell: ({ row }) => row.original.rsi ? <div className="text-xs">{(row.original.rsi).toFixed(3)}</div> : null,
+      cell: ({ row }) => row.original.rsi ? 
+        <div className="text-xs">{(row.original.rsi).toFixed(3)}</div> : null,
     },
     {
       header: "Wpeak",
       accessorKey: "power",
       cell: ({ row }) => {
-        return row.original.power ? <div className="text-xs">{row.original.power.toFixed(3)} /kg</div> : null
+        return row.original.power ? 
+          <div className="text-xs">{row.original.power.toFixed(3)} /kg</div> : null;
       }
     },
     {
-        header: `PaTpeak`,
-        accessorKey: "pat",
-        cell: ({ row }) => {
-          return row.original.pat ? <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)} /kg</div> : null
-        }
+      header: `PaTpeak`,
+      accessorKey: "pat",
+      cell: ({ row }) => {
+        return row.original.pat ? 
+          <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)} /kg</div> : null;
+      }
     },
     {
       header: "Impulse",
       accessorKey: "impulse",
       cell: ({ row }) => {
-        if ((row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && row.original.parent_activity_id !== "39ba0d2d-4a04-46e2-9a60-e208b682601c") {
-        let val; //4.96*(Ft/2 * Ft/2) * 100)
-        if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3"){
-          val = 4.96 * Math.pow((row.original.results/1000)/2, 2)*1000 ;
-          val = impulse(1, row.original.results/1000).toFixed(3)
-        } else {
-          val = impulse(1, row.original.ft/1000).toFixed(3)
+        if ((row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") && 
+            row.original.parent_activity_id !== "39ba0d2d-4a04-46e2-9a60-e208b682601c") {
+          let val;
+          if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
+            val = 4.96 * Math.pow((row.original.results/1000)/2, 2)*1000;
+            val = impulse(1, row.original.results/1000).toFixed(3);
+          } else {
+            val = impulse(1, row.original.ft/1000).toFixed(3);
+          }
+          return <div className="text-xs">{val} N/s</div>;
         }
-        return <div className="text-xs">{val} N/s</div>;}
+        return null;
       },
     },
     {
@@ -241,7 +253,52 @@ export default function UserTeamRecords() {
         </div>
       ),
     },
-  ];
+  ], [language]);
+
+  const action_btn = useMemo(() => (
+    <div className="flex items-center rounded cursor-pointer shadow-xl">
+      <button 
+        className={`${viewType === "table" ? "bg-green-500 text-white" : "bg-white text-black rounded-l"} py-1 px-4 rounded-l`} 
+        onClick={() => setViewType("table")}
+      >
+        Table
+      </button>
+      <button 
+        className={`${viewType === "chart" ? "bg-green-500 px-2 text-white" : "bg-white text-black"} py-1 px-4 rounded-r`} 
+        onClick={() => setViewType("chart")}
+      >
+        Chart
+      </button>
+      <button 
+        className={`${viewType === "raw" ? "bg-green-500 px-2 text-white" : "bg-white text-black"} py-1 px-4 rounded-r`} 
+        onClick={() => setViewType("raw")}
+      >
+        Raw
+      </button>
+    </div>
+  ), [viewType]);
+
+  const table_component = useMemo(() => (
+    <div>
+      {dataToRender.length > 0 && (
+        <Table 
+          data={dataToRender} 
+          columns={table_columns} 
+          searchMsg="Search team records" 
+          actionBtn={action_btn} 
+          searchMode="double" 
+          entity_name={team_name} 
+          back_path="/teams"
+        />
+      )}
+    </div>
+  ), [dataToRender, table_columns, action_btn, team_name]);
+
+  const components_to_render = useMemo(() => ({
+    "raw": <UserTeamRecordsRaw action_btn={action_btn} raw_data={data} />,
+    "table": table_component,
+    "chart": <TeamDataChart action_btn={action_btn} data={dataToRender} />
+  }), [action_btn, data, table_component, dataToRender]);
 
   if (isError) {
     return (
@@ -249,10 +306,10 @@ export default function UserTeamRecords() {
         <div className="w-full flex justify-center flex-col items-center mt-28">
           {hidePopup.show && popup}
           <div className="text-xl font-bold text-red-400">
-            {error?.response.status === 404 ? "No records found" : "Error fetching records"}
+            {error?.response?.status === 404 ? "No records found" : "Error fetching records"}
           </div>
           <div>
-            {error.response.status == 404 && (
+            {error?.response?.status == 404 && (
               <Button
                 text="Add Records"
                 handleClick={() => handleHidePopup({ show: true, type: "create", data: { base: false } })}
@@ -275,32 +332,14 @@ export default function UserTeamRecords() {
     );
   }
 
-  const action_btn =
-      <div className="flex items-center rounded cursor-pointer shadow-xl">
-        <button className={`${viewType === "table" ? "bg-green-500 text-white": "bg-white text-black rounded-l"} py-1 px-4 rounded-l`} onClick={()=>setViewType("table")}>Table</button>
-        <button className={`${viewType === "chart" ? "bg-green-500 px-2 text-white": "bg-white text-black"}  py-1 px-4 rounded-r`} onClick={()=>setViewType("chart")}>Chart</button>
-        <button className={`${viewType === "raw" ? "bg-green-500 px-2 text-white": "bg-white text-black"}  py-1 px-4 rounded-r`} onClick={()=>setViewType("raw")}>Raw</button>
-      </div>
-
-  
-  const table_component = <div>
-          {dataToRender.length > 0 && <Table data={dataToRender} columns={table_columns} searchMsg="Search team records" actionBtn={action_btn} searchMode="double" entity_name={team_name} back_path="/teams"/> }
-        </div>
-
-  const components_to_render = {
-    "raw": <UserTeamRecordsRaw action_btn={action_btn} raw_data={data} />,
-    "table": table_component,
-    "chart": <TeamDataChart action_btn={action_btn} data={dataToRender} />
-  }
-
   return (
-  data && (
-    <div>
-      {hidePopup.show && !hidePopup.data.base && popup}
-      <UserInfo nav_items={default_nav}>
-        {components_to_render[viewType]}
-      </UserInfo>
-    </div>
-  )
-);
+    data && (
+      <div>
+        {hidePopup.show && !hidePopup.data?.base && popup}
+        <UserInfo nav_items={default_nav}>
+          {components_to_render[viewType]}
+        </UserInfo>
+      </div>
+    )
+  );
 }
