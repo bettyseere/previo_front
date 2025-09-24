@@ -24,6 +24,11 @@ export default function UserTeamRecordsRaw({raw_data, action_btn}: Props) {
 
     const [dataToRender, setDataToRender] = useState([]);
 
+    const safeNumber = (v: any): number | undefined => {
+    const n = typeof v === "string" ? parseFloat(v) : Number(v);
+    return Number.isFinite(n) ? n : undefined;
+    };
+
 
     // ⬇️ Build enriched rows (with RSI) whenever `data` changes
     useEffect(() => {

@@ -20,6 +20,17 @@ export default function Measurements() {
     const [selectId, setSelectID] = useState("");
     const [viewType, setViewType] = useState("table");
     const { language } = useAuth();
+
+    const safeNumber = (v: any): number | undefined => {
+    const n = typeof v === "string" ? parseFloat(v) : Number(v);
+    return Number.isFinite(n) ? n : undefined;
+    };
+
+    // Helper function to safely format numbers with fallback
+    const safeFormat = (value: any, decimals: number = 3, fallback: string = ""): string => {
+        const num = safeNumber(value);
+        return num !== undefined ? num.toFixed(decimals) : fallback;
+    };
     
     const {
         data,
@@ -185,7 +196,13 @@ export default function Measurements() {
         {
             header: "Fd",
             accessorKey: "fd",
-            cell: ({ row }) => row.original.measurement_id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce" && <p className="text-xs">{(row.original.results/1000).toFixed(3) || ""} {row.original.units}</p>,
+            cell: ({ row }) => {
+                if (row.original.measurement_id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce") {
+                const value = safeFormat(row.original.results / 1000, 3);
+                return value ? <p className="text-xs">{value} {row.original.units}</p> : null;
+                }
+                return null;
+            },
         },
         {
             header: "RSI",

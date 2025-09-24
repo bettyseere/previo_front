@@ -25,6 +25,17 @@ export default function UserTeamRecords() {
   const team_name = localStorage.getItem("current_team") + " records" || "Team records";
   const [viewType, setViewType] = useState("table");
 
+  const safeNumber = (v: any): number | undefined => {
+    const n = typeof v === "string" ? parseFloat(v) : Number(v);
+    return Number.isFinite(n) ? n : undefined;
+  };
+
+  // Helper function to safely format numbers with fallback
+  const safeFormat = (value: any, decimals: number = 3, fallback: string = ""): string => {
+    const num = safeNumber(value);
+    return num !== undefined ? num.toFixed(decimals) : fallback;
+  };
+
   const user_team = currentUser?.teams?.find((team) => team.team.id == team_id);
   const role_id = user_team?.role.id;
   const access_type = user_team?.access_type;
@@ -156,8 +167,13 @@ export default function UserTeamRecords() {
     {
       header: "Ct",
       accessorKey: "ct",
-      cell: ({ row }) => row.original.measurement_id == "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && 
-        <p className="text-xs">{(row.original.results/1000).toFixed(3)} {row.original.units}</p>,
+      cell: ({ row }) => {
+        if (row.original.measurement_id == "f5daa493-5054-4ad2-97b0-d9db95e7cdd6") {
+          const value = safeFormat(row.original.results / 1000, 3);
+          return value ? <p className="text-xs">{value} {row.original.units}</p> : null;
+        }
+        return null;
+      },
     },
     {
       header: "Ft",
@@ -166,11 +182,15 @@ export default function UserTeamRecords() {
         if (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
           let val;
           if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-            val = `${(row.original.results/1000).toFixed(3)} ${row.original.units}`;
+            val = safeFormat(row.original.results / 1000, 3);
           } else {
-            val = `${(row.original.ft/1000).toFixed(3)} s`;
+            val = safeFormat(row.original.ft / 1000, 3);
           }
-          return <div className="text-xs">{val}</div>;
+          return val ? (
+            <div className="text-xs">
+              {val} {row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3" ? row.original.units : "s"}
+            </div>
+          ) : null;
         }
         return null;
       },
@@ -182,11 +202,12 @@ export default function UserTeamRecords() {
         if (row.original.ft || row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
           let val;
           if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-            val = 4.903 * Math.pow((row.original.results/1000)/2, 2)*1000;
+            val = 4.903 * Math.pow((safeNumber(row.original.results) || 0) / 1000 / 2, 2) * 1000;
           } else {
-            val = 4.903 * Math.pow((row.original.ft/1000)/2, 2)*1000;
+            val = 4.903 * Math.pow((safeNumber(row.original.ft) || 0) / 1000 / 2, 2) * 1000;
           }
-          return <div className="text-xs">{(val/1000).toFixed(3)} m</div>;
+          const formattedVal = safeFormat(val / 1000, 3);
+          return formattedVal ? <div className="text-xs">{formattedVal} m</div> : null;
         }
         return null;
       },
@@ -194,29 +215,40 @@ export default function UserTeamRecords() {
     {
       header: "Fd",
       accessorKey: "fd",
-      cell: ({ row }) => row.original.measurement_id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce" && 
-        <p className="text-xs">{(row.original.results/1000).toFixed(3) || ""} {row.original.units}</p>,
+      cell: ({ row }) => {
+        if (row.original.measurement_id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce") {
+          const value = safeFormat(row.original.results / 1000, 3);
+          return value ? <p className="text-xs">{value} {row.original.units}</p> : null;
+        }
+        return null;
+      },
     },
     {
       header: "RSI",
       accessorKey: "rsi",
-      cell: ({ row }) => row.original.rsi ? 
-        <div className="text-xs">{(row.original.rsi).toFixed(3)}</div> : null,
+      cell: ({ row }) => {
+        const value = safeFormat(row.original.rsi, 3);
+        return value ? <div className="text-xs">{value}</div> : null;
+      },
     },
     {
       header: "Wpeak",
       accessorKey: "power",
       cell: ({ row }) => {
-        return row.original.power ? 
-          <div className="text-xs">{row.original.power.toFixed(3)} /kg</div> : null;
+        const value = safeFormat(row.original.power, 3);
+        return value ? <div className="text-xs">{value} /kg</div> : null;
       }
     },
     {
       header: `PaTpeak`,
       accessorKey: "pat",
       cell: ({ row }) => {
-        return row.original.pat ? 
-          <div className={`text-xs ${row.original.colored === true && ""}`}>{row.original.pat.toFixed(3)} /kg</div> : null;
+        const value = safeFormat(row.original.pat, 3);
+        return value ? (
+          <div className={`text-xs ${row.original.colored === true ? "" : ""}`}>
+            {value} /kg
+          </div>
+        ) : null;
       }
     },
     {
@@ -227,12 +259,13 @@ export default function UserTeamRecords() {
             row.original.parent_activity_id !== "39ba0d2d-4a04-46e2-9a60-e208b682601c") {
           let val;
           if (row.original.measurement_id === "d4ebb79e-a0a8-4550-8bc4-e4336b8490a3") {
-            val = 4.96 * Math.pow((row.original.results/1000)/2, 2)*1000;
-            val = impulse(1, row.original.results/1000).toFixed(3);
+            val = 4.96 * Math.pow((safeNumber(row.original.results) || 0) / 1000 / 2, 2) * 1000;
+            val = impulse(1, (safeNumber(row.original.results) || 0) / 1000);
           } else {
-            val = impulse(1, row.original.ft/1000).toFixed(3);
+            val = impulse(1, (safeNumber(row.original.ft) || 0) / 1000);
           }
-          return <div className="text-xs">{val} N/s</div>;
+          const formattedVal = safeFormat(val, 3);
+          return formattedVal ? <div className="text-xs">{formattedVal} N/s</div> : null;
         }
         return null;
       },
