@@ -257,7 +257,7 @@ export default function UserReports() {
     if (isError) {
         return (
             <UserInfo>
-                <p className="font-semibold mt-4">Error loading records</p>
+                <p className="font-semibold mt-4">No records found</p>
             </UserInfo>
         );
     }
