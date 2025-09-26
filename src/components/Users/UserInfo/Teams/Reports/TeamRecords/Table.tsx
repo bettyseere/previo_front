@@ -216,8 +216,8 @@ export default function UserTeamRecords() {
       header: "Fd",
       accessorKey: "fd",
       cell: ({ row }) => {
-        if (row.original.measurement_id === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce") {
-          const value = safeFormat(row.original.results / 1000, 3);
+        if (row.original.fd) {
+          const value = safeFormat(row.original.fd / 1000, 3);
           return value ? <p className="text-xs">{value} {row.original.units}</p> : null;
         }
         return null;
