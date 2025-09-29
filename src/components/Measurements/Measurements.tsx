@@ -199,7 +199,7 @@ export default function Measurements() {
             cell: ({ row }) => {
                 if (row.original.fd) {
                 const value = safeFormat(row.original.fd / 1000, 3);
-                return value ? <p className="text-xs">{value} {row.original.units}</p> : null;
+                return value ? <p className="text-xs">{value} {row.original.fd_units}</p> : null;
                 }
                 return null;
             },
