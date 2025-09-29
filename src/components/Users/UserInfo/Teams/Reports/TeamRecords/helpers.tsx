@@ -50,11 +50,13 @@ export const computeRSI = (group) => {
 
         if (normalize(a.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(b.measurement_id) === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce") {
             a.fd = b.results; // Store the flight time value
+            a.fd_units = b.units
             b._shouldRemove = true;
         }
 
         if (normalize(b.measurement_id) === "f5daa493-5054-4ad2-97b0-d9db95e7cdd6" && normalize(a.measurement_id) === "73e0ac8f-b5e8-44f3-9557-2db5bb98c8ce") {
             b.fd = a.results; // Store the flight time value
+            b.fd_units = b.units
             a._shouldRemove = true;
         }
     }
