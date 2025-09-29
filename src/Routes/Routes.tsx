@@ -43,6 +43,7 @@ function AppRoutes() {
     const is_staff = currentUser?.user_type === "staff";
     const is_super = currentUser?.user_type === "super";
     const has_permission = currentUser?.has_permission;
+    const admin_view = localStorage.getItem("admin_view") === "true"
 
     return (
         <Router>
@@ -57,13 +58,13 @@ function AppRoutes() {
                 <Route element={<ProtectedRoutes />}>
                     {/* Common Routes for All Authenticated Users */}
                     <Route path="/" element={
-                        is_admin ? <CompanyOverview /> :
+                        is_admin ? admin_view ? <CompanyOverview />: <UserReports /> :
                         is_staff ? <UserReports /> : <Home />
                     } />
 
                     <Route path="/profile" element={<UserReports />} />
                     {is_admin && has_permission && (
-                        <Route path="/profile/teams" element={<UserTeamLayout />}>
+                        <Route path={admin_view ? "/profile/teams": "/teams"} element={<UserTeamLayout />}>
                             <Route index element={<UserTeams />} />
                             <Route path=":id" element={<UserTeamMembers />} />
                             <Route path=":id/records" element={<UserTeamRecords />} />
@@ -80,7 +81,7 @@ function AppRoutes() {
                     )}
 
                     {/* Admin User Routes */}
-                    {is_admin && (
+                    {(is_admin && admin_view) && (
                         <>
                             <Route path="/measurements">
                                 <Route index element={<Measurements />} />
