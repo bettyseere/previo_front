@@ -78,6 +78,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
                 // Update the state with the logged-in user and tokens
                 setCurrentUser(user);
+                return user
             } catch (error) {
                 if (error){
                     toast(error.data.detail)

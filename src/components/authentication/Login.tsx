@@ -6,30 +6,49 @@ import { useForm } from "react-hook-form";
 import { Login as LoginData } from "../../types/Auth";
 import Button from "../Commons/Button";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { usePopup } from "../../utils/hooks/usePopUp";
+import AdminViewPopup from "./AdminPopup";
 
 const Login = () => {
-  const { handleLogin, currentUser } = useAuth();
+  const { handleLogin, currentUser, handleLogout } = useAuth();
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm<LoginData>();
   const [showPassword, setShowPassword] = useState(false);
+  const {hidePopup, handleHidePopup} = usePopup()
+
 
   const onSubmit = async (data: LoginData) => {
     try {
-      await handleLogin?.(data);
-      toast.success("Login Successful!");
-      navigate("/");
+      const user = await handleLogin?.(data);
+      // const is_admin = currentUser?.user_type === "admin";
+      const is_admin = user?.user_type === "admin"
+      is_admin && handleHidePopup({show: true, type: "create"})
     } catch {
       toast.error("Login failed. Please check your credentials.");
     }
   };
 
+  // popup component
+
   useEffect(() => {
-    if (currentUser) {
-      navigate("/");
+    if (currentUser && !hidePopup.show) {
+      if (currentUser.user_type === "admin"){
+        const check_render = localStorage.getItem("admin_check")
+        if (!check_render){
+          handleLogout && handleLogout()
+        } else {
+          navigate("/");
+        }
+      } else {
+        navigate("/");
+      }
     }
   }, [currentUser, navigate]);
 
   return (
+    // check for render of popup component before redirecting to main UI
+    <div>
+    {hidePopup.show && <AdminViewPopup />}
     <div className="font-jarkata flex flex-col md:flex-row h-screen">
       {/* Logo Section */}
       <div className="flex-1 flex items-center justify-center p-4 md:p-8">
@@ -93,6 +112,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

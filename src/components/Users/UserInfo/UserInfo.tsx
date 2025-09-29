@@ -32,11 +32,12 @@ export default function UserInfo({children, nav_items}: Props){
     const current_location = window.location.pathname;
     // console.log(current_location)
     const has_permission = currentUser?.has_permission
+    const admin_view = localStorage.getItem("admin_view") === "true"
 
 
     const default_nav = has_permission ? [
-        {name: "Reports", path: is_staff ? "/": "/profile"},
-        {name: "Teams", path: is_staff ? "/teams": "/profile/teams"},
+        {name: "Reports", path: is_staff ? "/": admin_view ? "/profile": "/"},
+        {name: "Teams", path: is_staff ? "/teams": admin_view ?  "/profile/teams": "/teams"},
     ]: []
 
     const nav_to_use = !nav_items ? default_nav : nav_items
