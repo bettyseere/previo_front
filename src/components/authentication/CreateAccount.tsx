@@ -94,7 +94,7 @@ const CreateAccount = () => {
                     <div className="text-white font-semibold absolute bottom-4 text-center w-full left-0 right-0 px-4 text-sm sm:text-base">
                         <p className="pt-4">Previo is a registred trademark of Seere S.r.l</p>
                         <a href="https://www.seere.cloud/privacy-policy-previo">
-                        <p className="hover:text-green-500 cursor-pointer underline">Terms & Conditions</p>
+                        <p className="hover:text-green-500 cursor-pointer underline">Privacy Policy</p>
                         </a>
                     </div>
                 </div>
