@@ -1,9 +1,11 @@
 import { usePopup } from "../../utils/hooks/usePopUp";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from "../../utils/hooks/Auth";
 
 export default function AdminViewPopup() {
   const {handleHidePopup} = usePopup()
+  const {currentUser, updateCurrentUser} = useAuth()
   const navigate = useNavigate()
 
   const handleSelect = (asAdmin: boolean) => {
@@ -11,6 +13,7 @@ export default function AdminViewPopup() {
     localStorage.setItem("admin_check", "true");
     handleHidePopup({type: "create", show: false})
     toast.success("Login Successful!");
+    updateCurrentUser({...currentUser, admin_view: asAdmin, admin_check: true})
     navigate("/")
   };
 

@@ -25,11 +25,11 @@ export default function CompanyOverview() {
     );
 
     if (isLoading) {
-        return <Layout><div>Loading company details...</div></Layout>;
+        return <Layout><div className="p-4">Loading company details...</div></Layout>;
     }
 
     if (isError) {
-        return <Layout><div>Error fetching company details. Please try again later.</div></Layout>;
+        return <Layout><div className="p-4">Error fetching company details. Please try again later.</div></Layout>;
     }
 
     console.log(data)
