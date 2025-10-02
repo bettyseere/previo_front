@@ -44,6 +44,7 @@ function AppRoutes() {
     const is_super = currentUser?.user_type === "super";
     const has_permission = currentUser?.has_permission;
     const admin_view = localStorage.getItem("admin_view") === "true"
+    console.log(admin_view, "admin view")
 
     return (
         <Router>
@@ -58,7 +59,7 @@ function AppRoutes() {
                 <Route element={<ProtectedRoutes />}>
                     {/* Common Routes for All Authenticated Users */}
                     <Route path="/" element={
-                        is_admin ? admin_view ? <CompanyOverview />: <UserReports /> :
+                        is_admin ? (admin_view ? <CompanyOverview />: <UserReports />) :
                         is_staff ? <UserReports /> : <Home />
                     } />
 

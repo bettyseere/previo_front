@@ -48,7 +48,7 @@ export default function UserInfo({children, nav_items}: Props){
     if (isLoading || isFetching || isPending) {
         return (
             <StaffLayout>
-                <div  className="text-2xl font-bold text-secondary">Fetching user info ...</div>
+                <div  className="text-2xl font-bold text-secondary p-4">Fetching user info ...</div>
             </StaffLayout>
         )
     }
