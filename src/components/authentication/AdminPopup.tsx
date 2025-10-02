@@ -9,11 +9,11 @@ export default function AdminViewPopup() {
   const navigate = useNavigate()
 
   const handleSelect = (asAdmin: boolean) => {
-    localStorage.setItem("admin_view", String(asAdmin));
-    localStorage.setItem("admin_check", "true");
     handleHidePopup({type: "create", show: false})
     toast.success("Login Successful!");
     updateCurrentUser({...currentUser, admin_view: asAdmin, admin_check: true})
+    localStorage.setItem("admin_view", String(asAdmin));
+    localStorage.setItem("admin_check", "true");
     navigate("/")
   };
 

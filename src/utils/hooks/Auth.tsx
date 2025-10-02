@@ -47,10 +47,11 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         const storedTokens = localStorage.getItem("tokens");
         let storedLanguage = localStorage.getItem("language")
         let admin_view = localStorage.getItem("admin_view")
+        let admin_check = localStorage.getItem("admin_check")
 
         if (storedUser && storedTokens) {
             // If user and tokens exist in localStorage, restore the state
-            setCurrentUser(JSON.parse(storedUser));
+            setCurrentUser({...JSON.parse(storedUser), admin_view: admin_view === "true", admin_check: admin_check === "true"});
             setTokens(JSON.parse(storedTokens));
         }
         setLoading(false);
