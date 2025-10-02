@@ -33,8 +33,8 @@ const Login = () => {
   useEffect(() => {
     if (currentUser && !hidePopup.show) {
       if (currentUser.user_type === "admin"){
-        const check_render = localStorage.getItem("admin_check")
-        if (!check_render){
+
+        if (!currentUser.admin_check){
           handleLogout && handleLogout()
         } else {
           navigate("/");

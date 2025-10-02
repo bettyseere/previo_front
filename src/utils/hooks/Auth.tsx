@@ -3,12 +3,12 @@ import { createContext, PropsWithChildren, useContext, useState, useEffect } fro
 import { login, logout, user_info } from "../../api/authentication";
 import { toast } from "react-toastify";
 
-
 type AuthContext = {
     tokens?: Tokens | null;
     currentUser?: User | null;
     handleLogin?: (data: Login) => Promise<void>;
     handleLogout?: () => Promise<void>;
+    updateCurrentUser?: (userData: Partial<User> | User | null) => void; // Add this
     loading?: boolean;
     language?: string | null;
     handleLanguage?: (lang: string) => Promise<void>;
@@ -23,11 +23,30 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     const [loading, setLoading] = useState(true);
     const [language, setLanguage] = useState<string | null>("en")
 
+    // Function to update currentUser
+    const updateCurrentUser = (userData: Partial<User> | User | null) => {
+        if (userData === null) {
+            // Clear user
+            setCurrentUser(null);
+            localStorage.removeItem("user");
+        } else if (currentUser) {
+            // Merge with existing user data
+            const updatedUser = { ...currentUser, ...userData };
+            setCurrentUser(updatedUser);
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+        } else {
+            // Set new user
+            setCurrentUser(userData as User);
+            localStorage.setItem("user", JSON.stringify(userData));
+        }
+    };
+
     // On initial load, check localStorage for existing auth data
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         const storedTokens = localStorage.getItem("tokens");
         let storedLanguage = localStorage.getItem("language")
+        let admin_view = localStorage.getItem("admin_view")
 
         if (storedUser && storedTokens) {
             // If user and tokens exist in localStorage, restore the state
@@ -43,6 +62,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         localStorage.setItem("language", lang)
         setLanguage(lang)
     }
+
     async function handleLogin(data: Login) {
         try {
             const response = await login(data)
@@ -109,16 +129,29 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             setTokens(null);
             localStorage.removeItem("user");
             localStorage.removeItem("tokens");
+            localStorage.removeItem("admin_view")
+            localStorage.clear()
         } catch(error) {
             setCurrentUser(null);
             setTokens(null);
             localStorage.removeItem("user");
+            localStorage.removeItem("admin_view")
             localStorage.removeItem("tokens");
+            localStorage.clear()
         }
     }
 
     return (
-        <AuthContext.Provider value={{ handleLogin, handleLogout, currentUser, tokens, loading, language, handleLanguage }}>
+        <AuthContext.Provider value={{ 
+            handleLogin, 
+            handleLogout, 
+            currentUser, 
+            tokens, 
+            loading, 
+            language, 
+            handleLanguage,
+            updateCurrentUser // Add to context value
+        }}>
             {children}
         </AuthContext.Provider>
     );

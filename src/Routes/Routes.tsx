@@ -43,8 +43,7 @@ function AppRoutes() {
     const is_staff = currentUser?.user_type === "staff";
     const is_super = currentUser?.user_type === "super";
     const has_permission = currentUser?.has_permission;
-    const admin_view = localStorage.getItem("admin_view") === "true"
-    console.log(admin_view, "admin view")
+    const admin_view = currentUser?.admin_view
 
     return (
         <Router>

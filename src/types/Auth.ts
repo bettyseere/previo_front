@@ -7,6 +7,8 @@ export type User = {
     company?: string
     address?: string
     country?: string
+    admin_view?: boolean
+    admin_check?: boolean
     city?: string
     teams?: [any]
     devices?: [any]
