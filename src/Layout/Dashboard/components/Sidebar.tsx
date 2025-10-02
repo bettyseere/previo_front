@@ -28,7 +28,7 @@ export default function Sidebar() {
     is_admin && top_nav_items.push({ name: "Invites", logo: <TbSend className="text-secondary" size={20} />, link: "/invites", roles: ["admin"]})
     is_admin && top_nav_items.push({ name: "Teams", logo: <FaPeopleGroup className="text-secondary" size={20} />, link: "/teams", roles: ["admin", "super", "staff"] })
     is_super && top_nav_items.push({name: "Roles", logo: <FaPeopleGroup className="text-secondary" size={20} />, link: "/roles", roles: ["super"]})
-    is_admin && top_nav_items.push({name: "Measurements", logo: <TbRuler className="text-secondary" size={20} />, link: "/measurements", roles: ["admin"]})
+    // is_admin && top_nav_items.push({name: "Measurements", logo: <TbRuler className="text-secondary" size={20} />, link: "/measurements", roles: ["admin"]})
     is_super && top_nav_items.push({name: "Attributes", logo: <TbRuler className="text-secondary" size={20} />, link: "/attributes", roles: ["super"]})
     is_super && top_nav_items.push({ name: "Activities", logo: <FaPersonBiking className="text-secondary" size={20} />, link: "/activities", roles: ["admin", "super", "staff"] })
 
