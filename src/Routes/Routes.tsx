@@ -83,10 +83,10 @@ function AppRoutes() {
                     {/* Admin User Routes */}
                     {(is_admin && admin_view) && (
                         <>
-                            <Route path="/measurements">
+                            {/* <Route path="/measurements">
                                 <Route index element={<Measurements />} />
                                 <Route path=":id" element={<Results />} />
-                            </Route>
+                            </Route> */}
 
                             <Route path="/">
                                 <Route index element={<CompanyOverview />} />
