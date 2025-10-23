@@ -82,7 +82,7 @@ export default function UserInfo({children, nav_items}: Props){
 
     return (
         <StaffLayout>
-            {hidePopup.show && hidePopup.data.base && popup}
+            {hidePopup.show && hidePopup.data?.base && popup}
             <div className="flex gap-4 p-4">
                 <div className="h-[calc(100vh-6rem)] bg-gray-200 p-4 relative">
                     <div className="flex items-center gap-4 border-b border-gray-500 py-8 mb-6">
