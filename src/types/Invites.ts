@@ -2,7 +2,9 @@ export type CompanyUserInvite = {
     notes?: string,
     email: string,
     company_id: string,
-    user_type: string
+    user_type: string,
+    team?: string
+    role?: string
 }
 
 export type SuperUserInvite = {
