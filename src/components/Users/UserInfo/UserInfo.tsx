@@ -1,122 +1,189 @@
-import React from "react"
-import StaffLayout from "../../../Layout/Dashboard/StaffLayout"
-import { useAuth } from "../../../utils/hooks/Auth"
-import { RxAvatar } from "react-icons/rx"
-import Button from "../../Commons/Button"
-import { usePopup } from "../../../utils/hooks/usePopUp"
+import React, { useEffect, useState } from "react";
+import StaffLayout from "../../../Layout/Dashboard/StaffLayout";
+import { useAuth } from "../../../utils/hooks/Auth";
+import { RxAvatar } from "react-icons/rx";
+import Button from "../../Commons/Button";
+import { usePopup } from "../../../utils/hooks/usePopUp";
 import ChangePassword from "./ChangePasswordForm";
-import EditInfo from "./EditInfoForm"
-import { useState } from "react";
-import Popup from "../../Commons/Popup"
-import { useApiGet } from "../../../utils/hooks/query"
-import { user_info } from "../../../api/authentication"
-import { Link } from "react-router-dom"
-import { Outlet } from "react-router-dom"
+import EditInfo from "./EditInfoForm";
+import Popup from "../../Commons/Popup";
+import { useApiGet } from "../../../utils/hooks/query";
+import { user_info } from "../../../api/authentication";
+import { Link, Outlet } from "react-router-dom";
 
 type NavItem = {
-    name: string
-    path: string
-}
+  name: string;
+  path: string;
+};
 
 interface Props {
-    children?: React.ReactNode;
-    nav_items?: [NavItem]
+  children?: React.ReactNode;
+  nav_items?: [NavItem];
 }
 
+export default function UserInfo({ children, nav_items }: Props) {
+  const { currentUser } = useAuth();
+  const { hidePopup, handleHidePopup } = usePopup();
+  const is_staff = currentUser?.user_type === "staff";
+  const [popupType, setPopupType] = useState("edit_info");
+  const current_location = window.location.pathname;
+  const has_permission = currentUser?.has_permission;
+  const admin_view = localStorage.getItem("admin_view") === "true";
 
-export default function UserInfo({children, nav_items}: Props){
-    const {currentUser} = useAuth()
-    const {hidePopup, handleHidePopup} = usePopup()
-    const is_staff = currentUser?.user_type === "staff"
-    const [popupType, setPopupType] = useState("edit_info")
-    const current_location = window.location.pathname;
-    // console.log(current_location)
-    const has_permission = currentUser?.has_permission
-    const admin_view = localStorage.getItem("admin_view") === "true"
+  const default_nav = has_permission
+    ? [
+        { name: "Reports", path: is_staff ? "/" : admin_view ? "/profile" : "/" },
+        {
+          name: "Teams",
+          path: is_staff
+            ? "/teams"
+            : admin_view
+            ? "/profile/teams"
+            : "/teams",
+        },
+      ]
+    : [];
 
+  const nav_to_use = !nav_items ? default_nav : nav_items;
 
-    const default_nav = has_permission ? [
-        {name: "Reports", path: is_staff ? "/": admin_view ? "/profile": "/"},
-        {name: "Teams", path: is_staff ? "/teams": admin_view ?  "/profile/teams": "/teams"},
-    ]: []
+  // ✅ Check localStorage first
+  const [userData, setUserData] = useState<any>(null);
+  const userFromStorage = localStorage.getItem("user");
 
-    const nav_to_use = !nav_items ? default_nav : nav_items
+  const shouldFetch = !userFromStorage; // only fetch if user is not in localStorage
 
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isPending,
+    isError,
+    isLoadingError,
+  } = useApiGet(["current_user"], user_info, { enabled: shouldFetch }); // ✅ prevent query if unnecessary
 
-    const {data, isLoading, isFetching, isPending, isError, isLoadingError} = useApiGet(["current_user"], user_info)
-
-    if (isLoading || isFetching || isPending) {
-        return (
-            <StaffLayout>
-                <div  className="text-2xl font-bold text-secondary p-4">Fetching user info ...</div>
-            </StaffLayout>
-        )
+  useEffect(() => {
+    if (userFromStorage) {
+      try {
+        setUserData(JSON.parse(userFromStorage));
+      } catch (err) {
+        console.error("Error parsing user from localStorage:", err);
+        localStorage.removeItem("user");
+      }
+    } else if (data) {
+      // ✅ store API result to localStorage for next time
+      localStorage.setItem("user", JSON.stringify(data));
+      setUserData(data);
     }
+  }, [userFromStorage, data]);
 
-    if (isError || isLoadingError){
-        return (
-            <StaffLayout>
-                <div  className="text-2xl font-bold text-red-400">{"Error fetching user info"}</div>
-            </StaffLayout>
-            )
-        }
-
-    const handle_edit_info = () => {
-        setPopupType("edit_info")
-        handleHidePopup({show: true, type: "edit", data: {base: true}})
-    }
-
-    const handle_change_password = () =>  {
-        setPopupType("change_password")
-        handleHidePopup({show: true, type: "edit", data: {base: true}})
-    }
-
-    const popup = <Popup>{popupType === "edit_info" ?
-        <EditInfo
-            first_name={data.first_name}
-            last_name={data.last_name}
-            city={data.city && data.city}
-            country={data.country && data.country}
-            address={data.address && data.address}
-        />: <ChangePassword />}</Popup>
-
+  if ((isLoading || isFetching || isPending) && !userData) {
     return (
-        <StaffLayout>
-            {hidePopup.show && hidePopup.data?.base && popup}
-            <div className="flex gap-4 p-4">
-                <div className="h-[calc(100vh-6rem)] bg-gray-200 p-4 relative">
-                    <div className="flex items-center gap-4 border-b border-gray-500 py-8 mb-6">
-                        <div className="h-[6rem] w-[6rem] bg-gray-400 flex items-center justify-center"><RxAvatar size={78} color="white" /></div>
-                        <div className="font-semibold text-lg">{data?.first_name} {currentUser?.last_name}</div>
-                    </div>
-                    <div className="flex flex-col gap-4">
-                        <div>
-                            <h5 className="font-semibold mb-1 text-secondary">Email</h5>
-                            <p className="text-sm">{data?.email}</p>
-                        </div>
+      <StaffLayout>
+        <div className="text-2xl font-bold text-secondary p-4">
+          Fetching user info ...
+        </div>
+      </StaffLayout>
+    );
+  }
 
-                        <div>
-                            <h5 className="font-semibold mb-1 text-secondary">Address</h5>
-                            <div className="text-sm">
-                                <p>Address: {data?.address}</p>
-                                <p>Country: {data?.country}</p>
-                                <p>City: {data?.city}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={`absolute bottom-4 right-4 left-4 gap-2 flex flex-col justify-center`}>
-                        <Button handleClick={handle_edit_info} styling="rounded-none" text="Edit Info"/>
-                        <Button handleClick={handle_change_password} styling="rounded-none bg-red-500" text="Change Password"/>
-                    </div>
-                </div>
+  if ((isError || isLoadingError) && !userData) {
+    return (
+      <StaffLayout>
+        <div className="text-2xl font-bold text-red-400">
+          Error fetching user info
+        </div>
+      </StaffLayout>
+    );
+  }
 
-                <div className="w-full">
-                    {has_permission && <div className="flex w-full h-[3rem] gap-2 justify-between">
-                        {nav_to_use.map((item, i) => <Link to={item.path} className={`${item.path === current_location ? "bg-secondary" : "bg-primary"} w-full justify-center flex items-center text-white cursor-pointer`}><nav className="" key={i}>{item.name}</nav></Link>)}
-                    </div>}
-                    <Outlet/><div className={`${has_permission ? "mt-4": ""}`}>{children}</div>
-                </div>
+  const handle_edit_info = () => {
+    setPopupType("edit_info");
+    handleHidePopup({ show: true, type: "edit", data: { base: true } });
+  };
+
+  const handle_change_password = () => {
+    setPopupType("change_password");
+    handleHidePopup({ show: true, type: "edit", data: { base: true } });
+  };
+
+  const popup = (
+    <Popup>
+      {popupType === "edit_info" ? (
+        <EditInfo
+          first_name={userData?.first_name}
+          last_name={userData?.last_name}
+          city={userData?.city}
+          country={userData?.country}
+          address={userData?.address}
+        />
+      ) : (
+        <ChangePassword />
+      )}
+    </Popup>
+  );
+
+  return (
+    <StaffLayout>
+      {hidePopup.show && hidePopup.data?.base && popup}
+      <div className="flex gap-4 p-4">
+        <div className="h-[calc(100vh-6rem)] bg-gray-200 p-4 relative">
+          <div className="flex items-center gap-4 border-b border-gray-500 py-8 mb-6">
+            <div className="h-[6rem] w-[6rem] bg-gray-400 flex items-center justify-center">
+              <RxAvatar size={78} color="white" />
             </div>
-        </StaffLayout>
-    )
+            <div className="font-semibold text-lg">
+              {userData?.first_name} {currentUser?.last_name}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <div>
+              <h5 className="font-semibold mb-1 text-secondary">Email</h5>
+              <p className="text-sm">{userData?.email}</p>
+            </div>
+
+            <div>
+              <h5 className="font-semibold mb-1 text-secondary">Address</h5>
+              <div className="text-sm">
+                <p>Address: {userData?.address}</p>
+                <p>Country: {userData?.country}</p>
+                <p>City: {userData?.city}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-4 right-4 left-4 gap-2 flex flex-col justify-center">
+            <Button handleClick={handle_edit_info} styling="rounded-none" text="Edit Info" />
+            <Button
+              handleClick={handle_change_password}
+              styling="rounded-none bg-red-500"
+              text="Change Password"
+            />
+          </div>
+        </div>
+
+        <div className="w-full">
+          {has_permission && (
+            <div className="flex w-full h-[3rem] gap-2 justify-between">
+              {nav_to_use.map((item, i) => (
+                <Link
+                  key={i}
+                  to={item.path}
+                  className={`${
+                    item.path === current_location
+                      ? "bg-secondary"
+                      : "bg-primary"
+                  } w-full justify-center flex items-center text-white cursor-pointer`}
+                >
+                  <nav>{item.name}</nav>
+                </Link>
+              ))}
+            </div>
+          )}
+          <Outlet />
+          <div className={`${has_permission ? "mt-4" : ""}`}>{children}</div>
+        </div>
+      </div>
+    </StaffLayout>
+  );
 }
