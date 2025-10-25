@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ProtectedRoutes from "../utils/ProtectedRoutes";
 import { useAuth } from "../utils/hooks/Auth";
+import { LuAnnoyed } from "react-icons/lu";
 
 import Login from "../components/authentication/Login";
 import Home from "../components/Companies/Home";
@@ -135,7 +136,16 @@ function AppRoutes() {
                     </Route>
 
                     {/* Fallback Route */}
-                    <Route path="*" element={<div>Page not found</div>} />
+                    <Route path="*" element={
+                        <div className="text-center flex-col py-4 font-semibold text-xl text-red-500 flex justify-center items-center h-[100vh]">
+                            <LuAnnoyed size={40} className="mb-2"/>
+                            <p className="max-w-[16rem]">Looks we having nothing to show here!</p>
+                            <a href="/">
+                                <div className="bg-secondary rounded-md py-2 px-8 mt-4">
+                                    <p className="max-w-[16rem] text-white">Back home</p>
+                                </div>
+                            </a>
+                        </div>} />
                 </Route>
             </Routes>
         </Router>

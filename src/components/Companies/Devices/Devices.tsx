@@ -73,7 +73,7 @@ export default function CompanyDevices() {
             serial_number: device.serial_number,
             mac_address: device.mac_address,
             create_at: device.created_at,
-            owner: `${device.owner ? device.owner.first_name + " " + device.owner.last_name: ""}`,
+            owner: `${device.owner ? device.owner.email: ""}`,
             owner_id: `${device.owner ? device.owner.id: ""}`,
             device_type_id: device.device_type?.id || "",
             device_type_name: device.device_type?.name || "",

@@ -58,7 +58,7 @@ export default function AddUserToDeviceForm({ company_id }: {company_id: string}
                         ?.filter((user: any) => hidePopup.type == "edit" ? user.id !== hidePopup.data.owner_id: company_users)
                         .map((user: any) => (
                             <option key={user.id} value={user.id}>
-                                {user.first_name + " " + user.last_name}
+                                {user.email}
                             </option>
                         ))}
                 </select>

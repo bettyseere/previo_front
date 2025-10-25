@@ -6,7 +6,7 @@ const ProtectedRoutes = () => {
 
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="text-secondary p-4 font-semibold text-xl">Loading...</div>;
     }
 
     console.log("Protected routes being called")

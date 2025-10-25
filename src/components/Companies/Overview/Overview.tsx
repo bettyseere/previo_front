@@ -39,13 +39,13 @@ export default function CompanyOverview() {
         <CompanyLayout>
             <div className="flex">
                 <div className="border-r mt-4 flex flex-col ml-4">
-                    <div className="flex gap-4 items-center mt-4 mr-8">
+                    <div className="flex gap-4 items-center mr-8">
                         <div className="">
                             <BsHouseFill size={40} />
                         </div>
                         <div>
-                            <h2 className="font-bold text-secondary">{data.name}</h2>
-                            <h4 className="font-bold text-sm">Tax ID: {data.piva}</h4>
+                            {/* <h2 className="font-bold text-secondary">{data.name}</h2> */}
+                            <h4 className="font-bold text-lg">Tax ID: {data.piva}</h4>
                         </div>
                     </div>
                     <div className="py-8 mr-8 border-y my-8">

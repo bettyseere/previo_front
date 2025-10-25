@@ -76,7 +76,7 @@ export default function TeamMembersForm({team_id, added_athletes}: athletes) {
     const onSubmit = (data: any) => {
         const role_name = roles.find(role => role.id === data.role_id)
         const athlete_name = athletes.find(athlete => athlete.id == data.user_id)
-        data.athlete_name = athlete_name.first_name + " " + athlete_name.last_name
+        data.athlete_name = athlete_name.email
         role_name ? role_name.name : null
         data.team_id = team_id
 
@@ -168,7 +168,7 @@ export default function TeamMembersForm({team_id, added_athletes}: athletes) {
 
                         <Dropdown
                             name="user_id"
-                            options={athletes_to_select.map(athlete => ({value: athlete.id, label: `${athlete.first_name} ${athlete.last_name}`}))}
+                            options={athletes_to_select.map(athlete => ({value: athlete.id, label: `${athlete.email}`}))}
                             control={control}
                             onSelect={(val) => console.log("Selected:", val)}
                             rules={{ required: "Team member is required" }}

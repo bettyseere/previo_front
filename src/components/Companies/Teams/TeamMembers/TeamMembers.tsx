@@ -91,7 +91,7 @@ export default function TeamMembers(){
         if (data){
             data.map(item => {
                 data_to_render.push({
-                    name: item.user.first_name + " " + item.user.last_name,
+                    email: item.user.email,
                     role: item.role?.name || "Athlete",
                     access: access_mapper[item.access_type],
                     user_id: item.user.id,
@@ -101,7 +101,7 @@ export default function TeamMembers(){
         }
 
         const table_columns = [
-            {header: "Name", accessorKey: "name"},
+            {header: "Name", accessorKey: "email"},
             {header: "Role", accessorKey: "role"},
             {header: "Access", accessorKey: "access"},
             {

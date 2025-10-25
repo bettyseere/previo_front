@@ -80,8 +80,9 @@ export default function Users(){
         }
 
         const table_columns = [
-            {header: "First Name", accessorKey: "first_name"},
-            {header: "Last Name", accessorKey: "last_name"},
+            // {header: "First Name", accessorKey: "first_name"},
+            // {header: "Last Name", accessorKey: "last_name"},
+            {header: "Email", accessorKey: "email"},
             {header: "User Type", accessorKey: "user_type"},
             {header: "Company", accessorKey: "company", cell: ({ cell, row }) => {
                 console.log(row, "This is the row")
