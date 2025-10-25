@@ -36,7 +36,7 @@ export default function EditInfo({first_name, last_name, address, country, city}
     return (
         <Form formTitle="Edit Your Information" handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-4 items-center mt-4 w-[36rem]">
-                <div className="">
+                <div className="hidden">
                     <label htmlFor="first_name" className="block text-sm font-medium text-black">
                         First Name
                     </label>
@@ -50,7 +50,7 @@ export default function EditInfo({first_name, last_name, address, country, city}
                     />
                 </div>
 
-                <div className="">
+                <div className="hidden">
                     <label htmlFor="last_name" className="block text-sm font-medium text-black">
                         Last Name
                     </label>

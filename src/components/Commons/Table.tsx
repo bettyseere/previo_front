@@ -470,7 +470,7 @@ export default function Table<T>({
                     // console.log(span, cell.column.id)
                     return <td
                       key={cell.id}
-                      className={`text-secondary relative px-2 py-2 border-b border-r first:border-l text-center text-[1rem] ${span > 1 && "bg-gray-200"}`}
+                      className={`text-secondary relative truncate px-2 py-2 border-b border-r first:border-l text-center text-[1rem] ${span > 1 && "bg-gray-200"}`}
                       style={{ width: `auto` }}
                     >
                       {flexRender(

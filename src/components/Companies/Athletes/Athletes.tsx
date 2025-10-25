@@ -84,8 +84,8 @@ export default function CompanyAthletes() {
     }
 
     const table_columns = [
-            {header: "First Name", accessorKey: "first_name"},
-            {header: "Last Name", accessorKey: "last_name"},
+            // {header: "First Name", accessorKey: "first_name"},
+            // {header: "Last Name", accessorKey: "last_name"},
             {header: "Is Admin", accessorKey: "user_type", cell: ({cell, row}) => {
                 return <div>{row.original.user_type === "admin" ? "Yes": "No"}</div>
             }},
