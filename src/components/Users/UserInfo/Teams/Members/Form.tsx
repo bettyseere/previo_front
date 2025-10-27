@@ -169,7 +169,7 @@ export default function TeamMembersForm({team_id, added_athletes}: athletes) {
 
                         <Dropdown
                             name="user_id"
-                            options={athletes_to_select.map(athlete => ({value: athlete.id, label: `${athlete.first_name} ${athlete.last_name}`}))}
+                            options={athletes_to_select.map(athlete => ({value: athlete.id, label: `${athlete.email}`}))}
                             control={control}
                             onSelect={(val) => console.log("Selected:", val)}
                             rules={{ required: "Team member is required" }}
