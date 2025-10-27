@@ -66,8 +66,8 @@ export default function Home() {
             {hidePopup.show && popup}
             <ErrorLoading>
                 <div className="flex items-center justify-center flex-col gap-4">
-                    <div  className="text-xl font-bold text-red-400">{error.response.status === 404 ? "No companies found": "Error fetching companies"}</div>
-                    {error.response.status == 404 && <Button text="Create Company" handleClick={()=>handleHidePopup({show: true, type: "create"})} />}
+                    <div  className="text-xl font-bold text-red-400">{error.response?.status === 404 ? "No companies found": "Error fetching companies"}</div>
+                    {error.response?.status == 404 && <Button text="Create Company" handleClick={()=>handleHidePopup({show: true, type: "create"})} />}
                 </div>
             </ErrorLoading>
             </div>

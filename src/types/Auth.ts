@@ -7,6 +7,10 @@ export type User = {
     company?: string
     address?: string
     country?: string
+    height?: string
+    weight?: string
+    gender?: string
+    birth_date?: string
     admin_view?: boolean
     admin_check?: boolean
     city?: string
@@ -35,6 +39,10 @@ export type UpdateUserInfo = {
     last_name?: string,
     address?: string,
     country?: string,
+    height?: string
+    weight?: string
+    gender?: string
+    birth_date?: string
     city?: string
 }
 
@@ -47,6 +55,9 @@ export type ResetPassword = {
 export type CreateUserAccount = {
     first_name: string
     last_name: string
+    height?: string
+    weight?: string
+    gender?: string
     password: string
 }
 

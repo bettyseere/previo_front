@@ -4,24 +4,43 @@ import { useForm } from "react-hook-form";
 import { update_user_info } from "../../../api/authentication";
 import { useApiSend } from "../../../utils/hooks/query";
 import Button from "../../Commons/Button";
+import { useAuth } from "../../../utils/hooks/Auth";
 import { queryClient } from "../../../main";
 
 interface userInfo {
-    first_name: string
-    last_name: string
+    weight?: string
+    height?: string
+    gender?: string
+    birth_date?: string
     address?: string
     country?: string
     city?: string
 }
 
-export default function EditInfo({first_name, last_name, address, country, city}: userInfo){
+export default function EditInfo({height, weight, gender, birth_date, address, country, city}: userInfo){
     const {hidePopup, handleHidePopup} = usePopup()
+    const currentUser = useAuth()
     const { register, handleSubmit, reset } = useForm()
     const { mutate, isError, isSuccess, isPending } = useApiSend(update_user_info, undefined, undefined, ["invites"]);
+    console.log(birth_date, "birth date")
 
     const onSubmit = (data: any) => {
+        const updatedFields = Object.fromEntries(
+            Object.entries(data).filter(([_, value]) => value !== "" && value !== undefined)
+        );
+
+        if (!data?.birth_date){
+            data.birth_date = null
+        }
+
         mutate(data, {
             onSuccess: () => {
+                const storedUser = JSON.parse(localStorage.getItem("user"))
+                const updatedUser = {
+                    ...storedUser,
+                    ...updatedFields,
+                };
+                localStorage.setItem("user", JSON.stringify(updatedUser));
                 queryClient.invalidateQueries(["current_user"]);
                 handleHidePopup({ show: false, type: "create" }); // Close the popup on success
                 reset(); // Reset form fields
@@ -36,7 +55,7 @@ export default function EditInfo({first_name, last_name, address, country, city}
     return (
         <Form formTitle="Edit Your Information" handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-4 items-center mt-4 w-[36rem]">
-                <div className="hidden">
+                {/* <div className="hidden">
                     <label htmlFor="first_name" className="block text-sm font-medium text-black">
                         First Name
                     </label>
@@ -60,6 +79,47 @@ export default function EditInfo({first_name, last_name, address, country, city}
                         type="text"
                         placeholder="Last name"
                         {...register("last_name", { required: "Last name is required" })}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div> */}
+                <div className="">
+                    <label htmlFor="email" className="block text-sm font-medium text-black mt-2 w-[3rem]">
+                        Sex
+                    </label>
+                    {/* <label htmlFor="company_id" className="block text-sm font-medium text-black">
+                        Select Company
+                    </label> */}
+                    <select {...register("gender")} defaultValue={gender} name="gender" className="outline-none border-b-2 border-primary w-full py-2">
+                        <option className="py-2" value={"f"} key={"f"}>Female</option>
+                        <option className="py-2" value={"m"} key={"m"}>Male</option>
+                        <option className="py-2" key={"o"}>Rather not say</option>
+                    </select>
+                </div>
+
+                <div className="">
+                    <label htmlFor="height" className="block text-sm font-medium text-black">
+                        Height
+                    </label>
+                    <input
+                        id="height"
+                        defaultValue={height}
+                        type="number" step="0.01"
+                        placeholder="Height"
+                        {...register("height")}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div>
+
+                <div className="">
+                    <label htmlFor="weight" className="block text-sm font-medium text-black">
+                        Weight
+                    </label>
+                    <input
+                        id="weight"
+                        defaultValue={weight}
+                        type="text"
+                        placeholder="Weight"
+                        {...register("weight")}
                         className="outline-none border-b-2 border-primary w-full py-2"
                     />
                 </div>
@@ -102,6 +162,19 @@ export default function EditInfo({first_name, last_name, address, country, city}
                         placeholder="Your city"
                         type="text"
                         {...register("city")}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div>
+
+                <div className="mb-4 mt-2">
+                    <label htmlFor="birth_date" className="block text-sm font-medium text-black mt-2 w-[6rem]">
+                        Birth date
+                    </label>
+                    <input
+                        id="birth_date"
+                        // value={birth_date}
+                        type="date"
+                        {...register("birth_date")}
                         className="outline-none border-b-2 border-primary w-full py-2"
                     />
                 </div>
