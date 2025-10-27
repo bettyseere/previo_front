@@ -33,6 +33,15 @@ export default function EditInfo({height, weight, gender, birth_date, address, c
             data.birth_date = null
         }
 
+        if (!data?.height){
+            data.height = null
+        }
+
+        if (!data?.height){
+            data.height = null
+        }
+
+
         mutate(data, {
             onSuccess: () => {
                 const storedUser = JSON.parse(localStorage.getItem("user"))
