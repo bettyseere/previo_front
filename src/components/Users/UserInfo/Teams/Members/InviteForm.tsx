@@ -75,7 +75,8 @@ export default function AthleteInviteForm({company_id, team_id}: {company_id?: s
                         </label>
                         <select
                             id="role_id"
-                            {...register("role")}
+                            required
+                            {...register("role", { required: "Role is required" })}
                             className="outline-none border-b-2 border-primary min-w-[24rem] py-2"
                         >
                         <option value={""}>Set Role</option>
