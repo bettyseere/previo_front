@@ -202,6 +202,7 @@ export default function TeamMembersForm({team_id, added_athletes}: athletes) {
                             Role
                         </label>
                         <select
+                            required
                             id="role_id"
                             {...register("role_id")}
                             className="outline-none border-b-2 border-primary w-[22rem] py-2"
