@@ -13,7 +13,7 @@ export default function StaffSideBar() {
 
 
     return (
-        <div className="h-screen w-[14rem] bg-[#FFF] relative">
+        <div className="h-screen w-[1rem] bg-[#FFF] relative">
             <div className="px-4">
                 <div className="">
                     <img
