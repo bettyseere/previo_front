@@ -33,8 +33,8 @@ export default function EditInfo({height, weight, gender, birth_date, address, c
             data.birth_date = null
         }
 
-        if (!data?.height){
-            data.height = null
+        if (!data?.weight){
+            data.weight = null
         }
 
         if (!data?.height){
