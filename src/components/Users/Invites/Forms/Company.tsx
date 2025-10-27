@@ -63,16 +63,31 @@ export default function CompanyUserForm() {
                 </div>
             </div>
 
-            <div className="mb-4 mt-2 flex items-end">
-                <label htmlFor="email" className="block text-sm font-medium text-black mt-2 w-[6rem]">
-                    Birth date
-                </label>
-                <input
-                    id="birth_date"
-                    type="date"
-                    {...register("birth_date", { required: "Birth date is required" })}
-                    className="outline-none border-b-2 border-primary w-full py-2"
-                />
+            <div className="flex justify-between gap-4">
+                <div className="mt-2 items-end w-1/2">
+                    <label htmlFor="gender" className="block text-sm font-medium text-black mt-2 w-[3rem]">
+                        Sex
+                    </label>
+                    {/* <label htmlFor="company_id" className="block text-sm font-medium text-black">
+                        Select Company
+                    </label> */}
+                    <select {...register("gender")} name="gender" className="outline-none border-b-2 -mb-[4] border-primary w-full py-2">
+                        <option className="py-2" value={"f"} key={"f"}>Female</option>
+                        <option className="py-2" value={"m"} key={"m"}>Male</option>
+                        <option className="py-2" key={"o"}>Rather not say</option>
+                    </select>
+                </div>
+                <div className="mb-4 mt-2 w-1/2">
+                    <label htmlFor="birth_date" className="block text-sm font-medium text-black mt-2 w-[6rem]">
+                        Birth date
+                    </label>
+                    <input
+                        id="birth_date"
+                        type="date"
+                        {...register("birth_date")}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div>
             </div>
 
             <div className="flex items-center gap-2 mt-2">

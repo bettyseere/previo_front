@@ -66,6 +66,28 @@ const CreateAccount = () => {
                             <input
                                 minLength={8}
                                 maxLength={50}
+                                type="number" step="0.01"
+                                placeholder="Height (cm)"
+                                className="flex-1 outline-none bg-transparent"
+                                {...register("height", { required: false })}
+                            />
+                        </div>
+
+                        <div className="flex items-center bg-white rounded-md px-3 py-2 w-full focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                            <input
+                                minLength={8}
+                                maxLength={50}
+                                type="number" step="0.01"
+                                placeholder="Weight (kg)"
+                                className="flex-1 outline-none bg-transparent"
+                                {...register("weight", { required: false })}
+                            />
+                        </div>
+
+                        <div className="flex items-center bg-white rounded-md px-3 py-2 w-full focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                            <input
+                                minLength={8}
+                                maxLength={50}
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Password"
                                 className="flex-1 outline-none bg-transparent"

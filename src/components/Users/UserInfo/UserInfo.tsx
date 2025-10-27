@@ -10,6 +10,7 @@ import Popup from "../../Commons/Popup";
 import { useApiGet } from "../../../utils/hooks/query";
 import { user_info } from "../../../api/authentication";
 import { Link, Outlet } from "react-router-dom";
+import moment from "moment";
 
 type NavItem = {
   name: string;
@@ -110,11 +111,13 @@ export default function UserInfo({ children, nav_items }: Props) {
     <Popup>
       {popupType === "edit_info" ? (
         <EditInfo
-          first_name={userData?.first_name}
-          last_name={userData?.last_name}
           city={userData?.city}
           country={userData?.country}
           address={userData?.address}
+          weight={userData?.weight}
+          height={userData?.height}
+          gender={userData?.gender}
+          birth_date={userData?.birth_date}
         />
       ) : (
         <ChangePassword />
@@ -148,6 +151,15 @@ export default function UserInfo({ children, nav_items }: Props) {
                 <p>Address: {userData?.address}</p>
                 <p>Country: {userData?.country}</p>
                 <p>City: {userData?.city}</p>
+              </div>
+            </div>
+
+            <div>
+              <h5 className="font-semibold mb-1 text-secondary">Other</h5>
+              <div className="text-sm">
+                <p>Birth Date: {moment(userData?.birth_date).format("YYYY-MM-DD")}</p>
+                <p>Height: {userData?.height}</p>
+                <p>Weight: {userData?.weight}</p>
               </div>
             </div>
           </div>
