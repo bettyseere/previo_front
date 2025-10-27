@@ -75,7 +75,7 @@ export default function UserTeamMembers(){
         if (data){
             data.map(item => {
                 data_to_render.push({
-                    name: item.user.first_name + " " + item.user.last_name,
+                    name: item.email,
                     role: item.role?.name || "Athlete",
                     user_id: item.user.id,
                     team_id: item.team_id
