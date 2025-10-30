@@ -91,7 +91,7 @@ export default function TeamMembers(){
         if (data){
             data.map(item => {
                 data_to_render.push({
-                    email: item.user.email,
+                    Name: (item.user.first_name || "") + " " + (item.user.last_name || ""),
                     role: item.role?.name || "Athlete",
                     access: access_mapper[item.access_type],
                     user_id: item.user.id,
