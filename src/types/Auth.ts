@@ -35,6 +35,7 @@ export type ResetPasswordRequest = {
 }
 
 export type UpdateUserInfo = {
+    id?: string,
     first_name?: string,
     last_name?: string,
     address?: string,
