@@ -48,7 +48,7 @@ const CreateAccount = () => {
                 </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
-                        {/* <input
+                        <input
                             type="text"
                             placeholder="First Name"
                             className="rounded-md py-2 px-3 w-full outline-none bg-white focus:ring-2 focus:ring-offset-2 focus:ring-primary"
@@ -60,7 +60,7 @@ const CreateAccount = () => {
                             placeholder="Last Name"
                             className="rounded-md py-2 px-3 w-full outline-none bg-white focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                             {...register("last_name", { required: true })}
-                        /> */}
+                        />
 
                         <div className="flex items-center bg-white rounded-md px-3 py-2 w-full focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
                             <input
