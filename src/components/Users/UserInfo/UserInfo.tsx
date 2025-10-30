@@ -113,6 +113,8 @@ export default function UserInfo({ children, nav_items }: Props) {
         <EditInfo
           city={userData?.city}
           country={userData?.country}
+          first_name={userData?.first_name}
+          last_name={userData?.last_name}
           address={userData?.address}
           weight={userData?.weight}
           height={userData?.height}
@@ -135,15 +137,15 @@ export default function UserInfo({ children, nav_items }: Props) {
               <RxAvatar size={78} color="white" />
             </div>
             <div className="font-semibold text-lg">
-              {userData?.first_name} {currentUser?.last_name}
+              {currentUser?.first_name} {currentUser?.last_name}
             </div>
           </div>
 
           <div className="flex flex-col gap-4">
-            <div>
+            {/* <div>
               <h5 className="font-semibold mb-1 text-secondary">Email</h5>
               <p className="text-sm">{userData?.email}</p>
-            </div>
+            </div> */}
 
             <div>
               <h5 className="font-semibold mb-1 text-secondary">Address</h5>

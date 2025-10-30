@@ -11,13 +11,15 @@ interface userInfo {
     weight?: string
     height?: string
     gender?: string
+    first_name?: string
+    last_name?: string
     birth_date?: string
     address?: string
     country?: string
     city?: string
 }
 
-export default function EditInfo({height, weight, gender, birth_date, address, country, city}: userInfo){
+export default function EditInfo({first_name, last_name, height, weight, gender, birth_date, address, country, city}: userInfo){
     const {hidePopup, handleHidePopup} = usePopup()
     const currentUser = useAuth()
     const { register, handleSubmit, reset } = useForm()
@@ -64,7 +66,7 @@ export default function EditInfo({height, weight, gender, birth_date, address, c
     return (
         <Form formTitle="Edit Your Information" handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-4 items-center mt-4 w-[36rem]">
-                {/* <div className="hidden">
+                <div className="">
                     <label htmlFor="first_name" className="block text-sm font-medium text-black">
                         First Name
                     </label>
@@ -78,7 +80,7 @@ export default function EditInfo({height, weight, gender, birth_date, address, c
                     />
                 </div>
 
-                <div className="hidden">
+                <div className="">
                     <label htmlFor="last_name" className="block text-sm font-medium text-black">
                         Last Name
                     </label>
@@ -90,7 +92,7 @@ export default function EditInfo({height, weight, gender, birth_date, address, c
                         {...register("last_name", { required: "Last name is required" })}
                         className="outline-none border-b-2 border-primary w-full py-2"
                     />
-                </div> */}
+                </div>
                 <div className="">
                     <label htmlFor="email" className="block text-sm font-medium text-black mt-2 w-[3rem]">
                         Sex

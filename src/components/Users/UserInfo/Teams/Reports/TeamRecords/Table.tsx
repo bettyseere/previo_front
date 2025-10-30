@@ -64,8 +64,7 @@ export default function UserTeamRecords() {
       const parsed_row = {
         id: item.id,
         index: rows.length,
-        // athlete: `${item.athlete.first_name} ${item.athlete.last_name}`,
-        athlete: `${item.athlete.email}`,
+        athlete: `${item.athlete.first_name || "__"} ${item.athlete.last_name || ""}`,
         athlete_id: item.athlete.id,
         start: item.start,
         role: item.role.name,
