@@ -137,7 +137,7 @@ export default function UserInfo({ children, nav_items }: Props) {
               <RxAvatar size={78} color="white" />
             </div>
             <div className="font-semibold text-lg">
-              {currentUser?.first_name} {currentUser?.last_name}
+              {userData?.first_name} {userData?.last_name}
             </div>
           </div>
 
