@@ -13,6 +13,8 @@ import Popup from "../../Commons/Popup";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import ConfirmModel from "../../Commons/ConfirmModel";
+import { FaRegEdit } from "react-icons/fa";
+import EditAthleteInfo from "./EditAthlete";
 
 export default function CompanyAthletes() {
     const {hidePopup, handleHidePopup} = usePopup()
@@ -20,7 +22,7 @@ export default function CompanyAthletes() {
     const [selectedID, setSelectedID] = useState("")
     let company_id: any = useParams();
     company_id = company_id.id
-
+    const [selectedAthlete, setSelectedAthlete] = useState(null)
 
     const init_delete = (id: string) => {
             setSelectedID(id)
@@ -56,6 +58,19 @@ export default function CompanyAthletes() {
     }
 
     const popup = <Popup>
+                    {hidePopup.type === "edit" ? 
+                    <EditAthleteInfo
+                        id={selectedAthlete.id}
+                        first_name={selectedAthlete.first_name}
+                        last_name={selectedAthlete.last_name}
+                        height={selectedAthlete.height}
+                        weight={selectedAthlete.weight}
+                        gender={selectedAthlete.gender}
+                        birth_date={selectedAthlete.birth_date}
+                        city={selectedAthlete.city}
+                        country={selectedAthlete.country}
+                        address={selectedAthlete.address}
+                    />:
                     <div>
                         {hidePopup.confirmModel ? <ConfirmModel
                             message="Are you sure you want to delete this user?"
@@ -67,6 +82,7 @@ export default function CompanyAthletes() {
                             <div>Other Popup Content</div>
                         )}
                     </div>
+                    }
                 </Popup>
 
     if (isError) {
@@ -94,9 +110,18 @@ export default function CompanyAthletes() {
             header: "Actions",
             accessorKey: "id",
             cell: ({cell, row }) => {
-                return <div className="flex gap-8 justify-center items-center">
-                    {row.original.id !== currentUser?.id && <div onClick={()=>init_delete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
-                        <BsTrash size={20} color="red" />
+                return <div className="">
+                    {row.original.id !== currentUser?.id &&
+                    <div className="flex gap-8 justify-center items-center">
+                        <div onClick={()=>init_delete(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">
+                            <BsTrash size={20} color="red" />
+                        </div>
+                        <div onClick={()=>{
+                            setSelectedAthlete(row.original)
+                            handleHidePopup({show: true, type: "edit"})
+                        }} className="shadow-md text-primary p-2 rounded-md hover:scale-110 hover:duration-150">
+                            <FaRegEdit size={20} color="" />
+                        </div>
                     </div>}
                 </div>
                 }

@@ -19,6 +19,12 @@ export const update_user_info = async (data: UpdateUserInfo) => await request({
     data: data
 })
 
+export const update_athlete_info = async (data: UpdateUserInfo) => await request({
+    method: "PATCH",
+    url: `/auth?id=${data?.id}`,
+    data: data
+})
+
 export const logout = async () => await request({
     method: "GET",
     url: "/auth/logout"
