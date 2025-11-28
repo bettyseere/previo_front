@@ -33,6 +33,28 @@ export default function SuperUserForm() {
         <Form formTitle={hidePopup.type === "create" ? "Invite Super User" : "Edit Invite"} handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-4 items-center mt-4 w-[24rem]">
                 <div className="">
+                    <label htmlFor="first_name" className="block text-sm font-medium text-black">
+                        First Name (Optional)
+                    </label>
+                    <input
+                        id="first_name"
+                        type="text"
+                        {...register("first_name")}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div>
+                 <div className="">
+                    <label htmlFor="last_name" className="block text-sm font-medium text-black">
+                        Last Name (Optional)
+                    </label>
+                    <input
+                        id="last_name"
+                        type="text"
+                        {...register("last_name")}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div>
+                <div className="">
                     <label htmlFor="email" className="block text-sm font-medium text-black py-2">
                         Email
                     </label>
@@ -45,7 +67,7 @@ export default function SuperUserForm() {
                     />
                 </div>
 
-                <div className="">
+                <div className="hidden">
                     <label htmlFor="notes" className="block text-sm font-medium text-black">
                         Notes
                     </label>

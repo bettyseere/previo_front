@@ -34,6 +34,28 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
     return (
         <Form formTitle={hidePopup.type === "create" ? "Invite Company User" : "Edit Invite"} handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-4 items-center mt-4 w-[24rem]">
+                 <div className="">
+                    <label htmlFor="first_name" className="block text-sm font-medium text-black">
+                        First Name (Optional)
+                    </label>
+                    <input
+                        id="first_name"
+                        type="text"
+                        {...register("first_name")}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div>
+                 <div className="">
+                    <label htmlFor="last_name" className="block text-sm font-medium text-black">
+                        Last Name (Optional)
+                    </label>
+                    <input
+                        id="last_name"
+                        type="text"
+                        {...register("last_name")}
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                    />
+                </div>
                 <div className="">
                     <label htmlFor="email" className="block text-sm font-medium text-black">
                         Email
@@ -47,11 +69,44 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
                 </div>
 
 
-                <div className="">
+
+                <div className="hidden">
                     <label htmlFor="notes" className="block text-sm font-medium text-black">
                         Notes
                     </label>
                     <textarea {...register("notes")} name="notes" rows={4} maxLength={100} className="outline-none border-b-2 border-primary w-[24rem] py-2"></textarea>
+                </div>
+            </div>
+
+            <div className="flex justify-between gap-4">
+                <div className="mt-2 items-end w-1/2">
+                    <label htmlFor="weight" className="block text-sm font-medium text-black mt-2">
+                        Weight (Optional)
+                    </label>
+
+                    <input
+                        minLength={8}
+                        maxLength={50}
+                        type="number" step="0.01"
+                        placeholder="Weight (kg)"
+                        className="outline-none border-b-2 border-primary w-full py-2"
+                        {...register("weight", { required: false })}
+                    />
+                </div>
+
+                <div className="mt-2 items-end w-1/2">
+                    <label htmlFor="height" className="block text-sm font-medium text-black mt-2">
+                        Height (Optional)
+                    </label>
+
+                    <input
+                                minLength={8}
+                                maxLength={50}
+                                type="number" step="0.01"
+                                placeholder="Height (cm)"
+                                className="outline-none border-b-2 border-primary w-full py-2"
+                                {...register("height", { required: false })}
+                            />
                 </div>
             </div>
 
