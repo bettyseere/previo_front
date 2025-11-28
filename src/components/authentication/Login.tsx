@@ -51,7 +51,7 @@ const Login = () => {
     {hidePopup.show && <AdminViewPopup />}
     <div className="font-jarkata flex flex-col md:flex-row h-screen">
       {/* Logo Section */}
-      <div className="flex-1 flex items-center justify-center p-4 md:p-8">
+      <div className="min-h-[200px] md:flex-1 flex items-center justify-center p-4 md:p-8">
         <img
           className="w-full max-w-[180px] sm:max-w-xs md:max-w-md lg:max-w-lg"
           src="/images/logo_seere/png/previo-long.png"
