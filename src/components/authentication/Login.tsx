@@ -96,7 +96,7 @@ const Login = () => {
             </div>
 
             <a href="/forgot_password" className="">
-              <p className="text-white font-semibold cursor-pointer text-xs sm:text-xs hover:underline pt-1">
+              <p className="text-white font-semibold cursor-pointer text-xs sm:text-xs hover:underline mt-1">
                 Forgot password?
               </p>
             </a>
