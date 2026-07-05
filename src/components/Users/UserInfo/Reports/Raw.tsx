@@ -47,7 +47,7 @@ export default function UserTeamRecordsRaw({raw_data, action_btn}: Props) {
                 measurement_id: item.attribute.id,
                 results: parseInt(item.value),
                 units: item.attribute.translations[0].units,
-                device: item.device.device_type.name,
+                // device: item.device.device_type.name,
                 note: item.note,
                 created_at: item.created_at
             });

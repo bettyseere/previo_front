@@ -89,10 +89,12 @@ export default function TeamMembers(){
         }
 
         if (data){
+            console.log(data[0])
             data.map(item => {
                 data_to_render.push({
-                    Name: (item.user.first_name || "") + " " + (item.user.last_name || ""),
+                    name: (item.user.first_name || "") + " " + (item.user.last_name || ""),
                     role: item.role?.name || "Athlete",
+                    email: item.user.email,
                     access: access_mapper[item.access_type],
                     user_id: item.user.id,
                     team_id: item.team_id
@@ -101,7 +103,7 @@ export default function TeamMembers(){
         }
 
         const table_columns = [
-            {header: "Name", accessorKey: "email"},
+            {header: "Name", accessorKey: "name"},
             {header: "Role", accessorKey: "role"},
             {header: "Access", accessorKey: "access"},
             {
