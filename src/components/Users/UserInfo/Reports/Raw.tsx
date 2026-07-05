@@ -41,7 +41,7 @@ export default function UserTeamRecordsRaw({raw_data, action_btn}: Props) {
                 athlete: `${item.athlete.first_name} ${item.athlete.last_name}`,
                 athlete_id: item.athlete.id,
                 start: item.start,
-                role: item.role.name,
+                // role: item.role.name,
                 activity: activity_obj?.name,
                 measurement: measurement_obj.name,
                 measurement_id: item.attribute.id,
