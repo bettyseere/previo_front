@@ -56,7 +56,7 @@ export default function UserReports() {
                 measurement: measurement_obj?.name,
                 measurement_id: item.attribute.id,
                 units: item.attribute.translations[0].units,
-                device: item.device.device_type.name,
+                // device: item.device.device_type.name,
                 note: item.note,
                 created_at: item.created_at,
             };
