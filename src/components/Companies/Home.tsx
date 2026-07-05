@@ -37,9 +37,11 @@ export default function Home() {
 
     if (isLoading || isPending || isFetching) {
         return (
+            <Layout>
             <ErrorLoading>
                 <div  className="text-2xl font-bold text-secondary">Fetching companies ...</div>
             </ErrorLoading>
+            </Layout>
         )
     }
 

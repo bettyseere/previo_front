@@ -78,17 +78,17 @@ export default function CompanyOverview() {
                                 <li className="flex gap-2 text-sm">
                                     <BsPeople size={24} />
                                     <h6 className="font-bold text-secondary">Users:</h6>
-                                    <p className="font-bold"> {data.users.length} users</p>
+                                    <p className="font-bold"> {data?.total_users} users</p>
                                 </li>
                                 <li className="flex gap-2 text-sm">
                                     <FaPeopleGroup size={24} />
                                     <h6 className="font-bold text-secondary">Teams:</h6>
-                                    <p className="font-bold">{data.teams.length} teams</p>
+                                    <p className="font-bold">{data?.total_teams} teams</p>
                                 </li>
                                 <li className="flex gap-2 text-sm">
                                     <BsTablet size={24} />
                                     <h6 className="font-bold text-secondary">Devices:</h6>
-                                    <p className="font-bold">{data.devices.length} devices</p>
+                                    <p className="font-bold">{data.total_devices} devices</p>
                                 </li>
                             </ul>
                         </div>
