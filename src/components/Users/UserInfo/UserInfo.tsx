@@ -33,13 +33,13 @@ export default function UserInfo({ children, nav_items }: Props) {
 
   const default_nav = has_permission
     ? [
-        { name: "Reports", path: is_staff ? "/" : admin_view ? "/profile" : "/" },
+        { name: "Reports", path: is_staff ? "/" : admin_view ? "/" : "/" },
         {
           name: "Teams",
           path: is_staff
             ? "/teams"
             : admin_view
-            ? "/profile/teams"
+            ? "/teams"
             : "/teams",
         },
       ]
