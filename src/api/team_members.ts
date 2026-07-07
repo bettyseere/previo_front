@@ -13,6 +13,11 @@ export const get_team_member = async (user_id: string, team_id: string) => reque
     url: `/team_members?user_id=${user_id}&team_id=${team_id}`
 })
 
+export const get_user_teams = async () => request({
+    method: "GET",
+    url: "/team_members/me"
+})
+
 export const create_team_member = async (data: CreateTeamMembers) => request({
     method: "POST",
     url: "/team_members",

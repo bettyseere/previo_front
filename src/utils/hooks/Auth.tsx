@@ -1,6 +1,7 @@
 import { User, Tokens, Login } from "../../types/Auth";
 import { createContext, PropsWithChildren, useContext, useState, useEffect } from "react";
 import { login, logout, user_info } from "../../api/authentication";
+import { get_user_teams } from "../../api/team_members";
 import { toast } from "react-toastify";
 
 type AuthContext = {
@@ -8,7 +9,8 @@ type AuthContext = {
     currentUser?: User | null;
     handleLogin?: (data: Login) => Promise<void>;
     handleLogout?: () => Promise<void>;
-    updateCurrentUser?: (userData: Partial<User> | User | null) => void; // Add this
+    updateCurrentUser?: (userData: Partial<User> | User | null) => void;
+    refreshUserPermissions?: (force?: boolean) => Promise<void>;
     loading?: boolean;
     language?: string | null;
     handleLanguage?: (lang: string) => Promise<void>;
@@ -16,6 +18,7 @@ type AuthContext = {
 
 const AuthContext = createContext<AuthContext | undefined>(undefined);
 type AuthProviderProps = PropsWithChildren;
+const PERMISSION_CACHE_MS = 20 * 60 * 1000;
 
 export default function AuthProvider({ children }: AuthProviderProps) {
     const [tokens, setTokens] = useState<Tokens | null>(null);
@@ -41,6 +44,48 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
+    const refreshUserPermissions = async (
+        user?: User | null,
+        force = false
+    ) => {
+        const activeUser = user ?? currentUser;
+
+        if (!activeUser) return;
+
+        const lastUpdated =
+            (activeUser as any).permissions_updated_at ?? 0;
+
+        if (
+            !force &&
+            Date.now() - lastUpdated < PERMISSION_CACHE_MS
+        ) {
+            return;
+        }
+
+        try {
+            const teams = await get_user_teams();
+
+            const has_permission = teams.some(
+                (team: any) => !!team.role
+            );
+
+            const updatedUser = {
+                ...activeUser,
+                teams,
+                has_permission,
+                permissions_updated_at: Date.now(),
+            };
+
+            setCurrentUser(updatedUser);
+            localStorage.setItem(
+                "user",
+                JSON.stringify(updatedUser)
+            );
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     // On initial load, check localStorage for existing auth data
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -50,11 +95,18 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         let admin_check = localStorage.getItem("admin_check")
 
         if (storedUser && storedTokens) {
-            // If user and tokens exist in localStorage, restore the state
-            setCurrentUser({...JSON.parse(storedUser), admin_view: admin_view === "true", admin_check: admin_check === "true"});
+            const user = {
+                ...JSON.parse(storedUser),
+                admin_view: admin_view === "true",
+                admin_check: admin_check === "true",
+            };
+
+            setCurrentUser(user);
             setTokens(JSON.parse(storedTokens));
+
+            refreshUserPermissions(user);
         }
-        setLoading(false);
+                setLoading(false);
 
         setLanguage(storedLanguage ? storedLanguage: "en")
     }, []); // Only run once when the component mounts
@@ -101,9 +153,11 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
                 localStorage.setItem("user", JSON.stringify(user));
 
-                // Update the state with the logged-in user and tokens
                 setCurrentUser(user);
-                return user
+
+                await refreshUserPermissions(user, true);
+
+                return user;
             } catch (error) {
                 if (error){
                     toast(error.data.detail)
@@ -147,15 +201,18 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
 
     return (
-        <AuthContext.Provider value={{ 
-            handleLogin, 
-            handleLogout, 
-            currentUser, 
-            tokens, 
-            loading, 
-            language, 
+        <AuthContext.Provider 
+        value={{
+            handleLogin,
+            handleLogout,
+            currentUser,
+            tokens,
+            loading,
+            language,
             handleLanguage,
-            updateCurrentUser // Add to context value
+            updateCurrentUser,
+            refreshUserPermissions: (force = false) =>
+                refreshUserPermissions(undefined, force),
         }}>
             {children}
         </AuthContext.Provider>
