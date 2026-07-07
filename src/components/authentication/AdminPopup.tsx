@@ -5,16 +5,17 @@ import { useAuth } from "../../utils/hooks/Auth";
 
 export default function AdminViewPopup() {
   const {handleHidePopup} = usePopup()
-  const {currentUser, updateCurrentUser} = useAuth()
+  const { setAdminView} = useAuth()
   const navigate = useNavigate()
 
   const handleSelect = (asAdmin: boolean) => {
-    handleHidePopup({type: "create", show: false})
-    toast.success("Login Successful!");
-    updateCurrentUser({...currentUser, admin_view: asAdmin, admin_check: true})
-    localStorage.setItem("admin_view", String(asAdmin));
-    localStorage.setItem("admin_check", "true");
-    navigate("/")
+      handleHidePopup({ type: "create", show: false });
+
+      toast.success("Login Successful!");
+
+      setAdminView?.(asAdmin);
+
+      navigate("/");
   };
 
   if (!open) return null;

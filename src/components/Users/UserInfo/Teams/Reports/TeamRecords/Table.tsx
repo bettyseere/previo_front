@@ -41,8 +41,8 @@ export default function UserTeamRecords() {
   const access_type = user_team?.access_type;
 
   const default_nav = useMemo(() => [
-    { name: "Team Members", path: is_staff ? "/teams/" + team_id : "/profile/teams/" + team_id },
-    { name: "Team Records", path: is_staff ? "/teams/" + team_id + "/records" : "/profile/teams/" + team_id + "/records" },
+    { name: "Team Members", path: is_staff ? "/teams/" + team_id : "/teams/" + team_id },
+    { name: "Team Records", path: is_staff ? "/teams/" + team_id + "/records" : "/teams/" + team_id + "/records" },
   ], [is_staff, team_id]);
 
   const { data, isLoading, isError, error, refetch } = useApiGet(
@@ -341,7 +341,7 @@ export default function UserTeamRecords() {
           <div className="text-xl font-bold text-red-400">
             {error?.response?.status === 404 ? "No records found" : "Error fetching records"}
           </div>
-          <div>
+          <div className="hidden">
             {error?.response?.status == 404 && (
               <Button
                 text="Add Records"

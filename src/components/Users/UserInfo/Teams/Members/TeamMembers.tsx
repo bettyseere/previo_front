@@ -32,8 +32,8 @@ export default function UserTeamMembers(){
         } = useApiGet(["team_members", team_id], ()=>get_team_members(team_id))
 
     const default_nav = [
-        {name: "Team Members", path: is_staff ? "/teams/"+team_id: "/profile/teams/"+team_id},
-        {name: "Team Records", path: is_staff ? "/teams/"+team_id+"/records": "/profile/teams/"+team_id+"/records"}
+        {name: "Team Members", path: is_staff ? "/teams/"+team_id: "/teams/"+team_id},
+        {name: "Team Records", path: is_staff ? "/teams/"+team_id+"/records": "/teams/"+team_id+"/records"}
     ]
 
 

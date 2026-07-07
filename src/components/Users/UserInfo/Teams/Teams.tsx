@@ -10,8 +10,8 @@ export default function UserTeams(){
     let data_to_render = []
 
     const default_nav = [
-        {name: "Team Members", path: is_staff ? "/": "/profile"},
-        {name: "Athlete Records", path: is_staff ? "/teams": "/profile/teams"},
+        {name: "Team Members", path: is_staff ? "/": "/"},
+        {name: "Athlete Records", path: is_staff ? "/teams": "/teams"},
     ]
 
     user_teams.forEach(team =>
@@ -27,7 +27,8 @@ export default function UserTeams(){
             accessorKey: "name",
             cell: ({ cell, row }) => {
                 const { role, id, name} = row.original;
-                const href = is_staff ? `/teams/${id}?label=${name}`: `/profile/teams/${id}?label=${name}`;
+                // const href = is_staff ? `/teams/${id}?label=${name}`: `/profile/teams/${id}?label=${name}`;
+                const href = `/teams/${id}?label=${name}`;
 
                 return (
                     <div onClick={()=>localStorage.setItem("current_team", name)} className="text-secondary font-semibold">

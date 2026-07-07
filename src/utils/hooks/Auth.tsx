@@ -1,6 +1,8 @@
 import { User, Tokens, Login } from "../../types/Auth";
 import { createContext, PropsWithChildren, useContext, useState, useEffect } from "react";
 import { login, logout, user_info } from "../../api/authentication";
+import { get_user_teams } from "../../api/team_members";
+import { TeamMember } from "../../api/user_tems";
 import { toast } from "react-toastify";
 
 type AuthContext = {
@@ -12,6 +14,7 @@ type AuthContext = {
     loading?: boolean;
     language?: string | null;
     handleLanguage?: (lang: string) => Promise<void>;
+    setAdminView?: (asAdmin: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContext | undefined>(undefined);
@@ -20,6 +23,8 @@ type AuthProviderProps = PropsWithChildren;
 export default function AuthProvider({ children }: AuthProviderProps) {
     const [tokens, setTokens] = useState<Tokens | null>(null);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [userTeams, setUserTeams] = useState<TeamMember[]>([]);
+    const [hasPermissions, setHasPermissions] = useState(false);
     const [loading, setLoading] = useState(true);
     const [language, setLanguage] = useState<string | null>("en")
 
@@ -43,25 +48,131 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     // On initial load, check localStorage for existing auth data
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        const storedTokens = localStorage.getItem("tokens");
-        let storedLanguage = localStorage.getItem("language")
-        let admin_view = localStorage.getItem("admin_view")
-        let admin_check = localStorage.getItem("admin_check")
+        async function initialize() {
+            const storedUser = localStorage.getItem("user");
+            const storedTokens = localStorage.getItem("tokens");
+            const storedLanguage = localStorage.getItem("language");
+            const admin_view = localStorage.getItem("admin_view");
+            const admin_check = localStorage.getItem("admin_check");
 
-        if (storedUser && storedTokens) {
-            // If user and tokens exist in localStorage, restore the state
-            setCurrentUser({...JSON.parse(storedUser), admin_view: admin_view === "true", admin_check: admin_check === "true"});
-            setTokens(JSON.parse(storedTokens));
+            if (storedUser && storedTokens) {
+                const user = {
+                    ...JSON.parse(storedUser),
+                    admin_view: admin_view === "true",
+                    admin_check: admin_check === "true",
+                };
+
+                setCurrentUser(user);
+                setTokens(JSON.parse(storedTokens));
+
+                // wait until permissions are synchronized
+                await handleUserTeams();
+            }
+
+            setLanguage(storedLanguage ?? "en");
+            setLoading(false);
         }
-        setLoading(false);
 
-        setLanguage(storedLanguage ? storedLanguage: "en")
+        initialize();
     }, []); // Only run once when the component mounts
 
     async function handleLanguage(lang: string){
         localStorage.setItem("language", lang)
         setLanguage(lang)
+    }
+
+    // useEffect(() => {
+    //     if (currentUser && tokens) {
+    //         handleUserTeams();
+    //     }
+    // }, [currentUser?.id]);
+
+    const TEAM_CACHE_KEY = "user_teams";
+    const TEAM_CACHE_EXPIRY_KEY = "user_teams_expiry";
+    const SIX_HOURS = 1000 * 60 * 60 * 6;
+
+    async function handleUserTeams(forceRefresh = false) {
+        try {
+            let teams: TeamMember[];
+
+            const cachedTeams = localStorage.getItem(TEAM_CACHE_KEY);
+            const cacheExpiry = localStorage.getItem(TEAM_CACHE_EXPIRY_KEY);
+
+            if (
+                !forceRefresh &&
+                cachedTeams &&
+                cacheExpiry &&
+                Date.now() < Number(cacheExpiry)
+            ) {
+                teams = JSON.parse(cachedTeams);
+            } else {
+                teams = await get_user_teams();
+
+                localStorage.setItem(
+                    TEAM_CACHE_KEY,
+                    JSON.stringify(teams)
+                );
+
+                localStorage.setItem(
+                    TEAM_CACHE_EXPIRY_KEY,
+                    String(Date.now() + SIX_HOURS)
+                );
+            }
+
+            const hasPermission = teams.some(team => team.role !== null);
+
+            setCurrentUser(prev => {
+                if (!prev) return prev;
+
+                const updatedUser = {
+                    ...prev,
+                    teams,
+                    has_permission: hasPermission,
+                };
+
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+
+                return updatedUser;
+            });
+
+            return teams;
+        } catch (error) {
+            console.error(error);
+
+            setCurrentUser(prev => {
+                if (!prev) return prev;
+
+                const updatedUser = {
+                    ...prev,
+                    teams: [],
+                    has_permission: false,
+                };
+
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+
+                return updatedUser;
+            });
+
+            return [];
+        }
+    }
+
+    function setAdminView(asAdmin: boolean) {
+        setCurrentUser(prev => {
+            if (!prev) return prev;
+
+            const updatedUser = {
+                ...prev,
+                admin_view: asAdmin,
+                admin_check: true,
+            };
+
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            localStorage.setItem("admin_view", String(asAdmin));
+            localStorage.setItem("admin_check", "true");
+
+            return updatedUser;
+        });
     }
 
     async function handleLogin(data: Login) {
@@ -72,14 +183,13 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
             try {
                 const user_info_response = await user_info()
-                let has_permission = false;
 
-                for (const team of user_info_response.teams || []) {
-                    if (team.role) {
-                        has_permission = true;
-                        break;
-                    }
-                }
+                // for (const team of user_info_response.teams || []) {
+                //     if (team.role) {
+                //         has_permission = true;
+                //         break;
+                //     }
+                // }
                 const user = {
                     id: response.user.id,
                     first_name: response.user.first_name,
@@ -94,9 +204,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                     weight: user_info_response.weight,
                     city: user_info_response.city,
                     address: user_info_response.address,
-                    teams: user_info_response.teams,
+                    // teams: user_info_response.teams,
                     devices: user_info_response.devices,
-                    has_permission: has_permission
+                    // has_permission: has_permission 
                 };
 
                 localStorage.setItem("user", JSON.stringify(user));
@@ -155,6 +265,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             loading, 
             language, 
             handleLanguage,
+            setAdminView,
             updateCurrentUser // Add to context value
         }}>
             {children}
