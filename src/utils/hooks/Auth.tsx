@@ -148,38 +148,22 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
 
     function setAdminView(asAdmin: boolean) {
-        const sourceUser = baseUser ?? currentUser;
-
-        if (!sourceUser) {
-            return [];
-        }
-
-        const updatedUser = {
-            ...sourceUser,
-            teams,
-            has_permission: hasPermission,
-        };
-
-        setCurrentUser(updatedUser);
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-
-        return teams;
-        // setCurrentUser(prev => {
-        //     if (!prev) return prev;
-
-        //     const updatedUser = {
-        //         ...prev,
-        //         admin_view: asAdmin,
-        //         admin_check: true,
-        //     };
-
-        //     localStorage.setItem("user", JSON.stringify(updatedUser));
-        //     localStorage.setItem("admin_view", String(asAdmin));
-        //     localStorage.setItem("admin_check", "true");
-
-        //     return updatedUser;
-        // });
+    if (!currentUser) {
+        return;
     }
+
+    const updatedUser = {
+        ...currentUser,
+        admin_view: asAdmin,
+        admin_check: true,
+    };
+
+    setCurrentUser(updatedUser);
+
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    localStorage.setItem("admin_view", String(asAdmin));
+    localStorage.setItem("admin_check", "true");
+}
 
     async function handleLogin(data: Login) {
         try {
@@ -219,6 +203,10 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
                 // Update the state with the logged-in user and tokens
                 setCurrentUser(user);
+
+                // Store user and tokens in localStorage
+                // setTokens(tokens);
+
                 handleUserTeams(true, user)
                 return user
             } catch (error) {
@@ -229,8 +217,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
                 }
             }
 
-            // Store user and tokens in localStorage
-            setTokens(tokens);
         } catch (error) {
             // toast("Incorrect email or password.")
             if (error?.response.status == 401){
