@@ -62,26 +62,26 @@ export default function UserTeamRecords() {
       const activity_obj = item.sub_activity.translations.find(sa => sa.language_code === language) || item.sub_activity.translations[0];
 
       const parsed_row = {
-        id: item.id,
-        index: rows.length,
-        athlete: `${item.athlete.first_name || "__"} ${item.athlete.last_name || ""}`,
-        athlete_id: item.athlete.id,
-        start: item.start,
-        role: item.role.name,
-        activity: activity_obj.name,
-        parent_activity_id: parent_activity_id,
-        measurement: measurement_obj?.name,
-        measurement_id: item.attribute.id,
-        units: item.attribute.translations[0].units,
-        device: item.device.device_type.name,
-        note: item.note,
-        created_at: item.created_at,
-      };
-      
+                id: item.id,
+                index: rows.length,
+                // athlete: `${item.athlete.first_name} ${item.athlete.last_name}`,
+                athlete_id: item.athlete.id,
+                start: item.start,
+                // role: item.role.name,
+                activity: activity_obj.name,
+                parent_activity_id: parent_activity_id,
+                measurement: measurement_obj?.name,
+                measurement_id: item.attribute.id,
+                units: item.attribute.translations[0].units,
+                // device: item.device.device_type.name,
+                note: item.note,
+                created_at: item.created_at,
+            };
+            
       if (measurement_obj?.name) {
-        parsed_row[measurement_obj.name.toLowerCase()] = parseInt(item.value);
-        parsed_row.measurement = measurement_obj.name.toLowerCase();
-        parsed_row.results = parseInt(item.value);
+          parsed_row[measurement_obj.name.toLowerCase()] = parseInt(item.value);
+          parsed_row.measurement = measurement_obj.name.toLowerCase();
+          parsed_row.results = parseInt(item.value);
       }
       rows.push(parsed_row);
     });

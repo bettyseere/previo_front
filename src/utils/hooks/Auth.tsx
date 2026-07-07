@@ -224,6 +224,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
             // Store user and tokens in localStorage
             setTokens(tokens);
+            handleUserTeams()
         } catch (error) {
             // toast("Incorrect email or password.")
             if (error?.response.status == 401){
