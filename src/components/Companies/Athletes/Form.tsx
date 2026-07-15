@@ -15,8 +15,13 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
 
     // Handle form submission
     const onSubmit = (data: any) => {
-        data.is_admin ? data.user_type = "admin": data.user_type = "staff"
+        data.is_admin ? data.user_type = "admin" : data.user_type = "staff"
         data.company_id = company_id
+
+        // Convert empty strings to null for optional numeric fields
+        data.weight = data.weight === "" ? null : data.weight;
+        data.height = data.height === "" ? null : data.height;
+
         mutate(data, {
             onSuccess: () => {
                 handleHidePopup({ show: false, type: "create" }); // Close the popup on success
@@ -29,12 +34,13 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
             },
         });
     };
+
     let companies = localStorage.getItem("companies")
     companies ? companies = JSON.parse(companies) : companies = null
     return (
         <Form formTitle={hidePopup.type === "create" ? "Invite Company User" : "Edit Invite"} handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-4 items-center mt-4 w-[24rem]">
-                 <div className="">
+                <div className="">
                     <label htmlFor="first_name" className="block text-sm font-medium text-black">
                         First Name (Optional)
                     </label>
@@ -131,7 +137,7 @@ export default function CompanyUserForm({company_id}: {company_id: string}) {
             <div className="mt-6">
                 <Button
                     type="submit"
-                    text={isPending ? "Submitting..." : hidePopup.type === "create" ? "Create" : "Save"}
+                    text={isPending ? "Submitting..." : hidePopup.type === "create" ? "Send" : "Save"}
                     styling="text-white px-4 py-1 rounded"
                 />
             </div>
