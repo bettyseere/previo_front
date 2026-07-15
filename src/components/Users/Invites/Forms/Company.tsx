@@ -15,6 +15,8 @@ export default function CompanyUserForm() {
     // Handle form submission
     const onSubmit = (data: any) => {
         data.is_admin ? data.user_type = "admin": data.user_type = "staff"
+        data.height = data.height || null
+        data.weight = data.weight || null
         mutate(data, {
             onSuccess: () => {
                 console.log("company user invited successfully!", data);
