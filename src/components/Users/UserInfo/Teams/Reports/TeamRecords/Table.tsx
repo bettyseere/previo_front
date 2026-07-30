@@ -159,7 +159,6 @@ export default function UserTeamRecords() {
       cell: ({ row }) =>
         
         {
-          console.log(row.original)
           return row.original.start === true && (
           <div className="text-center">
             <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("DD-MM-YYYY")}</p>
