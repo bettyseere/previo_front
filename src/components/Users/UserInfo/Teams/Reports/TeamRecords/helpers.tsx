@@ -23,8 +23,8 @@ export const computeRSI = (group) => {
         });
         
         // Mark first and last items for removal
-        group[0]._shouldRemove = true;
-        group[group.length - 1]._shouldRemove = true;
+        // group[0]._shouldRemove = true;
+        // group[group.length - 1]._shouldRemove = true;
     }
 
     for (let i = 0; i < sliced.length - 1; i++) {
