@@ -157,12 +157,15 @@ export default function UserTeamRecords() {
       accessorKey: "created_at",
       meta: "date",
       cell: ({ row }) =>
-        row.original.start === true && (
+        
+        {
+          console.log(row.original)
+          return row.original.start === true && (
           <div className="text-center">
             <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("DD-MM-YYYY")}</p>
             <p className="max-w-[8rem] text-xs truncate">{moment.utc(row.original.created_at).local().format("HH:mm")}</p>
           </div>
-        ),
+        )},
     },
     {
       header: "Ct",
