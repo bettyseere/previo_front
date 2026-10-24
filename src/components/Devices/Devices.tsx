@@ -16,6 +16,7 @@ export default function Devices(){
     const {hidePopup ,handleHidePopup} = usePopup()
 
     const handleUpdate = (data: any) => {
+        console.log(data, "Update data")
         handleHidePopup({show: true, data: data, type: "edit"})
         console.log(data, hidePopup)
     }
@@ -85,7 +86,9 @@ export default function Devices(){
             owner: `${device.owner ? device.owner.email: ""}`,
             company: `${device.company ? device.company.name: ""}`,
             company_id: `${device.company ? device.company.id: ""}`,
+            owner_id: `${device.owner ? device.owner.id: ""}`,
             device_type_id: device.device_type?.id || null,
+            is_public: device.is_public,
             device_type_name: device.device_type?.name || null
         }))
         }
@@ -113,6 +116,7 @@ export default function Devices(){
         ]
 
         const button = <Button text="Create Device" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
+        console.log(data_to_render, "Data to render")
     return (
         <div>
             {hidePopup.show && popup}
