@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import Button from "./Button";
 import { MdKeyboardBackspace } from "react-icons/md";
@@ -12,6 +13,12 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 
+interface SearchableColumn {
+  key: string;
+  label: string;
+  type?: "text" | "date";
+}
+
 interface TableWithPaginationProps<T> {
   columns: ColumnDef<T, any>[];
   data: T[];
@@ -25,15 +32,33 @@ interface TableWithPaginationProps<T> {
   enableColumnVisibility?: boolean;
   enableColumnFilters?: boolean;
   searchMode?: "single" | "double";
+  searchableColumns?: SearchableColumn[];
   // New prop to control height behavior
   heightMode?: "fixed" | "flexible" | "viewport";
 }
 
-// Helper function to detect if a column is a date column
-const isDateColumn = (columns: ColumnDef<any, any>[], columnId: string) => {
-  const column = columns.find(col => col.accessorKey === columnId);
-  return column?.meta?.type === 'date' || 
-         (column?.accessorKey && /date|time|created|updated/i.test(column.accessorKey as string));
+// Helper function to detect a date column, including hidden searchable fields
+const isDateColumn = (
+  columns: ColumnDef<any, any>[],
+  columnId: string,
+  searchableColumns?: SearchableColumn[]
+) => {
+  const searchableColumn = searchableColumns?.find(
+    (col) => col.key === columnId
+  );
+
+  if (searchableColumn?.type) {
+    return searchableColumn.type === "date";
+  }
+
+  const column = columns.find((col) => col.accessorKey === columnId);
+
+  return (
+    column?.meta?.type === "date" ||
+    (!!column?.accessorKey &&
+      /date|time|created|updated/i.test(column.accessorKey as string)) ||
+    (!column && /date|time|created|updated/i.test(columnId))
+  );
 };
 
 // Helper function to parse date strings
@@ -56,6 +81,7 @@ export default function Table<T>({
   enableColumnVisibility = false,
   enableColumnFilters = false,
   searchMode = "single",
+  searchableColumns,
   heightMode = "viewport", // Default to flexible height
 }: TableWithPaginationProps<T>) {
   const [pagination, setPagination] = useState({
@@ -75,6 +101,24 @@ export default function Table<T>({
   const containerRef = useRef<HTMLDivElement>(null);
   const [availableHeight, setAvailableHeight] = useState(400);
 
+  // Search options are independent of the columns rendered in the table.
+  // If omitted, preserve the original behavior.
+  const searchOptions = useMemo<SearchableColumn[]>(
+    () =>
+      searchableColumns ??
+      columns.flatMap((col) =>
+        col.accessorKey
+          ? [
+              {
+                key: col.accessorKey as string,
+                label: String(col.header ?? col.accessorKey),
+              },
+            ]
+          : []
+      ),
+    [searchableColumns, columns]
+  );
+
   // 🔍 single search
   const [searchInput, setSearchInput] = useState("");
 
@@ -89,43 +133,60 @@ export default function Table<T>({
     const calculateHeight = () => {
       if (heightMode === "viewport") {
         // Use the full viewport height minus the space taken by other elements
-        const headerHeight = document.querySelector('header')?.clientHeight || 0;
-        const otherElementsHeight = 200; // Approximate height of controls and pagination
-        setAvailableHeight(window.innerHeight - headerHeight - otherElementsHeight - 100);
+        const headerHeight =
+          document.querySelector("header")?.clientHeight || 0;
+        const otherElementsHeight = 200;
+        setAvailableHeight(
+          window.innerHeight - headerHeight - otherElementsHeight - 100
+        );
       } else if (heightMode === "flexible" && containerRef.current) {
         // Use the available space in the parent container
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const parentHeight = containerRef.current.parentElement?.clientHeight || 0;
-        setAvailableHeight(parentHeight - 200); // Reserve space for controls
+        const parentHeight =
+          containerRef.current.parentElement?.clientHeight || 0;
+        setAvailableHeight(parentHeight - 200);
       }
       // For "fixed" mode, we don't need to calculate anything
     };
 
     calculateHeight();
-    window.addEventListener('resize', calculateHeight);
-    
+    window.addEventListener("resize", calculateHeight);
+
     return () => {
-      window.removeEventListener('resize', calculateHeight);
+      window.removeEventListener("resize", calculateHeight);
     };
   }, [heightMode]);
 
   // Check if both search columns are date columns
   const bothDateColumns = useMemo(() => {
-    return search1Col && search2Col && 
-           isDateColumn(columns, search1Col) && 
-           isDateColumn(columns, search2Col);
-  }, [search1Col, search2Col, columns]);
+    return (
+      !!search1Col &&
+      !!search2Col &&
+      isDateColumn(columns, search1Col, searchOptions) &&
+      isDateColumn(columns, search2Col, searchOptions)
+    );
+  }, [search1Col, search2Col, columns, searchOptions]);
 
   // Filtering logic
   const filteredData = useMemo(() => {
     if (searchMode === "single") {
       if (!searchInput) return data;
-      return data.filter((row) =>
-        Object.values(row as object)
+
+      const query = searchInput.toLowerCase();
+
+      return data.filter((row) => {
+        const values = searchableColumns
+          ? searchableColumns.map(
+              ({ key }) =>
+                (row as unknown as Record<string, unknown>)[key]
+            )
+          : Object.values(row as object);
+
+        return values
+          .map((value) => String(value ?? ""))
           .join(" ")
           .toLowerCase()
-          .includes(searchInput.toLowerCase())
-      );
+          .includes(query);
+      });
     }
 
     if (searchMode === "double") {
@@ -135,41 +196,32 @@ export default function Table<T>({
 
         if (search1 && search1Col) {
           const cellValue = String((row as any)[search1Col] ?? "");
-          
-          if (isDateColumn(columns, search1Col)) {
-            // For date columns, check if the date matches (simple contains check)
-            match1 = cellValue.toLowerCase().includes(search1.toLowerCase());
-          } else {
-            match1 = cellValue.toLowerCase().includes(search1.toLowerCase());
-          }
+          match1 = cellValue.toLowerCase().includes(search1.toLowerCase());
         }
 
         if (search2 && search2Col) {
           const cellValue = String((row as any)[search2Col] ?? "");
-          
-          if (isDateColumn(columns, search2Col)) {
-            match2 = cellValue.toLowerCase().includes(search2.toLowerCase());
-          } else {
-            match2 = cellValue.toLowerCase().includes(search2.toLowerCase());
-          }
+          match2 = cellValue.toLowerCase().includes(search2.toLowerCase());
         }
 
         // Special handling for date range search
         if (bothDateColumns && search1 && search2) {
-          const rowDate1 = parseDate(String((row as any)[search1Col] ?? ""));
-          const rowDate2 = parseDate(String((row as any)[search2Col] ?? ""));
+          const rowDate1 = parseDate(
+            String((row as any)[search1Col] ?? "")
+          );
+          const rowDate2 = parseDate(
+            String((row as any)[search2Col] ?? "")
+          );
           const fromDate = parseDate(search1);
           const toDate = parseDate(search2);
-          
-          // If we have valid dates, check if either of the row dates falls within the range
+
           if (rowDate1 && fromDate && toDate) {
             match1 = rowDate1 >= fromDate && rowDate1 <= toDate;
           }
           if (rowDate2 && fromDate && toDate) {
             match2 = rowDate2 >= fromDate && rowDate2 <= toDate;
           }
-          
-          // Return true if either date in the row falls within the range
+
           return match1 || match2;
         }
 
@@ -178,7 +230,18 @@ export default function Table<T>({
     }
 
     return data;
-  }, [data, searchInput, search1, search1Col, search2, search2Col, searchMode, columns, bothDateColumns]);
+  }, [
+    data,
+    searchInput,
+    search1,
+    search1Col,
+    search2,
+    search2Col,
+    searchMode,
+    columns,
+    searchableColumns,
+    bothDateColumns,
+  ]);
 
   // Table instance
   const table = useReactTable({
@@ -202,13 +265,13 @@ export default function Table<T>({
   const getTableBodyHeight = () => {
     switch (heightMode) {
       case "fixed":
-        return { maxHeight: '400px' };
+        return { maxHeight: "400px" };
       case "flexible":
-        return { maxHeight: '70vh' }; // Use 70% of viewport height
+        return { maxHeight: "70vh" };
       case "viewport":
         return { maxHeight: `${availableHeight}px` };
       default:
-        return { maxHeight: '400px' };
+        return { maxHeight: "400px" };
     }
   };
 
@@ -223,12 +286,13 @@ export default function Table<T>({
   // Handle date change for first input
   const handleFirstDateChange = (value: string) => {
     setSearch1(value);
-    
-    // If both are date columns and the second date is earlier than the first, reset the second date
+
+    // If both are date columns and the second date is earlier than the first,
+    // reset the second date
     if (bothDateColumns && search2) {
       const firstDate = parseDate(value);
       const secondDate = parseDate(search2);
-      
+
       if (firstDate && secondDate && secondDate < firstDate) {
         setSearch2("");
       }
@@ -237,17 +301,21 @@ export default function Table<T>({
 
   // Render appropriate input based on column type
   const renderSearchInput = (
-    searchValue: string, 
-    setSearchValue: (value: string) => void, 
+    searchValue: string,
+    setSearchValue: (value: string) => void,
     columnId: string,
     isSecondInput: boolean = false
   ) => {
-    if (isDateColumn(columns, columnId)) {
+    if (isDateColumn(columns, columnId, searchOptions)) {
       return (
         <input
           type="date"
           value={searchValue}
-          onChange={(e) => isSecondInput ? setSearchValue(e.target.value) : handleFirstDateChange(e.target.value)}
+          onChange={(e) =>
+            isSecondInput
+              ? setSearchValue(e.target.value)
+              : handleFirstDateChange(e.target.value)
+          }
           min={isSecondInput ? getMinDateForSecondInput() : undefined}
           className="border outline-none px-4 py-2 rounded"
         />
@@ -275,7 +343,10 @@ export default function Table<T>({
               {back_path && (
                 <a href={back_path}>
                   <div className="font-bold gap-1 flex items-center hover:scale-105 hover:duration-200">
-                    <MdKeyboardBackspace size={15} className="text-primary" />
+                    <MdKeyboardBackspace
+                      size={15}
+                      className="text-primary"
+                    />
                     <p className="text-primary">Back</p>
                   </div>
                 </a>
@@ -311,14 +382,14 @@ export default function Table<T>({
                   onChange={(e) => setSearch1Col(e.target.value)}
                   className="border px-2 py-2 rounded outline-none"
                 >
-                  <option value="" className="outline-none">Select column</option>
-                  {columns.map((col) =>
-                    col.accessorKey ? (
-                      <option key={col.accessorKey} value={col.accessorKey as string}>
-                        {col.header as string}
-                      </option>
-                    ) : null
-                  )}
+                  <option value="" className="outline-none">
+                    Select column
+                  </option>
+                  {searchOptions.map((col) => (
+                    <option key={col.key} value={col.key}>
+                      {col.label}
+                    </option>
+                  ))}
                 </select>
                 {renderSearchInput(search1, setSearch1, search1Col)}
               </div>
@@ -336,23 +407,26 @@ export default function Table<T>({
                   className="border px-2 py-2 rounded outline-none"
                 >
                   <option value="">Select column</option>
-                  {columns.map((col) =>
-                    col.accessorKey ? (
-                      <option key={col.accessorKey} value={col.accessorKey as string}>
-                        {col.header as string}
-                      </option>
-                    ) : null
-                  )}
+                  {searchOptions.map((col) => (
+                    <option key={col.key} value={col.key}>
+                      {col.label}
+                    </option>
+                  ))}
                 </select>
                 {renderSearchInput(search2, setSearch2, search2Col, true)}
               </div>
 
               {/* Validation message */}
-              {bothDateColumns && search1 && search2 && parseDate(search2) < parseDate(search1) && (
-                <span className="text-red-500 text-sm">
-                  End date cannot be earlier than start date
-                </span>
-              )}
+              {bothDateColumns &&
+                search1 &&
+                search2 &&
+                parseDate(search2) &&
+                parseDate(search1) &&
+                parseDate(search2)! < parseDate(search1)! && (
+                  <span className="text-red-500 text-sm">
+                    End date cannot be earlier than start date
+                  </span>
+                )}
             </div>
           )}
         </div>
@@ -427,7 +501,7 @@ export default function Table<T>({
                   <th
                     key={header.id}
                     className="px-2 py-2 border-b bg-slate-300 text-[1rem] text-gray-500 text-center font-semibold capitalize tracking-wider text-sm"
-                    style={{ width: `auto` }}
+                    style={{ width: "auto" }}
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     {header.isPlaceholder
@@ -441,8 +515,8 @@ export default function Table<T>({
                         {header.column.getIsSorted() === "asc"
                           ? " 🔼"
                           : header.column.getIsSorted() === "desc"
-                          ? " 🔽"
-                          : " ⬍"}
+                            ? " 🔽"
+                            : " ⬍"}
                       </span>
                     )}
                   </th>
@@ -453,7 +527,7 @@ export default function Table<T>({
         </table>
 
         {/* Table Body - This will scroll independently */}
-        <div 
+        <div
           className="overflow-y-auto scrollbar-hide flex-1"
           style={getTableBodyHeight()}
         >
@@ -466,18 +540,20 @@ export default function Table<T>({
                   onClick={() => onRowClick && onRowClick(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => {
-                    const span = row.original._rowSpan?.[cell.column.id] ?? 1;
-                    // console.log(span, cell.column.id)
-                    return <td
-                      key={cell.id}
-                      className={`text-secondary relative truncate px-2 py-2 border-b border-r first:border-l text-center text-[1rem] ${span > 1 && "bg-gray-200"}`}
-                      style={{ width: `auto` }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </td>
+                    const span = (row.original as any)._rowSpan?.[cell.column.id] ?? 1;
+
+                    return (
+                      <td
+                        key={cell.id}
+                        className={`text-secondary relative truncate px-2 py-2 border-b border-r first:border-l text-center text-[1rem] ${span > 1 && "bg-gray-200"}`}
+                        style={{ width: "auto" }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    );
                   })}
                 </tr>
               ))}

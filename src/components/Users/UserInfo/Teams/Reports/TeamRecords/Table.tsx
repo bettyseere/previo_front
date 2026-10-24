@@ -324,6 +324,10 @@ export default function UserTeamRecords() {
           searchMode="double" 
           entity_name={team_name} 
           back_path="/teams"
+          searchableColumns={[
+            { key: "athlete", label: "Athlete" },
+            { key: "activity", label: "Test" }
+          ]}
         />
       )}
     </div>
