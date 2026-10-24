@@ -34,11 +34,14 @@ export default function UserTeamRecordsRaw({raw_data, action_btn}: Props) {
     useEffect(() => {
         if (!raw_data) return;
 
+        console.log(raw_data, "Raw data")
+
         let rows: any[] = [];
 
         raw_data.forEach((item, index) => {
         const measurement_obj = item.attribute.translations.find(tr => tr.language_code === language) || item.attribute.translations[0]
         const activity_obj = item.sub_activity.translations.find(sa => sa.language_code === language) || item.sub_activity.translations[0]
+
 
         rows.push({
                 id: item.id,
@@ -53,7 +56,7 @@ export default function UserTeamRecordsRaw({raw_data, action_btn}: Props) {
                 measurement_id: item.attribute.id,
                 results: parseInt(item.value),
                 units: item.attribute.translations[0].units,
-                device: item.device.device_type.name,
+                device: item.device.device_type?.name,
                 note: item.note,
                 created_at: item.created_at
             });
@@ -114,6 +117,7 @@ export default function UserTeamRecordsRaw({raw_data, action_btn}: Props) {
         }
     ];
 
+    
 
     return (
         raw_data && <div>

@@ -252,10 +252,16 @@ export default function UserReports() {
                 <Table 
                     data={dataToRender} 
                     columns={table_columns} 
-                    searchMode="double" 
+                    searchMode="single" 
                     actionBtn={action_btn} 
                     entity_name="Your Records" 
-                    searchMsg="Search your records"
+                    searchMsg="Search by test"
+                    searchableColumns={[
+                        {
+                            key: "activity",
+                            label: "Test"
+                        }
+                    ]}
                 />
             ) : (
                 <div className="font-semibold mt-4">You don't have any records yet</div>
