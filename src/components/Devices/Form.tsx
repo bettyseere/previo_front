@@ -97,6 +97,8 @@ export default function DeviceForm({ popup }: UpdateDevice) {
         return <div>Loading Device Types...</div>
     }
 
+    console.log()
+
     return (
         <Form formTitle={popup.type === "create" ? "Create New Device" : "Edit Device"} handleSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-4 items-center mt-4 w-[36rem]">
@@ -173,6 +175,7 @@ export default function DeviceForm({ popup }: UpdateDevice) {
                 <label htmlFor="owner" className="block text-sm font-medium text-black">
                     Owner (Optional)
                 </label>
+
                 <select
                     id="owner"
                     {...register("owner_id")}
@@ -187,6 +190,17 @@ export default function DeviceForm({ popup }: UpdateDevice) {
                                 : "Select Owner"}
                     </option>
 
+                    {/* Preserve the existing owner if they aren't in the fetched list */}
+                    {popup.type === "edit" &&
+                        popup.data.owner &&
+                        !company_users?.some(
+                            (user: any) => user.id === popup.data.owner_id
+                        ) && (
+                            <option value={popup.data?.owner_id}>
+                                {popup.data?.owner_name || ""}
+                            </option>
+                        )}
+
                     {company_users?.map((user: any) => (
                         <option key={user.id} value={user.id}>
                             {user.first_name} {user.last_name}
@@ -195,10 +209,10 @@ export default function DeviceForm({ popup }: UpdateDevice) {
                 </select>
             </div>
 
-                <div className="mt-4">
-                    <label htmlFor="is_public" className="block text-sm font-medium text-black">
-                        Make Public
-                    </label>
+            <div className="mt-4">
+                <label htmlFor="is_public" className="block text-sm font-medium text-black">
+                    Make Public
+                </label>
 
                     <select
                         id="is_public"
@@ -217,14 +231,28 @@ export default function DeviceForm({ popup }: UpdateDevice) {
 
 
             {/* Submit Button */}
-            <div className={`mt-6 ${popup.type == "edit" && popup.data.company_id ? "flex gap-4": ""}`}>
+            <div className="mt-6 flex flex-wrap gap-4">
                 <Button
                     type="submit"
                     text={isPending ? "Submitting..." : popup.type === "create" ? "Create" : "Save"}
                     styling="text-white px-4 py-1 rounded"
                 />
-                {popup.type == "edit" && popup.data.company_id && <Button text="Remove Company" styling="bg-red-600" handleClick={()=>handle_remove_company(popup.data.id)} />}
-                {popup.type == "edit" && popup.data.owner_id && <Button text="Remove Owner" styling="bg-red-600" handleClick={()=>handle_remove_user(popup.data.id)} />}
+
+                {popup.type === "edit" && popup.data.company_id && (
+                    <Button
+                        text="Remove Company"
+                        styling="bg-red-600"
+                        handleClick={() => handle_remove_company(popup.data.id)}
+                    />
+                )}
+
+                {popup.type === "edit" && popup.data.owner_id && (
+                    <Button
+                        text="Remove Owner"
+                        styling="bg-red-600"
+                        handleClick={() => handle_remove_user(popup.data.id)}
+                    />
+                )}
             </div>
 
             {/* Error and Success Messages */}

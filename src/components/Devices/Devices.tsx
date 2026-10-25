@@ -16,7 +16,7 @@ export default function Devices(){
     const {hidePopup ,handleHidePopup} = usePopup()
 
     const handleUpdate = (data: any) => {
-        console.log(data, "Update data")
+        console.log(data, "Update data.......")
         handleHidePopup({show: true, data: data, type: "edit"})
         console.log(data, hidePopup)
     }
@@ -116,7 +116,6 @@ export default function Devices(){
         ]
 
         const button = <Button text="Create Device" styling="text-white py-2" handleClick={()=>handleHidePopup({ show: true, type: "create" })} />
-        console.log(data_to_render, "Data to render")
     return (
         <div>
             {hidePopup.show && popup}
