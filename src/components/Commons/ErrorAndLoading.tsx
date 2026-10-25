@@ -1,4 +1,4 @@
-import Layout from "../../Layout/Dashboard/Layout";
+// import Layout from "../../Layout/Dashboard/Layout";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -6,10 +6,10 @@ interface LayoutProps {
 
 export default function ErrorLoading({children}: LayoutProps){
     return (
-        <Layout>
+        // <Layout>
             <div className="flex justify-center items-center absolute bottom-[50%] right-auto text-center w-full">
                 {children}
             </div>
-        </Layout>
+        // </Layout>
     )
 }
