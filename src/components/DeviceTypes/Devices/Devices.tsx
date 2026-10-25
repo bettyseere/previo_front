@@ -35,7 +35,7 @@ export default function DeviceTypeDevices(){
 
     const handleUpdate = (data: any) => {
         handleHidePopup({show: true, data: data, type: "edit"})
-        console.log(data, hidePopup)
+        console.log(data, "This goes to update")
     }
 
 
@@ -66,6 +66,9 @@ export default function DeviceTypeDevices(){
             mac_address: device.mac_address,
             create_at: device.created_at,
             owner: `${device.owner ? device.owner.email: ""}`,
+            owner_name: device.owner ? (device.owner.first_name || "") + (" "+ device.owner?.last_name || ""): "",
+            owner_id: `${device.owner ? device.owner.id: ""}`,
+            is_public: device.is_public || false,
             company: `${device.company ? device.company.name: ""}`,
             company_id: `${device.company ? device.company.id: ""}`,
             device_type_id: device.device_type?.id || null,

@@ -74,6 +74,7 @@ export default function CompanyDevices() {
             mac_address: device.mac_address,
             create_at: device.created_at,
             owner: `${device.owner ? device.owner.email: ""}`,
+            is_public: device.is_public,
             owner_id: `${device.owner ? device.owner.id: ""}`,
             device_type_id: device.device_type?.id || "",
             device_type_name: device.device_type?.name || "",
