@@ -126,11 +126,23 @@ export default function DeviceTypeDevices(){
         )
         }
 
-        if (isError || isLoadingError){
-                return (
+        if (isError || isLoadingError) {
+            return (
+                <DeviceTypeSubMenu>
                     <ErrorLoading>
-                        <div  className="text-2xl font-bold text-red-400">{error.response.status === 404 ? "No devices found": "Error fetching devices. Try again later."}</div>
+                        <div className="text-2xl font-bold text-red-400">
+                            {error?.response?.status === 404
+                                ? "No devices found"
+                                : "Error fetching devices. Try again later."}
+                        </div>
+
+                        {error?.response?.status === 404 && (
+                            <div className="mt-4">
+                                {button}
+                            </div>
+                        )}
                     </ErrorLoading>
+                </DeviceTypeSubMenu>
             )
         }
 
