@@ -128,21 +128,34 @@ export default function DeviceTypeDevices(){
 
         if (isError || isLoadingError) {
             return (
-                <DeviceTypeSubMenu>
-                    <ErrorLoading>
-                        <div className="text-2xl font-bold text-red-400">
-                            {error?.response?.status === 404
-                                ? "No devices found"
-                                : "Error fetching devices. Try again later."}
-                        </div>
+                <div>
+                    {hidePopup.show && popup}
 
-                        {error?.response?.status === 404 && (
-                            <div className="mt-4">
-                                {button}
+                    <DeviceTypeSubMenu>
+                        <div className="flex flex-col items-center justify-center gap-4 mt-[5rem]">
+                            <div className="text-2xl font-bold text-red-400">
+                                {error?.response?.status === 404
+                                    ? "No devices found"
+                                    : "Error fetching devices. Try again later."}
                             </div>
-                        )}
-                    </ErrorLoading>
-                </DeviceTypeSubMenu>
+
+                            {error?.response?.status === 404 && (
+                                <div>
+                                    <Button
+                                        text="Create Device"
+                                        styling="text-white py-2"
+                                        handleClick={() =>
+                                            handleHidePopup({
+                                                show: true,
+                                                type: "create",
+                                            })
+                                        }
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </DeviceTypeSubMenu>
+                </div>
             )
         }
 
