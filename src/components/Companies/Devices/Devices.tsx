@@ -73,7 +73,7 @@ export default function CompanyDevices() {
             serial_number: device.serial_number,
             mac_address: device.mac_address,
             create_at: device.created_at,
-            owner: `${device.owner ? device.owner.email: ""}`,
+            owner: `${device.owner && !device.is_public ? device.owner.email: ""}`,
             is_public: device.is_public,
             owner_id: `${device.owner ? device.owner.id: ""}`,
             device_type_id: device.device_type?.id || "",
@@ -83,7 +83,24 @@ export default function CompanyDevices() {
         }
 
         const table_columns = [
-            {header: "Name", accessorKey: "device_type_name"},
+            {
+                header: "Name",
+                accessorKey: "device_type_name",
+                enableSorting: true,
+                cell: ({ row }) => (
+                    <div className="flex items-start gap-1 justify-center">
+                        <span>{row.original.device_type_name}</span>
+                        {row.original.is_public && (
+                            <span
+                                title="Public device"
+                                className="text-xs font-semibold text-primary"
+                            >
+                                <sup>P</sup>
+                            </span>
+                        )}
+                    </div>
+                ),
+            },
             {header: "Mac Address", accessorKey: "mac_address"},
             {header: "Serial Number", accessorKey: "serial_number"},
             {header: "Owner", accessorKey: "owner"},
@@ -100,7 +117,7 @@ export default function CompanyDevices() {
             accessorKey: "id",
             cell: ({ cell, row }) => {
                 console.log(row.original)
-                return <div className="flex gap-4 justify-center items-center">
+                return <div className={`flex gap-4 justify-center items-center ${row.original.is_public && "hidden"}`}>
                     <div onClick={()=>handleHidePopup({show: true, type: row.original.owner ? "edit": "create", data: row.original})} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">{row.original.owner ? "Change": "Assign"}
                     </div>
                     {row.original.owner && <div onClick={()=>handle_remove_user(row.original.id)} className="shadow-md p-2 rounded-md hover:scale-110 hover:duration-150">Remove</div>}
