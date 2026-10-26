@@ -94,7 +94,24 @@ export default function Devices(){
         }
 
         const table_columns = [
-            {header: "Name", accessorKey: "device_type_name"},
+            {
+                header: "Name",
+                accessorKey: "device_type_name",
+                enableSorting: true,
+                cell: ({ row }) => (
+                    <div className="flex items-start gap-1">
+                        <span>{row.original.device_type_name}</span>
+                        {row.original.is_public && (
+                            <span
+                                title="Public device"
+                                className="text-xs font-semibold text-primary"
+                            >
+                                <sup>P</sup>
+                            </span>
+                        )}
+                    </div>
+                ),
+            },
             {header: "Mac Address", accessorKey: "mac_address"},
             {header: "Serial Number", accessorKey: "serial_number"},
             {header: "Owner", accessorKey: "owner"},
