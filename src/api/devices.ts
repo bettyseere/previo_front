@@ -19,12 +19,17 @@ export const get_user_devices = (user_id: string) => request({
     params: {user_id: user_id}
 })
 
-export const get_company_devices = (company_id: string) => request({
+export const get_company_devices = (
+    company_id: string,
+    available_for_invite: boolean = false
+) => request({
     method: "GET",
     url: "/devices/company_devices",
-    params: {company_id: company_id}
+    params: {
+        company_id,
+        available_for_invite,
+    }
 })
-
 
 export const get_device_type_devices = (device_type_id: string) => request({
     method: "GET",

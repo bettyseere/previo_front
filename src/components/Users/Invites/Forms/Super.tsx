@@ -81,6 +81,7 @@ export default function SuperUserForm() {
                     type="submit"
                     text={isPending ? "Submitting..." : hidePopup.type === "create" ? "Create" : "Save"}
                     styling="text-white px-4 py-1 rounded"
+                    disabled={isPending}
                 />
             </div>
 
