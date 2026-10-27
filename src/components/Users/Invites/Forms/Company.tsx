@@ -7,7 +7,6 @@ import { invite_company_user } from "../../../../api/invites";
 import { get_company_devices } from "../../../../api/devices";
 import { useState } from "react";
 
-// island
 
 export default function CompanyUserForm() {
     const [errorMessage, setErrorMessage] = useState("Something went went wrong!")
